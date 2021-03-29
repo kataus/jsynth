@@ -1,5 +1,7 @@
 package pro.esteps.jsynth.console;
 
+import pro.esteps.jsynth.output.Output;
+import pro.esteps.jsynth.state.MixerState;
 import pro.esteps.jsynth.state.State;
 import pro.esteps.jsynth.synth.Synth;
 
@@ -18,11 +20,19 @@ public class TestConsole {
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 
+            // Shared state
             State state = new State();
+            MixerState mixerState = new MixerState();
 
-            Synth synth = new Synth(state);
-            Thread t = new Thread(synth);
-            t.start();
+            // Output
+            Output output = new Output(mixerState);
+            Thread outputThread = new Thread(output);
+            outputThread.start();
+
+            // Synth
+            Synth synth = new Synth(state, mixerState, 0);
+            Thread synthThread = new Thread(synth);
+            synthThread.start();
 
             String s;
 
