@@ -24,7 +24,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>pro.esteps.jsynth.Synth</mainClass>
+                            <mainClass>pro.esteps.jsynth.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
