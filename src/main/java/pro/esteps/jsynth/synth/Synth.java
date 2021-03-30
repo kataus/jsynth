@@ -4,9 +4,8 @@ import pro.esteps.jsynth.contract.FrequencyConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
 import pro.esteps.jsynth.frequency_generator.FixedFrequencyGenerator;
 import pro.esteps.jsynth.mixer.Mixer;
+import pro.esteps.jsynth.sequencer.Sequencer;
 import pro.esteps.jsynth.wave_generator.Generator;
-import pro.esteps.jsynth.wave_generator.SawWaveGenerator;
-import pro.esteps.jsynth.wave_generator.SquareWaveGenerator;
 
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
 
@@ -20,23 +19,51 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     private Mixer generatorMixer;
 
+    private Sequencer sequencer;
+
+    private static final int CHUNKS_PER_NOTE = 5;
+
+    private int currentChunk = 1;
+
     public Synth() {
-
         this.frequencyGenerator = new FixedFrequencyGenerator();
-        this.generator1 = new SawWaveGenerator();
-        this.generator2 = new SquareWaveGenerator();
         this.generatorMixer = new Mixer(2);
+    }
 
+    public void setGenerator1(Generator generator) {
+        this.generator1 = generator;
+        // todo Set consumer using index
         frequencyGenerator.addConsumer((FrequencyConsumer) generator1);
-        frequencyGenerator.addConsumer((FrequencyConsumer) generator2);
-
         generatorMixer.setProducerForInput(0, (SoundProducer) generator1, (byte) 100);
-        generatorMixer.setProducerForInput(1, (SoundProducer) generator2, (byte) 100);
+    }
 
+    public void setGenerator2(Generator generator) {
+        this.generator2 = generator;
+        // todo Set consumer using index
+        frequencyGenerator.addConsumer((FrequencyConsumer) generator2);
+        generatorMixer.setProducerForInput(1, (SoundProducer) generator2, (byte) 50);
+    }
+
+    public void setSequencer(Sequencer sequencer) {
+        this.sequencer = sequencer;
     }
 
     @Override
     public byte[] getSoundChunk() {
+
+        if (currentChunk == 1) {
+            float frequency = sequencer.getNextNoteFrequency();
+            if (frequency == 0) {
+                frequencyGenerator.clearFrequency();
+            } else {
+                frequencyGenerator.setFrequency(frequency);
+            }
+        }
+        currentChunk++;
+        if (currentChunk > CHUNKS_PER_NOTE) {
+            currentChunk = 1;
+        }
+
         byte[] chunk = new byte[BUFFER_SIZE];
         System.arraycopy(generatorMixer.getSoundChunk(), 0, chunk, 0, BUFFER_SIZE);
         return chunk;
@@ -44,11 +71,11 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     public void setFrequency(float frequency) {
         assert frequency > 0;
-        this.frequencyGenerator.setFrequency(frequency);
+        frequencyGenerator.setFrequency(frequency);
     }
 
     public void clearFrequency() {
-        this.frequencyGenerator.clearFrequency();
+        frequencyGenerator.clearFrequency();
     }
 
 }

@@ -1,19 +1,14 @@
 package pro.esteps.jsynth.sequencer;
 
-import pro.esteps.jsynth.contract.FrequencyConsumer;
 import pro.esteps.jsynth.parser.NoteParser;
 
-public class Sequencer implements Runnable {
-
-    private FrequencyConsumer frequencyConsumer;
+public class Sequencer {
 
     private String[] sequence = new String[16];
 
     private NoteParser noteParser;
 
-    public void setFrequencyConsumer(FrequencyConsumer frequencyConsumer) {
-        this.frequencyConsumer = frequencyConsumer;
-    }
+    private int currentNote;
 
     public void setSequence(String[] sequence) {
         this.sequence = sequence;
@@ -23,25 +18,21 @@ public class Sequencer implements Runnable {
         this.noteParser = new NoteParser();
     }
 
-    @Override
-    public void run() {
-        try {
+    public float getNextNoteFrequency() {
 
-            do {
-                for (String note : sequence) {
-                    if (note.isEmpty()) {
-                        frequencyConsumer.clearFrequency();
-                    } else {
-                        float frequency = noteParser.parseNote(note);
-                        frequencyConsumer.setFrequency(frequency);
-                    }
-                    Thread.sleep(200);
-                }
-            } while (true);
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        String note = sequence[currentNote++];
+        System.out.println(note);
+        if (currentNote >= sequence.length) {
+            currentNote = 0;
         }
+
+        // todo Consider using Float with null values
+        if (note.isEmpty()) {
+            return 0;
+        } else {
+            return noteParser.parseNote(note);
+        }
+
     }
 
 }

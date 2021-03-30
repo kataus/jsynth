@@ -5,6 +5,8 @@ import pro.esteps.jsynth.parser.NoteParser;
 import pro.esteps.jsynth.sequencer.Sequencer;
 import pro.esteps.jsynth.synth.Synth;
 import pro.esteps.jsynth.output.Output;
+import pro.esteps.jsynth.wave_generator.SawWaveGenerator;
+import pro.esteps.jsynth.wave_generator.SquareWaveGenerator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,21 +31,8 @@ public class TestConsole {
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 
-            Synth synth1 = new Synth();
-            Synth synth2 = new Synth();
-
-            List<Synth> synths = new ArrayList<>();
-
-            synths.add(synth1);
-            synths.add(synth2);
-
-            Mixer mixer = new Mixer(2);
-            mixer.setProducerForInput(0, synth1, (byte) 100);
-            mixer.setProducerForInput(1, synth2, (byte) 100);
-
-            Sequencer sequencer = new Sequencer();
-            sequencer.setFrequencyConsumer(synth2);
-            sequencer.setSequence(new String[]{
+            Sequencer sequencer1 = new Sequencer();
+            sequencer1.setSequence(new String[]{
                     "c3",
                     "g3",
                     "c4",
@@ -61,8 +50,19 @@ public class TestConsole {
                     "g4",
                     "f4"
             });
-            Thread sequencerThread = new Thread(sequencer);
-            sequencerThread.start();
+
+            Synth synth1 = new Synth();
+
+            synth1.setGenerator1(new SawWaveGenerator());
+            synth1.setGenerator2(new SquareWaveGenerator());
+            synth1.setSequencer(sequencer1);
+
+            List<Synth> synths = new ArrayList<>();
+
+            synths.add(synth1);
+
+            Mixer mixer = new Mixer(2);
+            mixer.setProducerForInput(0, synth1, (byte) 50);
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);
