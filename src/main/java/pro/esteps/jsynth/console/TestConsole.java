@@ -2,6 +2,7 @@ package pro.esteps.jsynth.console;
 
 import pro.esteps.jsynth.mixer.Mixer;
 import pro.esteps.jsynth.parser.NoteParser;
+import pro.esteps.jsynth.sequencer.Sequencer;
 import pro.esteps.jsynth.synth.Synth;
 import pro.esteps.jsynth.output.Output;
 
@@ -39,6 +40,29 @@ public class TestConsole {
             Mixer mixer = new Mixer(2);
             mixer.setProducerForInput(0, synth1, (byte) 100);
             mixer.setProducerForInput(1, synth2, (byte) 100);
+
+            Sequencer sequencer = new Sequencer();
+            sequencer.setFrequencyConsumer(synth2);
+            sequencer.setSequence(new String[]{
+                    "c4",
+                    "d#4",
+                    "d4",
+                    "a#3",
+                    "c4",
+                    "d#4",
+                    "d4",
+                    "a#3",
+                    "c4",
+                    "d#4",
+                    "d4",
+                    "a#3",
+                    "c4",
+                    "d#4",
+                    "d4",
+                    "a#3"
+            });
+            Thread sequencerThread = new Thread(sequencer);
+            sequencerThread.start();
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);

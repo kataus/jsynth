@@ -10,7 +10,7 @@ import pro.esteps.jsynth.wave_generator.SquareWaveGenerator;
 
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
 
-public class Synth implements SoundProducer {
+public class Synth implements FrequencyConsumer, SoundProducer {
 
     private FixedFrequencyGenerator frequencyGenerator;
 
