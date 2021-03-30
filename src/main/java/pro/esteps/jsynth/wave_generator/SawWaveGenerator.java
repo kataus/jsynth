@@ -1,8 +1,9 @@
-package pro.esteps.jsynth.generator;
+package pro.esteps.jsynth.wave_generator;
 
+import pro.esteps.jsynth.contract.FrequencyConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
 
-public class SawGenerator implements Generator, SoundProducer {
+public class SawWaveGenerator implements FrequencyConsumer, SoundProducer {
 
     private float frequency;
 

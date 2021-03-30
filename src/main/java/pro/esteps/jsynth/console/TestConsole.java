@@ -1,6 +1,7 @@
 package pro.esteps.jsynth.console;
 
-import pro.esteps.jsynth.generator.SawGenerator;
+import pro.esteps.jsynth.frequency_generator.FixedFrequencyGenerator;
+import pro.esteps.jsynth.wave_generator.SawWaveGenerator;
 import pro.esteps.jsynth.mixer.Mixer;
 import pro.esteps.jsynth.output.Output;
 
@@ -19,7 +20,10 @@ public class TestConsole {
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 
-            SawGenerator generator = new SawGenerator();
+            FixedFrequencyGenerator fixedFrequencyGenerator = new FixedFrequencyGenerator();
+
+            SawWaveGenerator generator = new SawWaveGenerator();
+            fixedFrequencyGenerator.addConsumer(generator);
 
             Mixer mixer = new Mixer();
             mixer.addProducer(generator);
@@ -32,9 +36,9 @@ public class TestConsole {
 
             while (!(s = br.readLine()).equals("q")) {
                 if (s.isEmpty()) {
-                    generator.clearFrequency();
+                    fixedFrequencyGenerator.clearFrequency();
                 } else {
-                    generator.setFrequency(Float.parseFloat(s));
+                    fixedFrequencyGenerator.setFrequency(Float.parseFloat(s));
                 }
             }
 
