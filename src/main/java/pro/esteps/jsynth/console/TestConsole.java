@@ -44,22 +44,22 @@ public class TestConsole {
             Sequencer sequencer = new Sequencer();
             sequencer.setFrequencyConsumer(synth2);
             sequencer.setSequence(new String[]{
+                    "c3",
+                    "g3",
                     "c4",
-                    "d#4",
-                    "d4",
-                    "a#3",
+                    "a#4",
+                    "g3",
                     "c4",
-                    "d#4",
-                    "d4",
-                    "a#3",
+                    "c5",
+                    "g4",
+                    "c3",
+                    "g3",
                     "c4",
-                    "d#4",
-                    "d4",
-                    "a#3",
+                    "a#4",
+                    "g3",
                     "c4",
-                    "d#4",
-                    "d4",
-                    "a#3"
+                    "g4",
+                    "f4"
             });
             Thread sequencerThread = new Thread(sequencer);
             sequencerThread.start();
