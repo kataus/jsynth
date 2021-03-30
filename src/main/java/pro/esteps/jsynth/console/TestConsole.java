@@ -4,6 +4,7 @@ import pro.esteps.jsynth.frequency_generator.FixedFrequencyGenerator;
 import pro.esteps.jsynth.wave_generator.SawWaveGenerator;
 import pro.esteps.jsynth.mixer.Mixer;
 import pro.esteps.jsynth.output.Output;
+import pro.esteps.jsynth.wave_generator.SquareWaveGenerator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class TestConsole {
             fixedFrequencyGenerator.addConsumer(generator);
 
             FixedFrequencyGenerator fixedFrequencyGeneratorHalf = new FixedFrequencyGenerator();
-            SawWaveGenerator generatorHalf = new SawWaveGenerator();
+            SquareWaveGenerator generatorHalf = new SquareWaveGenerator();
             fixedFrequencyGeneratorHalf.addConsumer(generatorHalf);
 
             Mixer mixer = new Mixer(2);

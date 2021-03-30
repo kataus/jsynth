@@ -3,10 +3,12 @@ package pro.esteps.jsynth.wave_generator;
 import pro.esteps.jsynth.contract.FrequencyConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
 
+import java.util.Arrays;
+
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
 
 // todo Add abstract parent
-public class SawWaveGenerator implements FrequencyConsumer, SoundProducer {
+public class SquareWaveGenerator implements FrequencyConsumer, SoundProducer {
 
     private float frequency;
 
@@ -41,13 +43,17 @@ public class SawWaveGenerator implements FrequencyConsumer, SoundProducer {
         int newPeriodSize = (int) (44100 / frequency);
         period = new byte[newPeriodSize];
 
-        int index = 0;
-        byte sample;
-        float divider = newPeriodSize / 256f;
-        for (int i = newPeriodSize; i > 0; i--) {
-            sample = (byte) (i / divider - 128);
-            period[index++] = sample;
-        }
+        int fromIndex = 0;
+        int toIndex = 0;
+        byte sample = 127;
+
+        toIndex = fromIndex + newPeriodSize / 2;
+        Arrays.fill(period, fromIndex, toIndex, sample);
+        fromIndex = toIndex;
+
+        sample = -128;
+        toIndex = newPeriodSize - 1;
+        Arrays.fill(period, fromIndex, toIndex, sample);
 
         if (currentPeriodSize == 0) {
             currentPeriodCursorIndex = 0;
