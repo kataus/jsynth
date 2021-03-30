@@ -24,17 +24,22 @@ public class Mixer implements SoundConsumer, SoundProducer {
         }
 
         public byte[] getMixedSoundChunk() {
+
             byte[] mixedChunk = new byte[2048];
             if (volume == 0) {
                 return mixedChunk;
             }
+
             byte[] initialChunk = producer.getSoundChunk();
             if (volume == 100) {
-                return initialChunk;
+                System.arraycopy(initialChunk, 0, mixedChunk, 0, 2048);
+                return mixedChunk;
             }
+
             for (int i = 0; i < 2048; i++) {
                 mixedChunk[i] = (byte) (initialChunk[i] / 100 * volume);
             }
+
             return mixedChunk;
         }
 
