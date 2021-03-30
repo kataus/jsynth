@@ -5,6 +5,7 @@ import pro.esteps.jsynth.wave_generator.SawWaveGenerator;
 import pro.esteps.jsynth.mixer.Mixer;
 import pro.esteps.jsynth.output.Output;
 import pro.esteps.jsynth.wave_generator.SquareWaveGenerator;
+import pro.esteps.jsynth.wave_generator.WhiteNoiseGenerator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,9 +30,13 @@ public class TestConsole {
             SquareWaveGenerator generatorHalf = new SquareWaveGenerator();
             fixedFrequencyGeneratorHalf.addConsumer(generatorHalf);
 
-            Mixer mixer = new Mixer(2);
+            WhiteNoiseGenerator whiteNoiseGenerator = new WhiteNoiseGenerator();
+            fixedFrequencyGenerator.addConsumer(whiteNoiseGenerator);
+
+            Mixer mixer = new Mixer(3);
             mixer.setProducerForInput(0, generator, (byte) 100);
             mixer.setProducerForInput(1, generatorHalf, (byte) 50);
+            mixer.setProducerForInput(2, whiteNoiseGenerator, (byte) 20);
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);
