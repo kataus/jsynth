@@ -51,18 +51,46 @@ public class TestConsole {
                     "f4"
             });
 
+            Sequencer sequencer2 = new Sequencer();
+            sequencer2.setSequence(new String[]{
+                    "c2",
+                    "c2",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+            });
+
             Synth synth1 = new Synth();
 
             synth1.setGenerator1(new SawWaveGenerator());
             synth1.setGenerator2(new SquareWaveGenerator());
             synth1.setSequencer(sequencer1);
 
+            Synth synth2 = new Synth();
+
+            synth2.setGenerator1(new SquareWaveGenerator());
+            // synth2.setGenerator2(new SquareWaveGenerator());
+            synth2.setSequencer(sequencer2);
+
             List<Synth> synths = new ArrayList<>();
 
             synths.add(synth1);
+            synths.add(synth2);
 
             Mixer mixer = new Mixer(2);
             mixer.setProducerForInput(0, synth1, (byte) 100);
+            mixer.setProducerForInput(1, synth2, (byte) 100);
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);
