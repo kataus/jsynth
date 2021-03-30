@@ -21,12 +21,16 @@ public class TestConsole {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 
             FixedFrequencyGenerator fixedFrequencyGenerator = new FixedFrequencyGenerator();
-
             SawWaveGenerator generator = new SawWaveGenerator();
             fixedFrequencyGenerator.addConsumer(generator);
 
+            FixedFrequencyGenerator fixedFrequencyGeneratorHalf = new FixedFrequencyGenerator();
+            SawWaveGenerator generatorHalf = new SawWaveGenerator();
+            fixedFrequencyGeneratorHalf.addConsumer(generatorHalf);
+
             Mixer mixer = new Mixer();
-            mixer.addProducer(generator);
+            mixer.addProducer(generator, (byte) 100);
+            mixer.addProducer(generatorHalf, (byte) 50);
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);
@@ -37,8 +41,10 @@ public class TestConsole {
             while (!(s = br.readLine()).equals("q")) {
                 if (s.isEmpty()) {
                     fixedFrequencyGenerator.clearFrequency();
+                    fixedFrequencyGeneratorHalf.clearFrequency();
                 } else {
                     fixedFrequencyGenerator.setFrequency(Float.parseFloat(s));
+                    fixedFrequencyGeneratorHalf.setFrequency(Float.parseFloat(s) / 2);
                 }
             }
 

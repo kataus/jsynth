@@ -8,10 +8,45 @@ import java.util.Set;
 
 public class Mixer implements SoundConsumer, SoundProducer {
 
-    private final Set<SoundProducer> producers = new LinkedHashSet<>();
+    private static class MixerSoundProducerWithVolume {
 
-    public void addProducer(SoundProducer producer) {
-        this.producers.add(producer);
+        private SoundProducer producer;
+
+        // todo Add data type
+        private byte volume;
+
+        public MixerSoundProducerWithVolume(SoundProducer producer, byte volume) {
+            if (volume < 0 || volume > 100) {
+                throw new IllegalArgumentException("Volume out of range 0..100");
+            }
+            this.producer = producer;
+            this.volume = volume;
+        }
+
+        public byte[] getMixedSoundChunk() {
+            byte[] mixedChunk = new byte[2048];
+            if (volume == 0) {
+                return mixedChunk;
+            }
+            byte[] initialChunk = producer.getSoundChunk();
+            if (volume == 100) {
+                return initialChunk;
+            }
+            for (int i = 0; i < 2048; i++) {
+                mixedChunk[i] = (byte) (initialChunk[i] / 100 * volume);
+            }
+            return mixedChunk;
+        }
+
+        // todo Add changeVolume() method
+
+    }
+
+    private final Set<MixerSoundProducerWithVolume> producers = new LinkedHashSet<>();
+
+    // todo Create Mixer with fixed number of inputs
+    public void addProducer(SoundProducer producer, byte volume) {
+        this.producers.add(new MixerSoundProducerWithVolume(producer, volume));
     }
 
     @Override
@@ -25,8 +60,8 @@ public class Mixer implements SoundConsumer, SoundProducer {
 
         int sample;
 
-        for (SoundProducer producer : producers) {
-            byte[] producerChunk = producer.getSoundChunk();
+        for (MixerSoundProducerWithVolume producerWithVolume : producers) {
+            byte[] producerChunk = producerWithVolume.getMixedSoundChunk();
             for (int i = 0; i < 2048; i++) {
                 sample = chunk[i] + producerChunk[i];
                 if (sample > Byte.MAX_VALUE) {
