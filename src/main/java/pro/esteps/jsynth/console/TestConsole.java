@@ -62,7 +62,7 @@ public class TestConsole {
             synths.add(synth1);
 
             Mixer mixer = new Mixer(2);
-            mixer.setProducerForInput(0, synth1, (byte) 50);
+            mixer.setProducerForInput(0, synth1, (byte) 100);
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);
