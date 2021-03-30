@@ -3,9 +3,6 @@ package pro.esteps.jsynth.console;
 import pro.esteps.jsynth.generator.SawGenerator;
 import pro.esteps.jsynth.mixer.Mixer;
 import pro.esteps.jsynth.output.Output;
-import pro.esteps.jsynth.state.MixerState;
-import pro.esteps.jsynth.state.State;
-import pro.esteps.jsynth.synth.Synth;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,22 +18,6 @@ public class TestConsole {
     public void processConsoleInput() throws IOException {
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
-
-            /*
-            // Shared state
-            State state = new State();
-            MixerState mixerState = new MixerState();
-
-            // Output
-            Output output = new Output(mixerState);
-            Thread outputThread = new Thread(output);
-            outputThread.start();
-
-            // Synth
-            Synth synth = new Synth(state, mixerState, 0);
-            Thread synthThread = new Thread(synth);
-            synthThread.start();
-            */
 
             SawGenerator generator = new SawGenerator();
 
