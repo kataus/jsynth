@@ -1,5 +1,7 @@
 package pro.esteps.jsynth.console;
 
+import pro.esteps.jsynth.generator.SawGenerator;
+import pro.esteps.jsynth.mixer.Mixer;
 import pro.esteps.jsynth.output.Output;
 import pro.esteps.jsynth.state.MixerState;
 import pro.esteps.jsynth.state.State;
@@ -20,6 +22,7 @@ public class TestConsole {
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 
+            /*
             // Shared state
             State state = new State();
             MixerState mixerState = new MixerState();
@@ -33,14 +36,24 @@ public class TestConsole {
             Synth synth = new Synth(state, mixerState, 0);
             Thread synthThread = new Thread(synth);
             synthThread.start();
+            */
+
+            SawGenerator generator = new SawGenerator();
+
+            Mixer mixer = new Mixer();
+            mixer.addProducer(generator);
+
+            Output output = new Output(mixer);
+            Thread outputThread = new Thread(output);
+            outputThread.start();
 
             String s;
 
             while (!(s = br.readLine()).equals("q")) {
                 if (s.isEmpty()) {
-                    state.clearFrequency();
+                    generator.clearFrequency();
                 } else {
-                    state.setFrequency(Float.parseFloat(s));
+                    generator.setFrequency(Float.parseFloat(s));
                 }
             }
 

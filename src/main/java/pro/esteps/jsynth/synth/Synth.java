@@ -20,6 +20,7 @@ public class Synth implements Runnable {
 
     public void run() {
 
+        /*
         Generator generator = new SawGenerator();
         byte[] buffer = new byte[2048];
 
@@ -35,6 +36,8 @@ public class Synth implements Runnable {
             }
             mixerState.setChannelBuffer(channelIndex, buffer);
         } while (true);
+        */
+
     }
 
 }

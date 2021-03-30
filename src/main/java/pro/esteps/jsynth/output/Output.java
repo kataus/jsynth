@@ -1,6 +1,6 @@
 package pro.esteps.jsynth.output;
 
-import pro.esteps.jsynth.state.MixerState;
+import pro.esteps.jsynth.contract.SoundProducer;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -10,6 +10,7 @@ import javax.sound.sampled.SourceDataLine;
 public class Output implements Runnable {
 
     private static final int FRAME_SIZE = 1;
+
     private static final int SAMPLE_RATE = 44100;
 
     private static final AudioFormat FORMAT = new AudioFormat(
@@ -22,15 +23,15 @@ public class Output implements Runnable {
             false
     );
 
-    private MixerState mixerState;
+    private final SoundProducer producer;
 
-    public Output(MixerState mixerState) {
-        this.mixerState = mixerState;
+    public Output(SoundProducer producer) {
+        this.producer = producer;
     }
 
     public void run() {
 
-        SourceDataLine soundLine = null;
+        SourceDataLine soundLine;
 
         try {
 
@@ -40,6 +41,21 @@ public class Output implements Runnable {
             soundLine.open(FORMAT, bufferSize);
             soundLine.start();
 
+            /*
+            float[] notes = new float[]{261.63f, 311.13f, 293.66f, 349.23f, 392.00f, 311.13f, 293.66f, 233.08f, 261.63f, 311.13f, 293.66f, 349.23f, 392.00f, 311.13f, 293.66f, 233.08f};
+            Generator generator = new SawGenerator();
+            for (float frequency : notes) {
+                for (int k = 0; k < 5; k++) {
+                    byte[] chunk = generator.generateChunk(frequency);
+                    for (int i = 0; i < bufferSize; i++) {
+                        buffer[i] = chunk[i];
+                    }
+                    soundLine.write(buffer, 0, bufferSize);
+                }
+            }
+            */
+
+            /*
             do {
 
                 byte[][] channelBuffers = mixerState.getChannelBuffers();
@@ -63,6 +79,12 @@ public class Output implements Runnable {
 
                 soundLine.write(buffer, 0, bufferSize);
 
+            } while (true);
+            */
+
+            do {
+                System.arraycopy(producer.getSoundChunk(), 0, buffer, 0, 2048);
+                soundLine.write(buffer, 0, 2048);
             } while (true);
 
         } catch (LineUnavailableException e) {
