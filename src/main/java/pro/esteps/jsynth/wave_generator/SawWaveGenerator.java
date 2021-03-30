@@ -3,6 +3,8 @@ package pro.esteps.jsynth.wave_generator;
 import pro.esteps.jsynth.contract.FrequencyConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
 
+import static pro.esteps.jsynth.App.BUFFER_SIZE;
+
 public class SawWaveGenerator implements FrequencyConsumer, SoundProducer {
 
     private float frequency;
@@ -61,7 +63,7 @@ public class SawWaveGenerator implements FrequencyConsumer, SoundProducer {
     @Override
     public byte[] getSoundChunk() {
 
-        byte[] chunk = new byte[2048];
+        byte[] chunk = new byte[BUFFER_SIZE];
 
         if (period.length == 0) {
             return chunk;

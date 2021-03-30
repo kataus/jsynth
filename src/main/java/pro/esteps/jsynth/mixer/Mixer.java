@@ -6,6 +6,8 @@ import pro.esteps.jsynth.contract.SoundProducer;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static pro.esteps.jsynth.App.BUFFER_SIZE;
+
 public class Mixer implements SoundConsumer, SoundProducer {
 
     private static class MixerSoundProducerWithVolume {
@@ -25,18 +27,18 @@ public class Mixer implements SoundConsumer, SoundProducer {
 
         public byte[] getMixedSoundChunk() {
 
-            byte[] mixedChunk = new byte[2048];
+            byte[] mixedChunk = new byte[BUFFER_SIZE];
             if (volume == 0) {
                 return mixedChunk;
             }
 
             byte[] initialChunk = producer.getSoundChunk();
             if (volume == 100) {
-                System.arraycopy(initialChunk, 0, mixedChunk, 0, 2048);
+                System.arraycopy(initialChunk, 0, mixedChunk, 0, BUFFER_SIZE);
                 return mixedChunk;
             }
 
-            for (int i = 0; i < 2048; i++) {
+            for (int i = 0; i < BUFFER_SIZE; i++) {
                 mixedChunk[i] = (byte) (initialChunk[i] / 100 * volume);
             }
 
@@ -61,7 +63,7 @@ public class Mixer implements SoundConsumer, SoundProducer {
     @Override
     public byte[] getSoundChunk() {
 
-        byte[] chunk = new byte[2048];
+        byte[] chunk = new byte[BUFFER_SIZE];
 
         List<MixerSoundProducerWithVolume> activeProducers =
                 producers
@@ -77,7 +79,7 @@ public class Mixer implements SoundConsumer, SoundProducer {
 
         for (MixerSoundProducerWithVolume producer : activeProducers) {
             byte[] producerChunk = producer.getMixedSoundChunk();
-            for (int i = 0; i < 2048; i++) {
+            for (int i = 0; i < BUFFER_SIZE; i++) {
                 sample = chunk[i] + producerChunk[i];
                 if (sample > Byte.MAX_VALUE) {
                     sample = Byte.MAX_VALUE;

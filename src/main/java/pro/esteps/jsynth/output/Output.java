@@ -7,6 +7,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
+import static pro.esteps.jsynth.App.BUFFER_SIZE;
+
 public class Output implements Runnable {
 
     private static final int FRAME_SIZE = 1;
@@ -36,7 +38,7 @@ public class Output implements Runnable {
         try {
 
             soundLine = AudioSystem.getSourceDataLine(FORMAT);
-            final int bufferSize = 2048; // in Bytes
+            final int bufferSize = BUFFER_SIZE; // in Bytes
             final byte[] buffer = new byte[bufferSize];
             soundLine.open(FORMAT, bufferSize);
             soundLine.start();
@@ -60,7 +62,7 @@ public class Output implements Runnable {
 
                 byte[][] channelBuffers = mixerState.getChannelBuffers();
                 int sample;
-                for (int sampleIndex = 0; sampleIndex < 2048; sampleIndex++) {
+                for (int sampleIndex = 0; sampleIndex < BUFFER_SIZE; sampleIndex++) {
                     // Mix all channels
                     sample = 0;
                     for (int channelIndex = 0; channelIndex < 4; channelIndex++) {
@@ -83,8 +85,8 @@ public class Output implements Runnable {
             */
 
             do {
-                System.arraycopy(producer.getSoundChunk(), 0, buffer, 0, 2048);
-                soundLine.write(buffer, 0, 2048);
+                System.arraycopy(producer.getSoundChunk(), 0, buffer, 0, BUFFER_SIZE);
+                soundLine.write(buffer, 0, BUFFER_SIZE);
             } while (true);
 
         } catch (LineUnavailableException e) {
