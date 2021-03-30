@@ -1,6 +1,7 @@
 package pro.esteps.jsynth.console;
 
 import pro.esteps.jsynth.mixer.Mixer;
+import pro.esteps.jsynth.parser.NoteParser;
 import pro.esteps.jsynth.synth.Synth;
 import pro.esteps.jsynth.output.Output;
 
@@ -11,6 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestConsole {
+
+    private NoteParser noteParser;
+
+    public TestConsole() {
+        this.noteParser = new NoteParser();
+    }
 
     /**
      * Process console input.
@@ -55,7 +62,8 @@ public class TestConsole {
                     synths.get(currentSynth).clearFrequency();
                     continue;
                 }
-                synths.get(currentSynth).setFrequency(Float.parseFloat(s));
+                float frequency = noteParser.parseNote(s);
+                synths.get(currentSynth).setFrequency(frequency);
             }
 
         }
