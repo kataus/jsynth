@@ -28,9 +28,9 @@ public class TestConsole {
             SawWaveGenerator generatorHalf = new SawWaveGenerator();
             fixedFrequencyGeneratorHalf.addConsumer(generatorHalf);
 
-            Mixer mixer = new Mixer();
-            mixer.addProducer(generator, (byte) 100);
-            mixer.addProducer(generatorHalf, (byte) 50);
+            Mixer mixer = new Mixer(2);
+            mixer.setProducerForInput(0, generator, (byte) 100);
+            mixer.setProducerForInput(1, generatorHalf, (byte) 50);
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);

@@ -3,8 +3,8 @@ package pro.esteps.jsynth.mixer;
 import pro.esteps.jsynth.contract.SoundConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Mixer implements SoundConsumer, SoundProducer {
 
@@ -42,11 +42,15 @@ public class Mixer implements SoundConsumer, SoundProducer {
 
     }
 
-    private final Set<MixerSoundProducerWithVolume> producers = new LinkedHashSet<>();
+    private final List<MixerSoundProducerWithVolume> producers;
 
-    // todo Create Mixer with fixed number of inputs
-    public void addProducer(SoundProducer producer, byte volume) {
-        this.producers.add(new MixerSoundProducerWithVolume(producer, volume));
+    public Mixer(int numberOfInputs) {
+        assert numberOfInputs > 0;
+        producers = new ArrayList<>(Collections.nCopies(numberOfInputs, null));
+    }
+
+    public void setProducerForInput(int inputIndex, SoundProducer producer, byte volume) {
+        this.producers.set(inputIndex, new MixerSoundProducerWithVolume(producer, volume));
     }
 
     @Override
@@ -54,14 +58,20 @@ public class Mixer implements SoundConsumer, SoundProducer {
 
         byte[] chunk = new byte[2048];
 
-        if (producers.isEmpty()) {
+        List<MixerSoundProducerWithVolume> activeProducers =
+                producers
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+
+        if (activeProducers.isEmpty()) {
             return chunk;
         }
 
         int sample;
 
-        for (MixerSoundProducerWithVolume producerWithVolume : producers) {
-            byte[] producerChunk = producerWithVolume.getMixedSoundChunk();
+        for (MixerSoundProducerWithVolume producer : activeProducers) {
+            byte[] producerChunk = producer.getMixedSoundChunk();
             for (int i = 0; i < 2048; i++) {
                 sample = chunk[i] + producerChunk[i];
                 if (sample > Byte.MAX_VALUE) {
