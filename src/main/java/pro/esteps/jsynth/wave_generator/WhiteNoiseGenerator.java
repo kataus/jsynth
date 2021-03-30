@@ -5,7 +5,7 @@ import pro.esteps.jsynth.contract.SoundProducer;
 
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
 
-public class WhiteNoiseGenerator implements FrequencyConsumer, SoundProducer {
+public class WhiteNoiseGenerator implements Generator, FrequencyConsumer, SoundProducer {
 
     private float frequency;
 

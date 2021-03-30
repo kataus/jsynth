@@ -6,7 +6,7 @@ import pro.esteps.jsynth.contract.SoundProducer;
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
 
 // todo Add abstract parent
-public class SawWaveGenerator implements FrequencyConsumer, SoundProducer {
+public class SawWaveGenerator implements Generator, FrequencyConsumer, SoundProducer {
 
     private float frequency;
 

@@ -8,7 +8,7 @@ import java.util.Arrays;
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
 
 // todo Add abstract parent
-public class SquareWaveGenerator implements FrequencyConsumer, SoundProducer {
+public class SquareWaveGenerator implements Generator, FrequencyConsumer, SoundProducer {
 
     private float frequency;
 
