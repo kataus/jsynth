@@ -3,6 +3,7 @@ package pro.esteps.jsynth.synth;
 import pro.esteps.jsynth.contract.FrequencyConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
 import pro.esteps.jsynth.frequency_generator.FixedFrequencyGenerator;
+import pro.esteps.jsynth.fx.Distortion;
 import pro.esteps.jsynth.fx.FixedDelay;
 import pro.esteps.jsynth.fx.LowHighPassFilter;
 import pro.esteps.jsynth.mixer.Mixer;
@@ -25,6 +26,8 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     private FixedDelay fixedDelay;
 
+    private Distortion distortion;
+
     private LowHighPassFilter lowHighPassFilter;
 
     private Sequencer sequencer;
@@ -39,6 +42,22 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         this.generatorMixer = new Mixer(2);
         this.lowHighPassFilter = new LowHighPassFilter(
                 generatorMixer,
+                frequency,
+                LowHighPassFilter.PassType.Lowpass,
+                1f
+        );
+        this.fixedDelay = new FixedDelay(lowHighPassFilter);
+        this.outputMixer = new Mixer(1);
+        outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
+    }
+
+    // todo Remove overloaded constructor
+    public Synth(int frequency, boolean hasDistortion) {
+        this.frequencyGenerator = new FixedFrequencyGenerator();
+        this.generatorMixer = new Mixer(2);
+        this.distortion = new Distortion(generatorMixer);
+        this.lowHighPassFilter = new LowHighPassFilter(
+                distortion,
                 frequency,
                 LowHighPassFilter.PassType.Lowpass,
                 1f

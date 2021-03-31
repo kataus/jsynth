@@ -93,10 +93,10 @@ public class TestConsole {
                     "",
             });
 
-            Synth synth1 = new Synth(800);
+            Synth synth1 = new Synth(600, true);
 
             synth1.setGenerator1(new SawWaveGenerator());
-            synth1.setGenerator2(new SquareWaveGenerator());
+            // synth1.setGenerator2(new SquareWaveGenerator());
             synth1.setSequencer(sequencer1);
 
             Synth synth2 = new Synth(400);
@@ -114,12 +114,12 @@ public class TestConsole {
 
             synths.add(synth1);
             synths.add(synth2);
-            synths.add(synth3);
+            // synths.add(synth3);
 
             Mixer mixer = new Mixer(3);
             mixer.setProducerForInput(0, synth1, (byte) 100);
             mixer.setProducerForInput(1, synth2, (byte) 100);
-            mixer.setProducerForInput(2, synth3, (byte) 70);
+            // mixer.setProducerForInput(2, synth3, (byte) 70);
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);
