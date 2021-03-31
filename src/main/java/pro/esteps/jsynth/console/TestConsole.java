@@ -8,6 +8,7 @@ import pro.esteps.jsynth.output.Output;
 import pro.esteps.jsynth.wave_generator.SawWaveGenerator;
 import pro.esteps.jsynth.wave_generator.SineWaveGenerator;
 import pro.esteps.jsynth.wave_generator.SquareWaveGenerator;
+import pro.esteps.jsynth.wave_generator.WhiteNoiseGenerator;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,43 +56,70 @@ public class TestConsole {
             Sequencer sequencer2 = new Sequencer();
             sequencer2.setSequence(new String[]{
                     "c2",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "c3",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
                     "c2",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
                     "",
                     "",
             });
 
-            Synth synth1 = new Synth();
+            Sequencer sequencer3 = new Sequencer();
+            sequencer3.setSequence(new String[]{
+                    "",
+                    "",
+                    "c2",
+                    "",
+                    "",
+                    "",
+                    "c2",
+                    "",
+                    "",
+                    "",
+                    "c2",
+                    "",
+                    "",
+                    "",
+                    "c2",
+                    "",
+            });
+
+            Synth synth1 = new Synth(800);
 
             synth1.setGenerator1(new SawWaveGenerator());
             synth1.setGenerator2(new SquareWaveGenerator());
             synth1.setSequencer(sequencer1);
 
-            Synth synth2 = new Synth();
+            Synth synth2 = new Synth(400);
 
-            synth2.setGenerator1(new SineWaveGenerator());
+            synth2.setGenerator1(new SquareWaveGenerator());
             // synth2.setGenerator2(new SquareWaveGenerator());
             synth2.setSequencer(sequencer2);
+
+            Synth synth3 = new Synth(4000);
+
+            synth3.setGenerator1(new WhiteNoiseGenerator());
+            synth3.setSequencer(sequencer3);
 
             List<Synth> synths = new ArrayList<>();
 
             synths.add(synth1);
             synths.add(synth2);
+            synths.add(synth3);
 
-            Mixer mixer = new Mixer(2);
+            Mixer mixer = new Mixer(3);
             mixer.setProducerForInput(0, synth1, (byte) 100);
             mixer.setProducerForInput(1, synth2, (byte) 100);
+            mixer.setProducerForInput(2, synth3, (byte) 70);
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);

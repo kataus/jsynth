@@ -4,6 +4,7 @@ import pro.esteps.jsynth.contract.FrequencyConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
 import pro.esteps.jsynth.frequency_generator.FixedFrequencyGenerator;
 import pro.esteps.jsynth.fx.FixedDelay;
+import pro.esteps.jsynth.fx.LowHighPassFilter;
 import pro.esteps.jsynth.mixer.Mixer;
 import pro.esteps.jsynth.sequencer.Sequencer;
 import pro.esteps.jsynth.wave_generator.Generator;
@@ -20,7 +21,11 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     private Mixer generatorMixer;
 
+    private Mixer outputMixer;
+
     private FixedDelay fixedDelay;
+
+    private LowHighPassFilter lowHighPassFilter;
 
     private Sequencer sequencer;
 
@@ -28,10 +33,28 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     private int currentChunk = 1;
 
+    // todo Remove overloaded constructor
+    public Synth(int frequency) {
+        this.frequencyGenerator = new FixedFrequencyGenerator();
+        this.generatorMixer = new Mixer(2);
+        this.lowHighPassFilter = new LowHighPassFilter(
+                generatorMixer,
+                frequency,
+                LowHighPassFilter.PassType.Lowpass,
+                1f
+        );
+        this.fixedDelay = new FixedDelay(lowHighPassFilter);
+        this.outputMixer = new Mixer(1);
+        outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
+    }
+
+    // todo Remove overloaded constructor
     public Synth() {
         this.frequencyGenerator = new FixedFrequencyGenerator();
         this.generatorMixer = new Mixer(2);
         this.fixedDelay = new FixedDelay(generatorMixer);
+        this.outputMixer = new Mixer(1);
+        outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
     }
 
     public void setGenerator1(Generator generator) {
@@ -70,7 +93,7 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
         short[] chunk = new short[BUFFER_SIZE];
         // todo Use FX Mixer
-        System.arraycopy(fixedDelay.getSoundChunk(), 0, chunk, 0, BUFFER_SIZE);
+        System.arraycopy(outputMixer.getSoundChunk(), 0, chunk, 0, BUFFER_SIZE);
         return chunk;
     }
 
