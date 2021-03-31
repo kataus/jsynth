@@ -7,20 +7,19 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
+import java.nio.ByteBuffer;
+
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
+import static pro.esteps.jsynth.App.SAMPLE_RATE;
 
 public class Output implements Runnable {
-
-    private static final int FRAME_SIZE = 1;
-
-    private static final int SAMPLE_RATE = 44100;
 
     private static final AudioFormat FORMAT = new AudioFormat(
             AudioFormat.Encoding.PCM_SIGNED,
             SAMPLE_RATE,
-            8,
+            16,
             1,
-            FRAME_SIZE,
+            2,
             SAMPLE_RATE,
             false
     );
@@ -38,55 +37,20 @@ public class Output implements Runnable {
         try {
 
             soundLine = AudioSystem.getSourceDataLine(FORMAT);
-            final int bufferSize = BUFFER_SIZE; // in Bytes
-            final byte[] buffer = new byte[bufferSize];
-            soundLine.open(FORMAT, bufferSize);
+            final byte[] buffer = new byte[BUFFER_SIZE * 2];
+            soundLine.open(FORMAT, BUFFER_SIZE * 2);
             soundLine.start();
 
-            /*
-            float[] notes = new float[]{261.63f, 311.13f, 293.66f, 349.23f, 392.00f, 311.13f, 293.66f, 233.08f, 261.63f, 311.13f, 293.66f, 349.23f, 392.00f, 311.13f, 293.66f, 233.08f};
-            Generator generator = new SawGenerator();
-            for (float frequency : notes) {
-                for (int k = 0; k < 5; k++) {
-                    byte[] chunk = generator.generateChunk(frequency);
-                    for (int i = 0; i < bufferSize; i++) {
-                        buffer[i] = chunk[i];
-                    }
-                    soundLine.write(buffer, 0, bufferSize);
-                }
-            }
-            */
-
-            /*
-            do {
-
-                byte[][] channelBuffers = mixerState.getChannelBuffers();
-                int sample;
-                for (int sampleIndex = 0; sampleIndex < BUFFER_SIZE; sampleIndex++) {
-                    // Mix all channels
-                    sample = 0;
-                    for (int channelIndex = 0; channelIndex < 4; channelIndex++) {
-                        sample += channelBuffers[channelIndex][sampleIndex];
-                    }
-                    // Normalize
-                    if (sample > Byte.MAX_VALUE) {
-                        sample = Byte.MAX_VALUE;
-                    }
-                    if (sample < Byte.MIN_VALUE) {
-                        sample = Byte.MIN_VALUE;
-                    }
-                    // Add to buffer
-                    buffer[sampleIndex] = (byte) sample;
-                }
-
-                soundLine.write(buffer, 0, bufferSize);
-
-            } while (true);
-            */
+            ByteBuffer bb = ByteBuffer.allocate(2);
 
             do {
-                System.arraycopy(producer.getSoundChunk(), 0, buffer, 0, BUFFER_SIZE);
-                soundLine.write(buffer, 0, BUFFER_SIZE);
+                short[] chunk = producer.getSoundChunk();
+                for (int i = 0; i < BUFFER_SIZE; i++) {
+                    bb.putShort(0, chunk[i]);
+                    buffer[i * 2 + 1] = bb.get(0);
+                    buffer[i * 2] = bb.get(1);
+                }
+                soundLine.write(buffer, 0, BUFFER_SIZE * 2);
             } while (true);
 
         } catch (LineUnavailableException e) {

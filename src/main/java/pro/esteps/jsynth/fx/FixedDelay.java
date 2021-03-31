@@ -9,7 +9,7 @@ public class FixedDelay implements SoundConsumer, SoundProducer {
 
     private static int CHUNKS_PER_DELAY = 5;
 
-    private byte[] previousInput = new byte[BUFFER_SIZE * CHUNKS_PER_DELAY];
+    private short[] previousInput = new short[BUFFER_SIZE * CHUNKS_PER_DELAY];
 
     private SoundProducer producer;
 
@@ -18,21 +18,22 @@ public class FixedDelay implements SoundConsumer, SoundProducer {
     }
 
     @Override
-    public byte[] getSoundChunk() {
+    public short[] getSoundChunk() {
 
-        byte[] mixedChunk = new byte[BUFFER_SIZE];
-        byte[] producerChunk = producer.getSoundChunk();
+        short[] mixedChunk = new short[BUFFER_SIZE];
+        short[] producerChunk = producer.getSoundChunk();
 
         int sample;
         for (int i = 0; i < BUFFER_SIZE; i++) {
             sample = producerChunk[i] + (previousInput[i] / 4);
-            if (sample > Byte.MAX_VALUE) {
-                sample = Byte.MAX_VALUE;
+            // todo Use clipping algorithm
+            if (sample > Short.MAX_VALUE) {
+                sample = Short.MAX_VALUE;
             }
-            if (sample < Byte.MIN_VALUE) {
-                sample = Byte.MIN_VALUE;
+            if (sample < Short.MIN_VALUE) {
+                sample = Short.MIN_VALUE;
             }
-            mixedChunk[i] = (byte) sample;
+            mixedChunk[i] = (short) sample;
         }
 
         System.arraycopy(

@@ -9,7 +9,7 @@ public class WhiteNoiseGenerator implements Generator, FrequencyConsumer, SoundP
 
     private float frequency;
 
-    private byte[] period = new byte[0];
+    private short[] period = new short[0];
 
     // FrequencyProducer works as an off/on switch
     public void setFrequency(float frequency) {
@@ -24,16 +24,16 @@ public class WhiteNoiseGenerator implements Generator, FrequencyConsumer, SoundP
     }
 
     private void regeneratePeriod() {
-        period = new byte[BUFFER_SIZE];
+        period = new short[BUFFER_SIZE];
         for (int i = 0; i < BUFFER_SIZE; i++) {
-            period[i] = (byte) ((Math.random() * 255 - 128));
+            period[i] = (short) ((Math.random() * 65536 - 32768));
         }
     }
 
     @Override
-    public byte[] getSoundChunk() {
+    public short[] getSoundChunk() {
 
-        byte[] chunk = new byte[BUFFER_SIZE];
+        short[] chunk = new short[BUFFER_SIZE];
 
         if (frequency == 0) {
             return chunk;

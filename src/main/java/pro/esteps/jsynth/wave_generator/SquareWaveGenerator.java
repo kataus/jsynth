@@ -6,6 +6,7 @@ import pro.esteps.jsynth.contract.SoundProducer;
 import java.util.Arrays;
 
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
+import static pro.esteps.jsynth.App.SAMPLE_RATE;
 
 // todo Add abstract parent
 public class SquareWaveGenerator implements Generator, FrequencyConsumer, SoundProducer {
@@ -17,7 +18,7 @@ public class SquareWaveGenerator implements Generator, FrequencyConsumer, SoundP
      */
     private int currentPeriodCursorIndex;
 
-    private byte[] period = new byte[0];
+    private short[] period = new short[0];
 
     public void setFrequency(float frequency) {
         assert frequency > 0;
@@ -35,23 +36,23 @@ public class SquareWaveGenerator implements Generator, FrequencyConsumer, SoundP
     private void regeneratePeriod() {
 
         if (frequency == 0) {
-            period = new byte[0];
+            period = new short[0];
             return;
         }
 
         int currentPeriodSize = period.length;
-        int newPeriodSize = (int) (44100 / frequency);
-        period = new byte[newPeriodSize];
+        int newPeriodSize = (int) (SAMPLE_RATE / frequency);
+        period = new short[newPeriodSize];
 
         int fromIndex = 0;
         int toIndex = 0;
-        byte sample = 127;
+        short sample = Short.MAX_VALUE;
 
         toIndex = fromIndex + newPeriodSize / 2;
         Arrays.fill(period, fromIndex, toIndex, sample);
         fromIndex = toIndex;
 
-        sample = -128;
+        sample = Short.MIN_VALUE;
         toIndex = newPeriodSize - 1;
         Arrays.fill(period, fromIndex, toIndex, sample);
 
@@ -68,9 +69,9 @@ public class SquareWaveGenerator implements Generator, FrequencyConsumer, SoundP
     }
 
     @Override
-    public byte[] getSoundChunk() {
+    public short[] getSoundChunk() {
 
-        byte[] chunk = new byte[BUFFER_SIZE];
+        short[] chunk = new short[BUFFER_SIZE];
 
         if (period.length == 0) {
             return chunk;
