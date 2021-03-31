@@ -6,6 +6,7 @@ import pro.esteps.jsynth.sequencer.Sequencer;
 import pro.esteps.jsynth.synth.Synth;
 import pro.esteps.jsynth.output.Output;
 import pro.esteps.jsynth.wave_generator.SawWaveGenerator;
+import pro.esteps.jsynth.wave_generator.SineWaveGenerator;
 import pro.esteps.jsynth.wave_generator.SquareWaveGenerator;
 
 import java.io.BufferedReader;
@@ -79,7 +80,7 @@ public class TestConsole {
 
             Synth synth2 = new Synth();
 
-            synth2.setGenerator1(new SquareWaveGenerator());
+            synth2.setGenerator1(new SineWaveGenerator());
             // synth2.setGenerator2(new SquareWaveGenerator());
             synth2.setSequencer(sequencer2);
 
