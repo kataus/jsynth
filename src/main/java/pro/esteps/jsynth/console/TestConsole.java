@@ -66,11 +66,11 @@ public class TestConsole {
                     "",
                     "",
                     "",
+                    "d#2",
                     "",
                     "",
-                    "c2",
-                    "",
-                    "",
+                    "f2",
+                    "g2",
             });
 
             Sequencer sequencer3 = new Sequencer();
