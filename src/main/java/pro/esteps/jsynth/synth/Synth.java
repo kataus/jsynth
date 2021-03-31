@@ -6,6 +6,7 @@ import pro.esteps.jsynth.frequency_generator.FixedFrequencyGenerator;
 import pro.esteps.jsynth.fx.Distortion;
 import pro.esteps.jsynth.fx.FixedDelay;
 import pro.esteps.jsynth.fx.LowHighPassFilter;
+import pro.esteps.jsynth.fx.LowPassFilter;
 import pro.esteps.jsynth.mixer.Mixer;
 import pro.esteps.jsynth.sequencer.Sequencer;
 import pro.esteps.jsynth.wave_generator.Generator;
@@ -30,6 +31,8 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     private LowHighPassFilter lowHighPassFilter;
 
+    private LowPassFilter lowPassFilter;
+
     private Sequencer sequencer;
 
     private static final int CHUNKS_PER_NOTE = 5;
@@ -40,13 +43,16 @@ public class Synth implements FrequencyConsumer, SoundProducer {
     public Synth(int frequency) {
         this.frequencyGenerator = new FixedFrequencyGenerator();
         this.generatorMixer = new Mixer(2);
+        /*
         this.lowHighPassFilter = new LowHighPassFilter(
                 generatorMixer,
                 frequency,
                 LowHighPassFilter.PassType.Lowpass,
                 1f
         );
-        this.fixedDelay = new FixedDelay(lowHighPassFilter);
+        */
+        this.lowPassFilter = new LowPassFilter(generatorMixer, frequency);
+        this.fixedDelay = new FixedDelay(lowPassFilter);
         this.outputMixer = new Mixer(1);
         outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
     }
@@ -56,13 +62,16 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         this.frequencyGenerator = new FixedFrequencyGenerator();
         this.generatorMixer = new Mixer(2);
         this.distortion = new Distortion(generatorMixer);
+        /*
         this.lowHighPassFilter = new LowHighPassFilter(
                 distortion,
                 frequency,
                 LowHighPassFilter.PassType.Lowpass,
                 1f
         );
-        this.fixedDelay = new FixedDelay(lowHighPassFilter);
+        */
+        this.lowPassFilter = new LowPassFilter(generatorMixer, frequency);
+        this.fixedDelay = new FixedDelay(lowPassFilter);
         this.outputMixer = new Mixer(1);
         outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
     }
