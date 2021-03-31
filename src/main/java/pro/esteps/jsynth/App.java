@@ -6,6 +6,7 @@ import java.io.IOException;
 
 public class App {
 
+    public static int SAMPLE_RATE = 44100;
     public static int BUFFER_SIZE = 2048;
 
     public static void main(String[] args) throws IOException {

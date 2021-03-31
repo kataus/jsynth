@@ -53,7 +53,7 @@ public class Synth implements FrequencyConsumer, SoundProducer {
     }
 
     @Override
-    public byte[] getSoundChunk() {
+    public short[] getSoundChunk() {
 
         if (currentChunk == 1) {
             float frequency = sequencer.getNextNoteFrequency();
@@ -68,7 +68,7 @@ public class Synth implements FrequencyConsumer, SoundProducer {
             currentChunk = 1;
         }
 
-        byte[] chunk = new byte[BUFFER_SIZE];
+        short[] chunk = new short[BUFFER_SIZE];
         // todo Use FX Mixer
         System.arraycopy(fixedDelay.getSoundChunk(), 0, chunk, 0, BUFFER_SIZE);
         return chunk;

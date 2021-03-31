@@ -15,31 +15,30 @@ public class Mixer implements SoundConsumer, SoundProducer {
         private SoundProducer producer;
 
         // todo Add data type
+        // todo Use log. volume control
         private byte volume;
 
         public MixerSoundProducerWithVolume(SoundProducer producer, byte volume) {
-            if (volume < 0 || volume > 100) {
-                throw new IllegalArgumentException("Volume out of range 0..100");
-            }
+            assert volume >= 0 && volume <= 100;
             this.producer = producer;
             this.volume = volume;
         }
 
-        public byte[] getMixedSoundChunk() {
+        public short[] getMixedSoundChunk() {
 
-            byte[] mixedChunk = new byte[BUFFER_SIZE];
+            short[] mixedChunk = new short[BUFFER_SIZE];
             if (volume == 0) {
                 return mixedChunk;
             }
 
-            byte[] initialChunk = producer.getSoundChunk();
+            short[] initialChunk = producer.getSoundChunk();
             if (volume == 100) {
                 System.arraycopy(initialChunk, 0, mixedChunk, 0, BUFFER_SIZE);
                 return mixedChunk;
             }
 
             for (int i = 0; i < BUFFER_SIZE; i++) {
-                mixedChunk[i] = (byte) (initialChunk[i] / 100 * volume);
+                mixedChunk[i] = (short) (initialChunk[i] / 100 * volume);
             }
 
             return mixedChunk;
@@ -61,9 +60,9 @@ public class Mixer implements SoundConsumer, SoundProducer {
     }
 
     @Override
-    public byte[] getSoundChunk() {
+    public short[] getSoundChunk() {
 
-        byte[] chunk = new byte[BUFFER_SIZE];
+        short[] chunk = new short[BUFFER_SIZE];
 
         List<MixerSoundProducerWithVolume> activeProducers =
                 producers
@@ -78,15 +77,16 @@ public class Mixer implements SoundConsumer, SoundProducer {
         int sample;
 
         for (MixerSoundProducerWithVolume producer : activeProducers) {
-            byte[] producerChunk = producer.getMixedSoundChunk();
+            short[] producerChunk = producer.getMixedSoundChunk();
             for (int i = 0; i < BUFFER_SIZE; i++) {
                 sample = chunk[i] + producerChunk[i];
-                if (sample > Byte.MAX_VALUE) {
-                    sample = Byte.MAX_VALUE;
-                } else if (sample < Byte.MIN_VALUE) {
-                    sample = Byte.MIN_VALUE;
+                // todo Use clipping algorithm
+                if (sample > Short.MAX_VALUE) {
+                    sample = Short.MAX_VALUE;
+                } else if (sample < Short.MIN_VALUE) {
+                    sample = Short.MIN_VALUE;
                 }
-                chunk[i] = (byte) sample;
+                chunk[i] = (short) sample;
             }
         }
 

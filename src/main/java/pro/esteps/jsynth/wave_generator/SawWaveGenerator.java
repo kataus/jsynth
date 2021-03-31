@@ -4,6 +4,7 @@ import pro.esteps.jsynth.contract.FrequencyConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
 
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
+import static pro.esteps.jsynth.App.SAMPLE_RATE;
 
 // todo Add abstract parent
 public class SawWaveGenerator implements Generator, FrequencyConsumer, SoundProducer {
@@ -15,7 +16,7 @@ public class SawWaveGenerator implements Generator, FrequencyConsumer, SoundProd
      */
     private int currentPeriodCursorIndex;
 
-    private byte[] period = new byte[0];
+    private short[] period = new short[0];
 
     public void setFrequency(float frequency) {
         assert frequency > 0;
@@ -33,19 +34,19 @@ public class SawWaveGenerator implements Generator, FrequencyConsumer, SoundProd
     private void regeneratePeriod() {
 
         if (frequency == 0) {
-            period = new byte[0];
+            period = new short[0];
             return;
         }
 
         int currentPeriodSize = period.length;
-        int newPeriodSize = (int) (44100 / frequency);
-        period = new byte[newPeriodSize];
+        int newPeriodSize = (int) (SAMPLE_RATE / frequency);
+        period = new short[newPeriodSize];
 
         int index = 0;
-        byte sample;
-        float divider = newPeriodSize / 256f;
+        short sample;
+        float divider = newPeriodSize / 65536f;
         for (int i = newPeriodSize; i > 0; i--) {
-            sample = (byte) (i / divider - 128);
+            sample = (short) (i / divider - 32768);
             period[index++] = sample;
         }
 
@@ -62,9 +63,9 @@ public class SawWaveGenerator implements Generator, FrequencyConsumer, SoundProd
     }
 
     @Override
-    public byte[] getSoundChunk() {
+    public short[] getSoundChunk() {
 
-        byte[] chunk = new byte[BUFFER_SIZE];
+        short[] chunk = new short[BUFFER_SIZE];
 
         if (period.length == 0) {
             return chunk;
