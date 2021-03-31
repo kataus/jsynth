@@ -53,6 +53,7 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         */
         this.lowPassFilter = new LowPassFilter(generatorMixer, frequency);
         this.fixedDelay = new FixedDelay(lowPassFilter);
+        // this.fixedDelay = new FixedDelay(generatorMixer);
         this.outputMixer = new Mixer(1);
         outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
     }
@@ -70,8 +71,9 @@ public class Synth implements FrequencyConsumer, SoundProducer {
                 1f
         );
         */
-        this.lowPassFilter = new LowPassFilter(generatorMixer, frequency);
-        this.fixedDelay = new FixedDelay(lowPassFilter);
+        // this.lowPassFilter = new LowPassFilter(generatorMixer, frequency);
+        // this.fixedDelay = new FixedDelay(lowPassFilter);
+        this.fixedDelay = new FixedDelay(generatorMixer);
         this.outputMixer = new Mixer(1);
         outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
     }
