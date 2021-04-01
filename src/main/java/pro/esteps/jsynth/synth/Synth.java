@@ -35,8 +35,10 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     private Sequencer sequencer;
 
+    // todo Duplicate code
     private static final int CHUNKS_PER_NOTE = 5;
 
+    // todo Duplicate code
     private int currentChunk = 1;
 
     // todo Remove overloaded constructor

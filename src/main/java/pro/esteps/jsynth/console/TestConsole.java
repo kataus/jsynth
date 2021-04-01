@@ -1,13 +1,15 @@
 package pro.esteps.jsynth.console;
 
+import pro.esteps.jsynth.contract.SoundProducer;
+import pro.esteps.jsynth.drum_machine.DrumMachine;
 import pro.esteps.jsynth.mixer.Mixer;
 import pro.esteps.jsynth.parser.NoteParser;
+import pro.esteps.jsynth.sequencer.DrumMachineSequencer;
 import pro.esteps.jsynth.sequencer.Sequencer;
 import pro.esteps.jsynth.synth.Synth;
 import pro.esteps.jsynth.output.Output;
 import pro.esteps.jsynth.wave_generator.SawWaveGenerator;
 import pro.esteps.jsynth.wave_generator.SineWaveGenerator;
-import pro.esteps.jsynth.wave_generator.SquareWaveGenerator;
 import pro.esteps.jsynth.wave_generator.WhiteNoiseGenerator;
 
 import java.io.BufferedReader;
@@ -93,6 +95,26 @@ public class TestConsole {
                     "",
             });
 
+            DrumMachineSequencer drumMachineSequencer = new DrumMachineSequencer();
+            drumMachineSequencer.setSequence(new String[][] {
+                    {"kick", "hihat-closed"},
+                    {"hihat-closed"},
+                    {"hihat-closed"},
+                    {"hihat-closed"},
+                    {"snare", "hihat-closed"},
+                    {"hihat-closed"},
+                    {"hihat-closed"},
+                    {"hihat-open"},
+                    {"kick", "hihat-closed"},
+                    {"hihat-closed"},
+                    {"hihat-closed"},
+                    {"hihat-closed"},
+                    {"snare", "hihat-closed"},
+                    {"hihat-closed"},
+                    {"hihat-closed"},
+                    {"hihat-open"},
+            });
+
             // Synth synth1 = new Synth(600, true);
             Synth synth1 = new Synth(1200);
 
@@ -111,16 +133,21 @@ public class TestConsole {
             synth3.setGenerator1(new WhiteNoiseGenerator());
             synth3.setSequencer(sequencer3);
 
-            List<Synth> synths = new ArrayList<>();
+            DrumMachine drumMachine = new DrumMachine();
+            drumMachine.setSequencer(drumMachineSequencer);
+
+            List<SoundProducer> synths = new ArrayList<>();
 
             synths.add(synth1);
             synths.add(synth2);
             // synths.add(synth3);
+            synths.add(drumMachine);
 
             Mixer mixer = new Mixer(3);
             mixer.setProducerForInput(0, synth1, (byte) 80);
             mixer.setProducerForInput(1, synth2, (byte) 80);
             // mixer.setProducerForInput(2, synth3, (byte) 70);
+            mixer.setProducerForInput(2, drumMachine, (byte) 100);
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);
@@ -140,12 +167,14 @@ public class TestConsole {
                     System.out.println("Current synth: S2");
                     continue;
                 }
+                /*
                 if (s.isEmpty()) {
                     synths.get(currentSynth).clearFrequency();
                     continue;
                 }
                 float frequency = noteParser.parseNote(s);
                 synths.get(currentSynth).setFrequency(frequency);
+                */
             }
 
         }
