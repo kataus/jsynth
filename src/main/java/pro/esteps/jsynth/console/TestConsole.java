@@ -100,18 +100,18 @@ public class TestConsole {
                     {"kick", "hihat-closed"},
                     {"hihat-closed"},
                     {"hihat-closed"},
-                    {"hihat-closed"},
+                    {"hihat-semiopen"},
                     {"snare", "hihat-closed"},
                     {"hihat-closed"},
                     {"hihat-closed"},
                     {"hihat-open"},
                     {"kick", "hihat-closed"},
-                    {"hihat-closed"},
+                    {"hihat-semiopen"},
                     {"hihat-closed"},
                     {"hihat-closed"},
                     {"snare", "hihat-closed"},
                     {"hihat-closed"},
-                    {"hihat-closed"},
+                    {"hihat-semiopen"},
                     {"hihat-open"},
             });
 
@@ -144,8 +144,8 @@ public class TestConsole {
             synths.add(drumMachine);
 
             Mixer mixer = new Mixer(3);
-            mixer.setProducerForInput(0, synth1, (byte) 80);
-            mixer.setProducerForInput(1, synth2, (byte) 80);
+            mixer.setProducerForInput(0, synth1, (byte) 70);
+            mixer.setProducerForInput(1, synth2, (byte) 70);
             // mixer.setProducerForInput(2, synth3, (byte) 70);
             mixer.setProducerForInput(2, drumMachine, (byte) 100);
 
