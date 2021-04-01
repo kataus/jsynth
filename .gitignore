@@ -37,6 +37,7 @@ build/
 /log/*.log
 /log/*.gz
 .env
+src/main/resources/drums
 
 # Ignore Gradle project-specific cache directory
 .gradle
