@@ -2,7 +2,7 @@ package pro.esteps.jsynth.fx;
 
 import pro.esteps.jsynth.contract.SoundConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
-import uk.me.berndporr.iirj.Butterworth;
+import pro.esteps.jsynth.iirj.Butterworth;
 
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
 import static pro.esteps.jsynth.App.SAMPLE_RATE;
@@ -27,6 +27,9 @@ public class LowPassFilter implements SoundConsumer, SoundProducer {
 
         short[] mixedChunk = new short[BUFFER_SIZE];
         short[] producerChunk = producer.getSoundChunk();
+
+        frequency += 10;
+        butterworth.lowPass(8, SAMPLE_RATE, frequency);
 
         double sample;
         for (int i = 0; i < BUFFER_SIZE; i++) {

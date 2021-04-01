@@ -116,9 +116,15 @@ public class Cascade {
 			break;
 		case DirectFormAbstract.DIRECT_FORM_II:
 		default:
-			m_states = new DirectFormII[m_numBiquads];
-			for (int i = 0; i < m_numBiquads; i++) {
-				m_states[i] = new DirectFormII();
+			if (m_states == null || m_states.length == 0) {
+				m_states = new DirectFormII[m_numBiquads];
+				for (int i = 0; i < m_numBiquads; i++) {
+					m_states[i] = new DirectFormII();
+				}
+			} else {
+				for (int i = 0; i < m_numBiquads; i++) {
+				    m_states[i].reset();
+				}
 			}
 			break;
 		}

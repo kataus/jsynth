@@ -34,8 +34,10 @@ public class DirectFormII extends DirectFormAbstract {
     }
 
     public void reset() {
+        /*
         m_v1 = 0;
         m_v2 = 0;
+        */
     }
 
     public double process1(double in,
