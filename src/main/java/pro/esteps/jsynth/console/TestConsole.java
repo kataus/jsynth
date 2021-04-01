@@ -118,8 +118,8 @@ public class TestConsole {
             // synths.add(synth3);
 
             Mixer mixer = new Mixer(3);
-            mixer.setProducerForInput(0, synth1, (byte) 100);
-            mixer.setProducerForInput(1, synth2, (byte) 100);
+            mixer.setProducerForInput(0, synth1, (byte) 80);
+            mixer.setProducerForInput(1, synth2, (byte) 80);
             // mixer.setProducerForInput(2, synth3, (byte) 70);
 
             Output output = new Output(mixer);
