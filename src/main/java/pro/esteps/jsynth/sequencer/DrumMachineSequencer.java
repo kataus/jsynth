@@ -12,7 +12,6 @@ public class DrumMachineSequencer {
 
     public String[] getNextNotes() {
         String[] notes = sequence[currentNote++];
-        System.out.println(notes);
         if (currentNote >= sequence.length) {
             currentNote = 0;
         }
