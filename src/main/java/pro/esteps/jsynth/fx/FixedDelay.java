@@ -36,9 +36,9 @@ public class FixedDelay implements SoundConsumer, SoundProducer {
         int sample;
         for (int i = 0; i < BUFFER_SIZE; i++) {
             sample = 0;
-            sample += (previousInput[CHUNKS_PER_DELAY * BUFFER_SIZE * 2 + i] / 2);
-            sample += (previousInput[CHUNKS_PER_DELAY * BUFFER_SIZE + i] / 4);
-            sample += (previousInput[i] / 8);
+            sample += (previousInput[CHUNKS_PER_DELAY * BUFFER_SIZE * 2 + i] / 4);
+            sample += (previousInput[CHUNKS_PER_DELAY * BUFFER_SIZE + i] / 8);
+            sample += (previousInput[i] / 16);
             sample = (int) butterworth.filter(sample);
             sample += producerChunk[i];
             // todo Use clipping algorithm

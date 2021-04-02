@@ -206,9 +206,9 @@ public class DrumMachine implements SoundProducer {
         this.drumMachineSoundProducer = new DrumMachineSoundProducer();
         this.generatorMixer = new Mixer(1);
         generatorMixer.setProducerForInput(0, drumMachineSoundProducer, (byte) 50);
-        this.fixedDelay = new FixedDelay(generatorMixer);
+        // this.fixedDelay = new FixedDelay(generatorMixer);
         this.outputMixer = new Mixer(1);
-        outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
+        outputMixer.setProducerForInput(0, (SoundProducer) generatorMixer, (byte) 100);
     }
 
     public void setSequencer(DrumMachineSequencer sequencer) {
@@ -220,9 +220,10 @@ public class DrumMachine implements SoundProducer {
 
         // todo Handle exceptions
         if (currentChunk == 1) {
-            String[] notes = sequencer.getNextNotes();
+            sequencer.advance();
+            String[] samples = sequencer.getCurrentNoteSamples();
             try {
-                drumMachineSoundProducer.setNotes(notes);
+                drumMachineSoundProducer.setNotes(samples);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (UnsupportedAudioFileException e) {

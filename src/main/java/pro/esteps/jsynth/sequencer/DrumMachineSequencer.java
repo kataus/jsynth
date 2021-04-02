@@ -2,20 +2,32 @@ package pro.esteps.jsynth.sequencer;
 
 public class DrumMachineSequencer {
 
-    private String[][] sequence = new String[16][4];
+    private DrumMachineNote[] sequence = new DrumMachineNote[64];
 
-    private int currentNote;
+    private DrumMachineNote currentNote;
 
-    public void setSequence(String[][] sequence) {
+    private int currentNoteIndex;
+
+    private static final String[] EMPTY_NOTES = new String[0];
+
+    public void setSequence(DrumMachineNote[] sequence) {
+        // todo Guard clauses
         this.sequence = sequence;
     }
 
-    public String[] getNextNotes() {
-        String[] notes = sequence[currentNote++];
-        if (currentNote >= sequence.length) {
-            currentNote = 0;
+    public void advance() {
+        DrumMachineNote note = sequence[currentNoteIndex++];
+        if (currentNoteIndex >= sequence.length) {
+            currentNoteIndex = 0;
         }
-        return notes;
+        currentNote = note;
+    }
+
+    public String[] getCurrentNoteSamples() {
+        if (currentNote == null) {
+            return EMPTY_NOTES;
+        }
+        return currentNote.getSamples();
     }
 
 }

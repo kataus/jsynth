@@ -4,14 +4,12 @@ import pro.esteps.jsynth.contract.SoundProducer;
 import pro.esteps.jsynth.drum_machine.DrumMachine;
 import pro.esteps.jsynth.mixer.Mixer;
 import pro.esteps.jsynth.parser.NoteParser;
-import pro.esteps.jsynth.sequencer.DrumMachineSequencer;
-import pro.esteps.jsynth.sequencer.Note;
-import pro.esteps.jsynth.sequencer.Sequencer;
-import pro.esteps.jsynth.sequencer.SynthNote;
+import pro.esteps.jsynth.sequencer.*;
 import pro.esteps.jsynth.synth.Synth;
 import pro.esteps.jsynth.output.Output;
 import pro.esteps.jsynth.wave_generator.SawWaveGenerator;
 import pro.esteps.jsynth.wave_generator.SineWaveGenerator;
+import pro.esteps.jsynth.wave_generator.SquareWaveGenerator;
 import pro.esteps.jsynth.wave_generator.WhiteNoiseGenerator;
 
 import java.io.BufferedReader;
@@ -40,63 +38,305 @@ public class TestConsole {
             Sequencer sequencer1 = new Sequencer();
             sequencer1.setSequence(new Note[]{
 
-                    new SynthNote("c3", 800, (byte) 30),
-                    new SynthNote("g3", 850, (byte) 30),
-                    new SynthNote("c4", 900, (byte) 50),
-                    new SynthNote("a#4", 1600, (byte) 80),
+                    // --- 01 ---
 
-                    new SynthNote("g3", 1000, (byte) 50),
-                    new SynthNote("c4", 1050, (byte) 30),
-                    new SynthNote("c5", 1100, (byte) 30),
-                    new SynthNote("g4", 1600, (byte) 30),
+                    new SynthNote("f4", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("e4", 800, (byte) 30),
 
-                    new SynthNote("c3", 1000, (byte) 30),
-                    new SynthNote("g3", 950, (byte) 30),
-                    new SynthNote("c4", 900, (byte) 50),
-                    new SynthNote("a#4", 1600, (byte) 80),
+                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("d4", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30),
 
-                    new SynthNote("g3", 800, (byte) 50),
-                    new SynthNote("c4", 800, (byte) 50),
-                    new SynthNote("g4", 1600, (byte) 80),
-                    new SynthNote("f4", 1600, (byte) 80),
+                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("c4", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30),
+
+                    new SynthNote("c4", 800, (byte) 30),
+                    new SynthNote("a3", 800, (byte) 30),
+                    new SynthNote("c4", 800, (byte) 30),
+                    new SynthNote("d4", 800, (byte) 30),
+
+                    // --- 02 ---
+
+                    new SynthNote("f4", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("e4", 800, (byte) 30),
+
+                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("d4", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30),
+
+                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("c4", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30),
+
+                    new SynthNote("c4", 800, (byte) 30),
+                    new SynthNote("a3", 800, (byte) 30),
+                    new SynthNote("c4", 800, (byte) 30),
+                    new SynthNote("d4", 800, (byte) 30),
+
+                    // --- 03 ---
+
+                    new SynthNote("f4", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("e4", 800, (byte) 30),
+
+                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("d4", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30),
+
+                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("c4", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30),
+
+                    new SynthNote("c4", 800, (byte) 30),
+                    new SynthNote("a3", 800, (byte) 30),
+                    new SynthNote("c4", 800, (byte) 30),
+                    new SynthNote("d4", 800, (byte) 30),
+
+                    // --- 04 ---
+
+                    new SynthNote("f4", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("e4", 800, (byte) 30),
+
+                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("d4", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30),
+
+                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("c4", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30),
+
+                    new SynthNote("c4", 800, (byte) 30),
+                    new SynthNote("a3", 800, (byte) 30),
+                    new SynthNote("c4", 800, (byte) 30),
+                    new SynthNote("d4", 800, (byte) 30),
+
+            });
+
+            Sequencer sequencer2 = new Sequencer();
+            sequencer2.setSequence(new Note[]{
+
+                    // --- 01 ---
+
+                    new SynthNote("a2", 1200, (byte) 0),
+                    null,
+                    null,
+                    null,
+
+                    null,
+                    null,
+                    null,
+                    null,
+
+                    null,
+                    null,
+                    null,
+                    null,
+
+                    null,
+                    null,
+                    null,
+                    null,
+
+                    // --- 02 ---
+
+                    null,
+                    null,
+                    null,
+                    null,
+
+                    null,
+                    null,
+                    null,
+                    null,
+
+                    null,
+                    null,
+                    null,
+                    null,
+
+                    null,
+                    null,
+                    null,
+                    null,
+
+                    // --- 03 ---
+
+                    new SynthNote("d3", 1200, (byte) 0),
+                    null,
+                    null,
+                    null,
+
+                    null,
+                    null,
+                    null,
+                    null,
+
+                    null,
+                    null,
+                    null,
+                    null,
+
+                    null,
+                    null,
+                    null,
+                    null,
+
+                    // --- 04 ---
+
+                    new SynthNote("f2", 1200, (byte) 0),
+                    null,
+                    null,
+                    null,
+
+                    null,
+                    null,
+                    null,
+                    null,
+
+                    null,
+                    null,
+                    null,
+                    null,
+
+                    null,
+                    null,
+                    null,
+                    null,
 
             });
 
             DrumMachineSequencer drumMachineSequencer = new DrumMachineSequencer();
-            drumMachineSequencer.setSequence(new String[][] {
-                    {"kick", "hihat-closed"},
-                    {"hihat-closed"},
-                    {"hihat-closed"},
-                    {"hihat-semiopen"},
-                    {"snare", "hihat-closed"},
-                    {"hihat-closed"},
-                    {"hihat-closed"},
-                    {"hihat-open"},
-                    {"kick", "hihat-closed"},
-                    {"hihat-semiopen"},
-                    {"hihat-closed"},
-                    {"hihat-closed"},
-                    {"snare", "hihat-closed"},
-                    {"hihat-closed"},
-                    {"hihat-semiopen"},
-                    {"hihat-open"},
+            drumMachineSequencer.setSequence(new DrumMachineNote[] {
+
+                    // --- 01 ---
+
+                    new DrumMachineNote(new String[]{"kick", "hihat-closed"}),
+                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
+                    null,
+
+                    new DrumMachineNote(new String[]{"snare", "hihat-closed"}),
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+
+                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-open"}),
+                    null,
+
+                    // --- 02 ---
+
+                    new DrumMachineNote(new String[]{"kick", "hihat-closed"}),
+                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
+                    null,
+
+                    new DrumMachineNote(new String[]{"snare", "hihat-closed"}),
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+
+                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-open"}),
+                    null,
+
+                    // --- 03 ---
+
+                    new DrumMachineNote(new String[]{"kick", "hihat-closed"}),
+                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
+                    null,
+
+                    new DrumMachineNote(new String[]{"snare", "hihat-closed"}),
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+
+                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-open"}),
+                    null,
+
+                    // --- 04 ---
+
+                    new DrumMachineNote(new String[]{"kick", "hihat-closed"}),
+                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
+                    null,
+
+                    new DrumMachineNote(new String[]{"snare", "hihat-closed"}),
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-closed"}),
+
+                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
+                    null,
+                    new DrumMachineNote(new String[]{"hihat-open"}),
+                    null,
+
             });
 
             Synth synth1 = new Synth(800, 0);
             synth1.setGenerator1(new SawWaveGenerator());
+            // synth1.setGenerator2(new SquareWaveGenerator());
             synth1.setSequencer(sequencer1);
+
+            Synth synth2 = new Synth(600, 0);
+            synth2.setGenerator1(new SineWaveGenerator());
+            synth2.setGenerator2(new SquareWaveGenerator());
+            synth2.setSequencer(sequencer2);
 
             DrumMachine drumMachine = new DrumMachine();
             drumMachine.setSequencer(drumMachineSequencer);
 
+            /*
             List<SoundProducer> synths = new ArrayList<>();
-
             synths.add(synth1);
             synths.add(drumMachine);
+            */
 
             Mixer mixer = new Mixer(3);
-            mixer.setProducerForInput(0, synth1, (byte) 70);
-            mixer.setProducerForInput(1, drumMachine, (byte) 70);
+            mixer.setProducerForInput(0, synth1, (byte) 60);
+            mixer.setProducerForInput(1, synth2, (byte) 60);
+            mixer.setProducerForInput(2, drumMachine, (byte) 100);
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);

@@ -6,7 +6,7 @@ import static pro.esteps.jsynth.fx.LowPassFilter.LOW_PASS_DEFAULT_FREQUENCY;
 
 public class Sequencer {
 
-    private Note[] sequence = new Note[16];
+    private Note[] sequence = new Note[64];
 
     private final NoteParser noteParser;
 
