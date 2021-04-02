@@ -23,6 +23,8 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     private Generator generator2;
 
+    private Generator generator3;
+
     private Mixer generatorMixer;
 
     private Mixer outputMixer;
@@ -48,7 +50,7 @@ public class Synth implements FrequencyConsumer, SoundProducer {
     // todo Remove overloaded constructor
     public Synth(int frequency) {
         this.frequencyGenerator = new FixedFrequencyGenerator();
-        this.generatorMixer = new Mixer(2);
+        this.generatorMixer = new Mixer(3);
         /*
         this.lowHighPassFilter = new LowHighPassFilter(
                 generatorMixer,
@@ -67,7 +69,7 @@ public class Synth implements FrequencyConsumer, SoundProducer {
     // todo Remove overloaded constructor
     public Synth(int frequency, int resonanceAmount) {
         this.frequencyGenerator = new FixedFrequencyGenerator();
-        this.generatorMixer = new Mixer(2);
+        this.generatorMixer = new Mixer(3);
         /*
         this.lowHighPassFilter = new LowHighPassFilter(
                 generatorMixer,
@@ -87,7 +89,7 @@ public class Synth implements FrequencyConsumer, SoundProducer {
     // todo Remove overloaded constructor
     public Synth(int frequency, boolean hasDistortion) {
         this.frequencyGenerator = new FixedFrequencyGenerator();
-        this.generatorMixer = new Mixer(2);
+        this.generatorMixer = new Mixer(3);
         this.distortion = new Distortion(generatorMixer);
         /*
         this.lowHighPassFilter = new LowHighPassFilter(
@@ -137,6 +139,19 @@ public class Synth implements FrequencyConsumer, SoundProducer {
             frequencyGenerator.addConsumer((FrequencyConsumer) generator2);
         }
         generatorMixer.setProducerForInput(1, (SoundProducer) generator2, (byte) 15);
+    }
+
+    public void setGenerator3(Generator generator, float delta) {
+        this.generator3 = generator;
+        // todo Set consumer using index
+        if (delta != 0) {
+            FrequencyShift frequencyShift = new FrequencyShift(delta);
+            frequencyShift.addConsumer((FrequencyConsumer) generator3);
+            frequencyGenerator.addConsumer((FrequencyConsumer) frequencyShift);
+        } else {
+            frequencyGenerator.addConsumer((FrequencyConsumer) generator3);
+        }
+        generatorMixer.setProducerForInput(2, (SoundProducer) generator3, (byte) 15);
     }
 
     public void setSequencer(Sequencer sequencer) {
