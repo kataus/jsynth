@@ -9,6 +9,8 @@ import static pro.esteps.jsynth.App.SAMPLE_RATE;
 
 public class LowPassFilter implements SoundConsumer, SoundProducer {
 
+    public static final float LOW_PASS_DEFAULT_FREQUENCY = 20000f;
+
     private static final int BAND_PASS_WIDTH_FREQUENCY = 800;
 
     private SoundProducer producer;
@@ -39,13 +41,17 @@ public class LowPassFilter implements SoundConsumer, SoundProducer {
     }
 
     public void setFrequency(float frequency) {
-        this.frequency = frequency;
-        butterworthLowPassFilter.lowPass(8, SAMPLE_RATE, frequency);
+        if (this.frequency != frequency) {
+            this.frequency = frequency;
+            butterworthLowPassFilter.lowPass(8, SAMPLE_RATE, frequency);
+        }
     }
 
     public void setResonanceAmount(byte resonanceAmount) {
-        this.resonanceAmount = resonanceAmount;
-        butterworthBandPassFilter.bandPass(8, SAMPLE_RATE, frequency, BAND_PASS_WIDTH_FREQUENCY);
+        if (this.resonanceAmount != resonanceAmount) {
+            this.resonanceAmount = resonanceAmount;
+            butterworthBandPassFilter.bandPass(8, SAMPLE_RATE, frequency, BAND_PASS_WIDTH_FREQUENCY);
+        }
     }
 
     @Override

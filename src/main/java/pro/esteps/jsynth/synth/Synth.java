@@ -130,12 +130,15 @@ public class Synth implements FrequencyConsumer, SoundProducer {
     public short[] getSoundChunk() {
 
         if (currentChunk == 1) {
-            float frequency = sequencer.getNextNoteFrequency();
+            sequencer.advance();
+            float frequency = sequencer.getCurrentNoteFrequency();
             if (frequency == 0) {
                 frequencyGenerator.clearFrequency();
             } else {
                 frequencyGenerator.setFrequency(frequency);
             }
+            this.lowPassFilter.setFrequency(sequencer.getCurrentNoteLowPassFilterFrequency());
+            this.lowPassFilter.setResonanceAmount(sequencer.getCurrentNoteLowPassFilterResonance());
         }
         currentChunk++;
         if (currentChunk > CHUNKS_PER_NOTE) {

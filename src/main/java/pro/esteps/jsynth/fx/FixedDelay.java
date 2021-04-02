@@ -12,7 +12,7 @@ public class FixedDelay implements SoundConsumer, SoundProducer {
     private static final int DELAY_LINES = 3;
 
     // todo Duplicate code
-    private static final int CHUNKS_PER_DELAY = 7;
+    private static final int CHUNKS_PER_DELAY = 10;
 
     private final short[] previousInput = new short[DELAY_LINES * BUFFER_SIZE * CHUNKS_PER_DELAY];
 
@@ -24,7 +24,7 @@ public class FixedDelay implements SoundConsumer, SoundProducer {
     public FixedDelay(SoundProducer producer) {
         this.producer = producer;
         this.butterworth = new Butterworth();
-        butterworth.lowPass(8, SAMPLE_RATE, 600);
+        butterworth.lowPass(8, SAMPLE_RATE, 1200);
     }
 
     @Override
@@ -36,9 +36,9 @@ public class FixedDelay implements SoundConsumer, SoundProducer {
         int sample;
         for (int i = 0; i < BUFFER_SIZE; i++) {
             sample = 0;
-            sample += (previousInput[CHUNKS_PER_DELAY * BUFFER_SIZE * 2 + i] / 4);
-            sample += (previousInput[CHUNKS_PER_DELAY * BUFFER_SIZE + i] / 8);
-            sample += (previousInput[i] / 16);
+            sample += (previousInput[CHUNKS_PER_DELAY * BUFFER_SIZE * 2 + i] / 2);
+            sample += (previousInput[CHUNKS_PER_DELAY * BUFFER_SIZE + i] / 4);
+            sample += (previousInput[i] / 8);
             sample = (int) butterworth.filter(sample);
             sample += producerChunk[i];
             // todo Use clipping algorithm
