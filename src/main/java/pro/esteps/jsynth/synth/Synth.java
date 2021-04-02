@@ -75,7 +75,7 @@ public class Synth implements FrequencyConsumer, SoundProducer {
                 1f
         );
         */
-        this.simpleDecay = new SimpleDecay(generatorMixer);
+        this.simpleDecay = new SimpleDecay(generatorMixer, (byte) 1);
         this.lowPassFilter = new LowPassFilter(simpleDecay, frequency, (byte) resonanceAmount);
         this.fixedDelay = new FixedDelay(lowPassFilter);
         // this.fixedDelay = new FixedDelay(generatorMixer);
@@ -138,6 +138,7 @@ public class Synth implements FrequencyConsumer, SoundProducer {
             // todo Reset index only when a note changes
             if (simpleDecay != null) {
                 simpleDecay.resetIndex();
+                simpleDecay.setDecayLength(sequencer.getCurrentDecayLength());
             }
             float frequency = sequencer.getCurrentNoteFrequency();
             if (frequency == 0) {

@@ -12,23 +12,33 @@ public class SimpleDecay implements SoundConsumer, SoundProducer {
 
     private final SoundProducer producer;
 
+    private byte decayLength;
+
     private byte[] envelope = new byte[0];
 
     private int envelopeIndex;
 
-    public SimpleDecay(SoundProducer producer) {
+    public SimpleDecay(SoundProducer producer, byte decayLength) {
         this.producer = producer;
+        this.decayLength = decayLength;
         regenerateEnvelope();
     }
 
     private void regenerateEnvelope() {
         // todo Add dynamic calculations
-        int envelopeSize = BUFFER_SIZE * CHUNKS_PER_NOTE;
+        int envelopeSize = decayLength * BUFFER_SIZE * CHUNKS_PER_NOTE;
         envelope = new byte[envelopeSize];
         for (int i = 0; i < envelopeSize; i++) {
             envelope[i] = (byte) ((envelopeSize - i) * 100 / envelopeSize);
         }
         int a = 1;
+    }
+
+    public void setDecayLength(byte decayLength) {
+        if (this.decayLength != decayLength) {
+            this.decayLength = decayLength;
+            regenerateEnvelope();
+        }
     }
 
     public void resetIndex() {
