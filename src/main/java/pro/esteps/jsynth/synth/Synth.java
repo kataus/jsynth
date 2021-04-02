@@ -4,6 +4,7 @@ import pro.esteps.jsynth.amplitude.SimpleDecay;
 import pro.esteps.jsynth.contract.FrequencyConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
 import pro.esteps.jsynth.frequency_generator.FixedFrequencyGenerator;
+import pro.esteps.jsynth.frequency_generator.FrequencyShift;
 import pro.esteps.jsynth.fx.Distortion;
 import pro.esteps.jsynth.fx.FixedDelay;
 import pro.esteps.jsynth.fx.LowHighPassFilter;
@@ -112,17 +113,29 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
     }
 
-    public void setGenerator1(Generator generator) {
+    public void setGenerator1(Generator generator, float delta) {
         this.generator1 = generator;
         // todo Set consumer using index
-        frequencyGenerator.addConsumer((FrequencyConsumer) generator1);
+        if (delta != 0) {
+            FrequencyShift frequencyShift = new FrequencyShift(delta);
+            frequencyShift.addConsumer((FrequencyConsumer) generator1);
+            frequencyGenerator.addConsumer((FrequencyConsumer) frequencyShift);
+        } else {
+            frequencyGenerator.addConsumer((FrequencyConsumer) generator1);
+        }
         generatorMixer.setProducerForInput(0, (SoundProducer) generator1, (byte) 25);
     }
 
-    public void setGenerator2(Generator generator) {
+    public void setGenerator2(Generator generator, float delta) {
         this.generator2 = generator;
         // todo Set consumer using index
-        frequencyGenerator.addConsumer((FrequencyConsumer) generator2);
+        if (delta != 0) {
+            FrequencyShift frequencyShift = new FrequencyShift(delta);
+            frequencyShift.addConsumer((FrequencyConsumer) generator2);
+            frequencyGenerator.addConsumer((FrequencyConsumer) frequencyShift);
+        } else {
+            frequencyGenerator.addConsumer((FrequencyConsumer) generator2);
+        }
         generatorMixer.setProducerForInput(1, (SoundProducer) generator2, (byte) 15);
     }
 
