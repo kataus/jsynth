@@ -53,7 +53,26 @@ public class Synth implements FrequencyConsumer, SoundProducer {
                 1f
         );
         */
-        this.lowPassFilter = new LowPassFilter(generatorMixer, frequency);
+        this.lowPassFilter = new LowPassFilter(generatorMixer, frequency, (byte) 0);
+        this.fixedDelay = new FixedDelay(lowPassFilter);
+        // this.fixedDelay = new FixedDelay(generatorMixer);
+        this.outputMixer = new Mixer(1);
+        outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
+    }
+
+    // todo Remove overloaded constructor
+    public Synth(int frequency, int resonanceAmount) {
+        this.frequencyGenerator = new FixedFrequencyGenerator();
+        this.generatorMixer = new Mixer(2);
+        /*
+        this.lowHighPassFilter = new LowHighPassFilter(
+                generatorMixer,
+                frequency,
+                LowHighPassFilter.PassType.Lowpass,
+                1f
+        );
+        */
+        this.lowPassFilter = new LowPassFilter(generatorMixer, frequency, (byte) resonanceAmount);
         this.fixedDelay = new FixedDelay(lowPassFilter);
         // this.fixedDelay = new FixedDelay(generatorMixer);
         this.outputMixer = new Mixer(1);

@@ -116,7 +116,7 @@ public class TestConsole {
             });
 
             // Synth synth1 = new Synth(600, true);
-            Synth synth1 = new Synth(1200);
+            Synth synth1 = new Synth(1200, 0);
 
             synth1.setGenerator1(new SawWaveGenerator());
             // synth1.setGenerator2(new SquareWaveGenerator());
