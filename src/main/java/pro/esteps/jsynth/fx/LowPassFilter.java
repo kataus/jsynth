@@ -11,7 +11,7 @@ public class LowPassFilter implements SoundConsumer, SoundProducer {
 
     public static final float LOW_PASS_DEFAULT_FREQUENCY = 20000f;
 
-    private static final int BAND_PASS_WIDTH_FREQUENCY = 800;
+    private static final int BAND_PASS_WIDTH_FREQUENCY = 600;
 
     private SoundProducer producer;
 

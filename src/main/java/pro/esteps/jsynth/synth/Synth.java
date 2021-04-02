@@ -112,14 +112,14 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         this.generator1 = generator;
         // todo Set consumer using index
         frequencyGenerator.addConsumer((FrequencyConsumer) generator1);
-        generatorMixer.setProducerForInput(0, (SoundProducer) generator1, (byte) 50);
+        generatorMixer.setProducerForInput(0, (SoundProducer) generator1, (byte) 25);
     }
 
     public void setGenerator2(Generator generator) {
         this.generator2 = generator;
         // todo Set consumer using index
         frequencyGenerator.addConsumer((FrequencyConsumer) generator2);
-        generatorMixer.setProducerForInput(1, (SoundProducer) generator2, (byte) 25);
+        generatorMixer.setProducerForInput(1, (SoundProducer) generator2, (byte) 15);
     }
 
     public void setSequencer(Sequencer sequencer) {
