@@ -40,91 +40,91 @@ public class TestConsole {
 
                     // --- 01 ---
 
-                    new SynthNote("f4", 800, (byte) 30),
-                    new SynthNote("a2", 800, (byte) 30),
-                    new SynthNote("e3", 800, (byte) 30),
-                    new SynthNote("e4", 800, (byte) 30),
+                    new SynthNote("f4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
+                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
+                    new SynthNote("e4", 800, (byte) 30, (byte) 1),
 
-                    new SynthNote("a2", 800, (byte) 30),
-                    new SynthNote("e3", 800, (byte) 30),
-                    new SynthNote("d4", 800, (byte) 30),
-                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
+                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
+                    new SynthNote("d4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
 
-                    new SynthNote("e3", 800, (byte) 30),
-                    new SynthNote("c4", 800, (byte) 30),
-                    new SynthNote("a2", 800, (byte) 30),
-                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
+                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
+                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
 
-                    new SynthNote("c4", 800, (byte) 30),
-                    new SynthNote("a3", 800, (byte) 30),
-                    new SynthNote("c4", 800, (byte) 30),
-                    new SynthNote("d4", 800, (byte) 30),
+                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a3", 800, (byte) 30, (byte) 1),
+                    new SynthNote("c4", 1000, (byte) 30, (byte) 1),
+                    new SynthNote("d4", 1200, (byte) 30, (byte) 1),
 
                     // --- 02 ---
 
-                    new SynthNote("f4", 800, (byte) 30),
-                    new SynthNote("a2", 800, (byte) 30),
-                    new SynthNote("e3", 800, (byte) 30),
-                    new SynthNote("e4", 800, (byte) 30),
+                    new SynthNote("f4", 1500, (byte) 30, (byte) 2),
+                    new SynthNote("a2", 2000, (byte) 60, (byte) 3),
+                    new SynthNote("e3", 3500, (byte) 80, (byte) 4),
+                    new SynthNote("e4", 4000, (byte) 80, (byte) 4),
 
-                    new SynthNote("a2", 800, (byte) 30),
-                    new SynthNote("e3", 800, (byte) 30),
-                    new SynthNote("d4", 800, (byte) 30),
-                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("a2", 2500, (byte) 80, (byte) 3),
+                    new SynthNote("e3", 2000, (byte) 60, (byte) 2),
+                    new SynthNote("d4", 1500, (byte) 0, (byte) 1),
+                    new SynthNote("a2", 1000, (byte) 30, (byte) 1),
 
-                    new SynthNote("e3", 800, (byte) 30),
-                    new SynthNote("c4", 800, (byte) 30),
-                    new SynthNote("a2", 800, (byte) 30),
-                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
+                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
+                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
 
-                    new SynthNote("c4", 800, (byte) 30),
-                    new SynthNote("a3", 800, (byte) 30),
-                    new SynthNote("c4", 800, (byte) 30),
-                    new SynthNote("d4", 800, (byte) 30),
+                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a3", 800, (byte) 30, (byte) 1),
+                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("d4", 800, (byte) 30, (byte) 1),
 
                     // --- 03 ---
 
-                    new SynthNote("f4", 800, (byte) 30),
-                    new SynthNote("a2", 800, (byte) 30),
-                    new SynthNote("e3", 800, (byte) 30),
-                    new SynthNote("e4", 800, (byte) 30),
+                    new SynthNote("f4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
+                    new SynthNote("e3", 1800, (byte) 40, (byte) 1),
+                    new SynthNote("e4", 2800, (byte) 80, (byte) 1),
 
-                    new SynthNote("a2", 800, (byte) 30),
-                    new SynthNote("e3", 800, (byte) 30),
-                    new SynthNote("d4", 800, (byte) 30),
-                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("a2", 1800, (byte) 40, (byte) 1),
+                    new SynthNote("e3", 800, (byte) 0, (byte) 1),
+                    new SynthNote("d4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
 
-                    new SynthNote("e3", 800, (byte) 30),
-                    new SynthNote("c4", 800, (byte) 30),
-                    new SynthNote("a2", 800, (byte) 30),
-                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
+                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
+                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
 
-                    new SynthNote("c4", 800, (byte) 30),
-                    new SynthNote("a3", 800, (byte) 30),
-                    new SynthNote("c4", 800, (byte) 30),
-                    new SynthNote("d4", 800, (byte) 30),
+                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a3", 800, (byte) 30, (byte) 1),
+                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("d4", 800, (byte) 30, (byte) 1),
 
                     // --- 04 ---
 
-                    new SynthNote("f4", 800, (byte) 30),
-                    new SynthNote("a2", 800, (byte) 30),
-                    new SynthNote("e3", 800, (byte) 30),
-                    new SynthNote("e4", 800, (byte) 30),
+                    new SynthNote("f4", 800, (byte) 70, (byte) 2),
+                    new SynthNote("a2", 800, (byte) 70, (byte) 3),
+                    new SynthNote("e3", 800, (byte) 70, (byte) 4),
+                    new SynthNote("e4", 800, (byte) 50, (byte) 4),
 
-                    new SynthNote("a2", 800, (byte) 30),
-                    new SynthNote("e3", 800, (byte) 30),
-                    new SynthNote("d4", 800, (byte) 30),
-                    new SynthNote("a2", 800, (byte) 30),
+                    new SynthNote("a2", 800, (byte) 0, (byte) 3),
+                    new SynthNote("e3", 800, (byte) 30, (byte) 2),
+                    new SynthNote("d4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
 
-                    new SynthNote("e3", 800, (byte) 30),
-                    new SynthNote("c4", 800, (byte) 30),
-                    new SynthNote("a2", 800, (byte) 30),
-                    new SynthNote("e3", 800, (byte) 30),
+                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
+                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
+                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
 
-                    new SynthNote("c4", 800, (byte) 30),
-                    new SynthNote("a3", 800, (byte) 30),
-                    new SynthNote("c4", 800, (byte) 30),
-                    new SynthNote("d4", 800, (byte) 30),
+                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("a3", 800, (byte) 30, (byte) 1),
+                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
+                    new SynthNote("d4", 800, (byte) 30, (byte) 1),
 
             });
 
@@ -133,7 +133,7 @@ public class TestConsole {
 
                     // --- 01 ---
 
-                    new SynthNote("a2", 1200, (byte) 0),
+                    new SynthNote("a2", 1200, (byte) 0, (byte) 0),
                     null,
                     null,
                     null,
@@ -177,7 +177,7 @@ public class TestConsole {
 
                     // --- 03 ---
 
-                    new SynthNote("d3", 1200, (byte) 0),
+                    new SynthNote("d3", 1200, (byte) 0, (byte) 0),
                     null,
                     null,
                     null,
@@ -199,7 +199,7 @@ public class TestConsole {
 
                     // --- 04 ---
 
-                    new SynthNote("f2", 1200, (byte) 0),
+                    new SynthNote("f2", 1200, (byte) 0, (byte) 0),
                     null,
                     null,
                     null,
@@ -316,10 +316,10 @@ public class TestConsole {
 
             Synth synth1 = new Synth(800, 0);
             synth1.setGenerator1(new SawWaveGenerator());
-            // synth1.setGenerator2(new SquareWaveGenerator());
+            synth1.setGenerator2(new SquareWaveGenerator());
             synth1.setSequencer(sequencer1);
 
-            Synth synth2 = new Synth(600, 0);
+            Synth synth2 = new Synth(600);
             synth2.setGenerator1(new SineWaveGenerator());
             synth2.setGenerator2(new SquareWaveGenerator());
             synth2.setSequencer(sequencer2);
@@ -334,8 +334,8 @@ public class TestConsole {
             */
 
             Mixer mixer = new Mixer(3);
-            mixer.setProducerForInput(0, synth1, (byte) 60);
-            mixer.setProducerForInput(1, synth2, (byte) 60);
+            mixer.setProducerForInput(0, synth1, (byte) 80);
+            mixer.setProducerForInput(1, synth2, (byte) 80);
             mixer.setProducerForInput(2, drumMachine, (byte) 100);
 
             Output output = new Output(mixer);

@@ -1,5 +1,6 @@
 package pro.esteps.jsynth.synth;
 
+import pro.esteps.jsynth.amplitude.SimpleDecay;
 import pro.esteps.jsynth.contract.FrequencyConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
 import pro.esteps.jsynth.frequency_generator.FixedFrequencyGenerator;
@@ -35,6 +36,8 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     private Sequencer sequencer;
 
+    private SimpleDecay simpleDecay;
+
     // todo Duplicate code
     private static final int CHUNKS_PER_NOTE = 5;
 
@@ -54,10 +57,10 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         );
         */
         this.lowPassFilter = new LowPassFilter(generatorMixer, frequency, (byte) 0);
-        this.fixedDelay = new FixedDelay(lowPassFilter);
+        // this.fixedDelay = new FixedDelay(lowPassFilter);
         // this.fixedDelay = new FixedDelay(generatorMixer);
         this.outputMixer = new Mixer(1);
-        outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
+        outputMixer.setProducerForInput(0, (SoundProducer) lowPassFilter, (byte) 100);
     }
 
     // todo Remove overloaded constructor
@@ -72,7 +75,8 @@ public class Synth implements FrequencyConsumer, SoundProducer {
                 1f
         );
         */
-        this.lowPassFilter = new LowPassFilter(generatorMixer, frequency, (byte) resonanceAmount);
+        this.simpleDecay = new SimpleDecay(generatorMixer, (byte) 1);
+        this.lowPassFilter = new LowPassFilter(simpleDecay, frequency, (byte) resonanceAmount);
         this.fixedDelay = new FixedDelay(lowPassFilter);
         // this.fixedDelay = new FixedDelay(generatorMixer);
         this.outputMixer = new Mixer(1);
@@ -112,14 +116,14 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         this.generator1 = generator;
         // todo Set consumer using index
         frequencyGenerator.addConsumer((FrequencyConsumer) generator1);
-        generatorMixer.setProducerForInput(0, (SoundProducer) generator1, (byte) 50);
+        generatorMixer.setProducerForInput(0, (SoundProducer) generator1, (byte) 25);
     }
 
     public void setGenerator2(Generator generator) {
         this.generator2 = generator;
         // todo Set consumer using index
         frequencyGenerator.addConsumer((FrequencyConsumer) generator2);
-        generatorMixer.setProducerForInput(1, (SoundProducer) generator2, (byte) 25);
+        generatorMixer.setProducerForInput(1, (SoundProducer) generator2, (byte) 15);
     }
 
     public void setSequencer(Sequencer sequencer) {
@@ -131,6 +135,11 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
         if (currentChunk == 1) {
             sequencer.advance();
+            // todo Reset index only when a note changes
+            if (simpleDecay != null) {
+                simpleDecay.resetIndex();
+                simpleDecay.setDecayLength(sequencer.getCurrentDecayLength());
+            }
             float frequency = sequencer.getCurrentNoteFrequency();
             if (frequency == 0) {
                 frequencyGenerator.clearFrequency();

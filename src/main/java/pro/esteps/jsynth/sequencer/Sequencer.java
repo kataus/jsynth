@@ -58,4 +58,11 @@ public class Sequencer {
         return ((SynthNote) currentNote).getLowPassFilterResonance();
     }
 
+    public byte getCurrentDecayLength() {
+        if (currentNote == null || !(currentNote instanceof SynthNote)) {
+            return 0;
+        }
+        return ((SynthNote) currentNote).getDecayLength();
+    }
+
 }
