@@ -28,6 +28,10 @@ public class NoteParser {
     // todo Use regex
     public float parseNote(String note) {
 
+        if (note == null) {
+            return 0;
+        }
+
         String letter;
         int octave;
 

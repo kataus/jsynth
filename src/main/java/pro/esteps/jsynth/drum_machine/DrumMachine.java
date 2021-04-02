@@ -152,8 +152,6 @@ public class DrumMachine implements SoundProducer {
             int sample;
             List<FileSoundProducer> producersToRemove = new ArrayList<>();
 
-            System.out.println(fileSoundProducers);
-
             for (FileSoundProducer fileSoundProducer : fileSoundProducers) {
                 producerChunk = fileSoundProducer.getSoundChunk();
                 for (int i = 0; i < producerChunk.length; i++) {

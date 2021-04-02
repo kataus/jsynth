@@ -2,19 +2,29 @@ package pro.esteps.jsynth.fx;
 
 import pro.esteps.jsynth.contract.SoundConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
+import pro.esteps.jsynth.iirj.Butterworth;
 
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
+import static pro.esteps.jsynth.App.SAMPLE_RATE;
 
 public class FixedDelay implements SoundConsumer, SoundProducer {
 
-    private static int CHUNKS_PER_DELAY = 5;
+    private static final int DELAY_LINES = 3;
 
-    private short[] previousInput = new short[BUFFER_SIZE * CHUNKS_PER_DELAY];
+    // todo Duplicate code
+    private static final int CHUNKS_PER_DELAY = 10;
 
-    private SoundProducer producer;
+    private final short[] previousInput = new short[DELAY_LINES * BUFFER_SIZE * CHUNKS_PER_DELAY];
+
+    // todo Attach LowPassFilter instead of Butterworth
+    private Butterworth butterworth;
+
+    private final SoundProducer producer;
 
     public FixedDelay(SoundProducer producer) {
         this.producer = producer;
+        this.butterworth = new Butterworth();
+        butterworth.lowPass(8, SAMPLE_RATE, 1200);
     }
 
     @Override
@@ -25,7 +35,12 @@ public class FixedDelay implements SoundConsumer, SoundProducer {
 
         int sample;
         for (int i = 0; i < BUFFER_SIZE; i++) {
-            sample = producerChunk[i] + (previousInput[i] / 4);
+            sample = 0;
+            sample += (previousInput[CHUNKS_PER_DELAY * BUFFER_SIZE * 2 + i] / 2);
+            sample += (previousInput[CHUNKS_PER_DELAY * BUFFER_SIZE + i] / 4);
+            sample += (previousInput[i] / 8);
+            sample = (int) butterworth.filter(sample);
+            sample += producerChunk[i];
             // todo Use clipping algorithm
             if (sample > Short.MAX_VALUE) {
                 sample = Short.MAX_VALUE;
@@ -41,13 +56,13 @@ public class FixedDelay implements SoundConsumer, SoundProducer {
                 BUFFER_SIZE,
                 previousInput,
                 0,
-                BUFFER_SIZE * (CHUNKS_PER_DELAY - 1)
+                DELAY_LINES * BUFFER_SIZE * (CHUNKS_PER_DELAY - 1)
         );
         System.arraycopy(
                 producerChunk,
                 0,
                 previousInput,
-                BUFFER_SIZE * (CHUNKS_PER_DELAY - 1),
+                DELAY_LINES * BUFFER_SIZE * (CHUNKS_PER_DELAY - 1),
                 BUFFER_SIZE
         );
 
