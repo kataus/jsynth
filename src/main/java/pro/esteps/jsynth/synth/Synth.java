@@ -1,5 +1,6 @@
 package pro.esteps.jsynth.synth;
 
+import pro.esteps.jsynth.amplitude.SimpleDecay;
 import pro.esteps.jsynth.contract.FrequencyConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
 import pro.esteps.jsynth.frequency_generator.FixedFrequencyGenerator;
@@ -35,6 +36,8 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     private Sequencer sequencer;
 
+    private SimpleDecay simpleDecay;
+
     // todo Duplicate code
     private static final int CHUNKS_PER_NOTE = 5;
 
@@ -54,10 +57,10 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         );
         */
         this.lowPassFilter = new LowPassFilter(generatorMixer, frequency, (byte) 0);
-        this.fixedDelay = new FixedDelay(lowPassFilter);
+        // this.fixedDelay = new FixedDelay(lowPassFilter);
         // this.fixedDelay = new FixedDelay(generatorMixer);
         this.outputMixer = new Mixer(1);
-        outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
+        outputMixer.setProducerForInput(0, (SoundProducer) lowPassFilter, (byte) 100);
     }
 
     // todo Remove overloaded constructor
@@ -72,7 +75,8 @@ public class Synth implements FrequencyConsumer, SoundProducer {
                 1f
         );
         */
-        this.lowPassFilter = new LowPassFilter(generatorMixer, frequency, (byte) resonanceAmount);
+        this.simpleDecay = new SimpleDecay(generatorMixer);
+        this.lowPassFilter = new LowPassFilter(simpleDecay, frequency, (byte) resonanceAmount);
         this.fixedDelay = new FixedDelay(lowPassFilter);
         // this.fixedDelay = new FixedDelay(generatorMixer);
         this.outputMixer = new Mixer(1);
@@ -131,6 +135,10 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
         if (currentChunk == 1) {
             sequencer.advance();
+            // todo Reset index only when a note changes
+            if (simpleDecay != null) {
+                simpleDecay.resetIndex();
+            }
             float frequency = sequencer.getCurrentNoteFrequency();
             if (frequency == 0) {
                 frequencyGenerator.clearFrequency();

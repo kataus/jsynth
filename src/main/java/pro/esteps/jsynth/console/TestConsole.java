@@ -319,7 +319,7 @@ public class TestConsole {
             synth1.setGenerator2(new SquareWaveGenerator());
             synth1.setSequencer(sequencer1);
 
-            Synth synth2 = new Synth(600, 0);
+            Synth synth2 = new Synth(600);
             synth2.setGenerator1(new SineWaveGenerator());
             synth2.setGenerator2(new SquareWaveGenerator());
             synth2.setSequencer(sequencer2);
