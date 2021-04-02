@@ -133,7 +133,7 @@ public class TestConsole {
 
                     // --- 01 ---
 
-                    new SynthNote("a2", 1200, (byte) 0, (byte) 0),
+                    new SynthNote("a2", 600, (byte) 0, (byte) 0),
                     null,
                     null,
                     null,
@@ -177,7 +177,7 @@ public class TestConsole {
 
                     // --- 03 ---
 
-                    new SynthNote("d3", 1200, (byte) 0, (byte) 0),
+                    new SynthNote("d3", 600, (byte) 0, (byte) 0),
                     null,
                     null,
                     null,
@@ -199,7 +199,7 @@ public class TestConsole {
 
                     // --- 04 ---
 
-                    new SynthNote("f2", 1200, (byte) 0, (byte) 0),
+                    new SynthNote("f2", 600, (byte) 0, (byte) 0),
                     null,
                     null,
                     null,
@@ -315,13 +315,13 @@ public class TestConsole {
             });
 
             Synth synth1 = new Synth(800, 0);
-            synth1.setGenerator1(new SawWaveGenerator());
-            synth1.setGenerator2(new SquareWaveGenerator());
+            synth1.setGenerator1(new SawWaveGenerator(), 0);
+            synth1.setGenerator2(new SquareWaveGenerator(), 1);
             synth1.setSequencer(sequencer1);
 
-            Synth synth2 = new Synth(600);
-            synth2.setGenerator1(new SineWaveGenerator());
-            synth2.setGenerator2(new SquareWaveGenerator());
+            Synth synth2 = new Synth(800);
+            synth2.setGenerator1(new SquareWaveGenerator(), 0);
+            synth2.setGenerator2(new SineWaveGenerator(), 1);
             synth2.setSequencer(sequencer2);
 
             DrumMachine drumMachine = new DrumMachine();
