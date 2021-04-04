@@ -60,7 +60,7 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         this.effectsProcessor = new EffectsProcessor(simpleDecay);
 
         this.outputMixer = new Mixer(1);
-        outputMixer.setProducerForInput(0, effectsProcessor, (byte) 100);
+        outputMixer.setProducerForInput(0, simpleDecay, (byte) 100);
     }
 
     @Override
@@ -73,7 +73,8 @@ public class Synth implements FrequencyConsumer, SoundProducer {
             // todo Reset index only when a note changes
             if (simpleDecay != null) {
                 simpleDecay.resetIndex();
-                simpleDecay.setDecayLength(sequencer.getCurrentDecayLength());
+                // simpleDecay.setDecayLength(sequencer.getCurrentDecayLength());
+                simpleDecay.setDecayLength((byte) 1);
             }
 
             float frequency = sequencer.getCurrentNoteFrequency();
@@ -95,7 +96,6 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         }
 
         short[] chunk = new short[BUFFER_SIZE];
-        // todo Use FX Mixer
         System.arraycopy(outputMixer.getSoundChunk(), 0, chunk, 0, BUFFER_SIZE);
 
         return chunk;
@@ -108,6 +108,27 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     public void clearFrequency() {
         frequencyGenerator.clearFrequency();
+    }
+
+    public void setSequence(Note[] notes) {
+        this.sequencer.setSequence(notes);
+    }
+
+    public void setGenerator(int index, Generator generator, float delta, byte volume) {
+        assert index >= 0 && index < generators.size();
+        if (index >= generators.size() - 1) {
+            generators.add(index, generator);
+        } else {
+            generators.set(index, generator);
+        }
+        if (delta != 0) {
+            FrequencyShift frequencyShift = new FrequencyShift(delta);
+            frequencyShift.addConsumer((FrequencyConsumer) generator);
+            frequencyGenerator.addConsumer(frequencyShift);
+        } else {
+            frequencyGenerator.addConsumer((FrequencyConsumer) generator);
+        }
+        generatorMixer.setProducerForInput(index, (SoundProducer) generators.get(index), volume);
     }
 
 }

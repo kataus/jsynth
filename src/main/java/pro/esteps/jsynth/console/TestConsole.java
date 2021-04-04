@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TestConsole {
@@ -70,14 +71,103 @@ public class TestConsole {
 
             // Command processing
 
-            String s;
+            String str;
 
-            while (!(s = br.readLine()).equals("quit")) {
+            String synth;
+            String action;
+
+            Synth currentSynth = null;
+
+            while (!(str = br.readLine()).equals("quit")) {
+
+                // todo Parser with validation
+                String[] splitted = str.split("\\s+");
+
+                synth = splitted[0];
+                action = splitted[1];
+
+                if (synth.equals("s1") || synth.equals("s2") || synth.equals("s3") || synth.equals("s4")) {
+                    int index = Integer.parseInt(synth.substring(1)) - 1;
+                    currentSynth = synths.get(index);
+                    System.out.println("Current synth: " + index);
+                }
+
+                if (action.equals("sequence") && currentSynth != null) {
+                    if (splitted.length != 3) {
+                        System.out.println("Parameters are not specified");
+                        continue;
+                    }
+                    Note[] notes = parseSequence(splitted[2]);
+                    currentSynth.setSequence(notes);
+                    System.out.println("Set new sequence: " + Arrays.toString(notes));
+                }
+
+                if (action.equals("generator") && currentSynth != null) {
+
+                    if (splitted.length != 6) {
+                        System.out.println("Parameters are not specified");
+                        continue;
+                    }
+
+                    Generator generator = null;
+                    int generatorIndex = Integer.parseInt(splitted[2]);
+                    String generatorType = splitted[3];
+                    float frequencyDelta = Float.parseFloat(splitted[4]);
+                    byte volume = Byte.parseByte(splitted[5]);
+
+                    if (generatorType.equals("saw")) {
+                        generator = new SawWaveGenerator();
+                    }
+                    if (generatorType.equals("square")) {
+                        generator = new SquareWaveGenerator();
+                    }
+                    if (generatorType.equals("sine")) {
+                        generator = new SineWaveGenerator();
+                    }
+                    if (generatorType.equals("triangle")) {
+                        generator = new TriangleWaveGenerator();
+                    }
+                    if (generatorType.equals("white")) {
+                        generator = new WhiteNoiseGenerator();
+                    }
+
+                    currentSynth.setGenerator(
+                            generatorIndex,
+                            generator,
+                            frequencyDelta,
+                            volume
+                    );
+
+                    System.out.println("Set new generator");
+                }
 
             }
 
+            outputThread.interrupt();
+
         }
 
+    }
+
+    // todo Refactor to a separate class
+    // todo Validate input
+    // todo Move magic number 16 to a constant
+    private Note[] parseSequence(String parameters) {
+        Note[] notes = new Note[16];
+        String[] splitted = parameters.split(",");
+        String str;
+        Note note;
+        for (int i = 0; i < 16; i++) {
+            note = null;
+            str = splitted[i];
+            if (str.equals(".")) {
+                note = new EmptyNote();
+            } else if (!str.isEmpty()) {
+                note = new SynthNote(str);
+            }
+            notes[i] = note;
+        }
+        return notes;
     }
 
 }
