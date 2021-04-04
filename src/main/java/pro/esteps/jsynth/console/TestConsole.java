@@ -32,150 +32,48 @@ public class TestConsole {
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 
-            Sequencer sequencer1 = new Sequencer();
-            sequencer1.setSequence(new Note[]{
+            // Init synths
 
-                    // --- 01 ---
+            List<Synth> synths = new ArrayList<>();
 
-                    new SynthNote("f4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
-                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
-                    new SynthNote("e4", 800, (byte) 30, (byte) 1),
+            for (byte i = 0; i < 4; i++) {
+                synths.add(i, new Synth());
+            }
 
-                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
-                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
-                    new SynthNote("d4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
+            // Init drum machines
 
-                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
-                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
-                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
+            List<DrumMachine> drumMachines = new ArrayList<>();
 
-                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a3", 800, (byte) 30, (byte) 1),
-                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("d4", 800, (byte) 30, (byte) 1),
+            for (byte i = 0; i < 2; i++) {
+                drumMachines.add(i, new DrumMachine());
+            }
 
-            });
+            // Init mixer
 
-            Sequencer sequencer2 = new Sequencer(Sequencer.SequencerTempo.QUARTER);
-            sequencer2.setSequence(new Note[]{
+            Mixer mixer = new Mixer(6);
 
-                    // --- 01 ---
-
-                    new SynthNote("a2", 600, (byte) 0, (byte) 0),
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    new SynthNote("d3", 600, (byte) 0, (byte) 0),
-                    null,
-                    null,
-                    null,
-
-                    new SynthNote("f2", 600, (byte) 0, (byte) 0),
-                    null,
-                    null,
-                    null,
-
-            });
-
-
-            DrumMachineSequencer drumMachineSequencer = new DrumMachineSequencer();
-            drumMachineSequencer.setSequence(new DrumMachineNote[] {
-
-                    // --- 01 ---
-
-                    new DrumMachineNote(new String[]{"kick", "hihat-closed"}),
-                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
-                    null,
-
-                    new DrumMachineNote(new String[]{"snare", "hihat-closed"}),
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-
-                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-open"}),
-                    null,
-
-            });
-
-            Synth synth1 = new Synth(800, 0);
-            synth1.setGenerator1(new SawWaveGenerator(), 0);
-            synth1.setGenerator2(new SquareWaveGenerator(), 1);
-            synth1.setGenerator3(new SawWaveGenerator(), 101);
-            synth1.setSequencer(sequencer1);
-
-            Synth synth2 = new Synth(800);
-            synth2.setGenerator1(new SquareWaveGenerator(), 0);
-            synth2.setGenerator2(new SineWaveGenerator(), 1);
-            // synth2.setGenerator3(new SineWaveGenerator(), -100);
-            synth2.setSequencer(sequencer2);
+            mixer.setProducerForInput(0, synths.get(0), (byte) 80);
+            mixer.setProducerForInput(1, synths.get(1), (byte) 80);
+            mixer.setProducerForInput(2, synths.get(2), (byte) 80);
+            mixer.setProducerForInput(3, synths.get(3), (byte) 80);
 
             /*
-            Synth synth3 = new Synth(800, 0);
-            synth3.setGenerator1(new SawWaveGenerator(), 0);
-            synth3.setGenerator2(new TriangleWaveGenerator(), 4);
-            synth3.setGenerator3(new WhiteNoiseGenerator(), 0);
-            // synth3.setGenerator2(new SineWaveGenerator(), 1);
-            synth3.setSequencer(sequencer3);
+            mixer.setProducerForInput(4, drumMachines.get(0), (byte) 80);
+            mixer.setProducerForInput(5, drumMachines.get(1), (byte) 80);
             */
 
-            DrumMachine drumMachine = new DrumMachine();
-            drumMachine.setSequencer(drumMachineSequencer);
-
-            /*
-            List<SoundProducer> synths = new ArrayList<>();
-            synths.add(synth1);
-            synths.add(drumMachine);
-            */
-
-            Mixer mixer = new Mixer(4);
-            mixer.setProducerForInput(0, synth1, (byte) 80);
-            mixer.setProducerForInput(1, synth2, (byte) 80);
-            // mixer.setProducerForInput(2, synth3, (byte) 80);
-            mixer.setProducerForInput(3, drumMachine, (byte) 80);
+            // Start mixer in a separate thread
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);
             outputThread.start();
 
+            // Command processing
+
             String s;
-            int currentSynth = 0;
 
             while (!(s = br.readLine()).equals("quit")) {
-                if (s.equals("s1")) {
-                    currentSynth = 0;
-                    System.out.println("Current synth: S1");
-                    continue;
-                }
-                if (s.equals("s2")) {
-                    currentSynth = 1;
-                    System.out.println("Current synth: S2");
-                    continue;
-                }
-                /*
-                if (s.isEmpty()) {
-                    synths.get(currentSynth).clearFrequency();
-                    continue;
-                }
-                float frequency = noteParser.parseNote(s);
-                synths.get(currentSynth).setFrequency(frequency);
-                */
+
             }
 
         }
