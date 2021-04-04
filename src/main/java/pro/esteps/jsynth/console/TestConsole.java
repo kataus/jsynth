@@ -54,78 +54,12 @@ public class TestConsole {
 
                     new SynthNote("c4", 800, (byte) 30, (byte) 1),
                     new SynthNote("a3", 800, (byte) 30, (byte) 1),
-                    new SynthNote("c4", 1000, (byte) 30, (byte) 1),
-                    new SynthNote("d4", 1200, (byte) 30, (byte) 1),
-
-                    // --- 02 ---
-
-                    new SynthNote("f4", 1500, (byte) 30, (byte) 2),
-                    new SynthNote("a2", 2000, (byte) 60, (byte) 3),
-                    new SynthNote("e3", 3500, (byte) 80, (byte) 4),
-                    new SynthNote("e4", 4000, (byte) 80, (byte) 4),
-
-                    new SynthNote("a2", 2500, (byte) 80, (byte) 3),
-                    new SynthNote("e3", 2000, (byte) 60, (byte) 2),
-                    new SynthNote("d4", 1500, (byte) 0, (byte) 1),
-                    new SynthNote("a2", 1000, (byte) 30, (byte) 1),
-
-                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
-                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
-                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
-
-                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a3", 800, (byte) 30, (byte) 1),
-                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("d4", 800, (byte) 30, (byte) 1),
-
-                    // --- 03 ---
-
-                    new SynthNote("f4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
-                    new SynthNote("e3", 1800, (byte) 40, (byte) 1),
-                    new SynthNote("e4", 2800, (byte) 80, (byte) 1),
-
-                    new SynthNote("a2", 1800, (byte) 40, (byte) 1),
-                    new SynthNote("e3", 800, (byte) 0, (byte) 1),
-                    new SynthNote("d4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
-
-                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
-                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
-                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
-
-                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a3", 800, (byte) 30, (byte) 1),
-                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("d4", 800, (byte) 30, (byte) 1),
-
-                    // --- 04 ---
-
-                    new SynthNote("f4", 800, (byte) 70, (byte) 2),
-                    new SynthNote("a2", 800, (byte) 70, (byte) 3),
-                    new SynthNote("e3", 800, (byte) 70, (byte) 4),
-                    new SynthNote("e4", 800, (byte) 50, (byte) 4),
-
-                    new SynthNote("a2", 800, (byte) 0, (byte) 3),
-                    new SynthNote("e3", 800, (byte) 30, (byte) 2),
-                    new SynthNote("d4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
-
-                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
-                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a2", 800, (byte) 30, (byte) 1),
-                    new SynthNote("e3", 800, (byte) 30, (byte) 1),
-
-                    new SynthNote("c4", 800, (byte) 30, (byte) 1),
-                    new SynthNote("a3", 800, (byte) 30, (byte) 1),
                     new SynthNote("c4", 800, (byte) 30, (byte) 1),
                     new SynthNote("d4", 800, (byte) 30, (byte) 1),
 
             });
 
-            Sequencer sequencer2 = new Sequencer();
+            Sequencer sequencer2 = new Sequencer(Sequencer.SequencerTempo.QUARTER);
             sequencer2.setSequence(new Note[]{
 
                     // --- 01 ---
@@ -140,176 +74,18 @@ public class TestConsole {
                     null,
                     null,
 
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    // --- 02 ---
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    // --- 03 ---
-
                     new SynthNote("d3", 600, (byte) 0, (byte) 0),
                     null,
                     null,
                     null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    // --- 04 ---
 
                     new SynthNote("f2", 600, (byte) 0, (byte) 0),
                     null,
                     null,
                     null,
 
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
             });
 
-            Sequencer sequencer3 = new Sequencer();
-            sequencer3.setSequence(new Note[]{
-
-                    // --- 01 ---
-
-                    new SynthNote("b5", 800, (byte) 60, (byte) 4),
-                    new SynthNote("e5", 1000, (byte) 30, (byte) 4),
-                    new SynthNote("b5", 1400, (byte) 0, (byte) 4),
-                    new EmptyNote(),
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    // --- 02 ---
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    // --- 03 ---
-
-                    new SynthNote("d3", 600, (byte) 0, (byte) 0),
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    // --- 04 ---
-
-                    new SynthNote("f2", 600, (byte) 0, (byte) 0),
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-                    null,
-                    null,
-                    null,
-                    null,
-
-            });
 
             DrumMachineSequencer drumMachineSequencer = new DrumMachineSequencer();
             drumMachineSequencer.setSequence(new DrumMachineNote[] {
@@ -336,90 +112,28 @@ public class TestConsole {
                     new DrumMachineNote(new String[]{"hihat-open"}),
                     null,
 
-                    // --- 02 ---
-
-                    new DrumMachineNote(new String[]{"kick", "hihat-closed"}),
-                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
-                    null,
-
-                    new DrumMachineNote(new String[]{"snare", "hihat-closed"}),
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-
-                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-open"}),
-                    null,
-
-                    // --- 03 ---
-
-                    new DrumMachineNote(new String[]{"kick", "hihat-closed"}),
-                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
-                    null,
-
-                    new DrumMachineNote(new String[]{"snare", "hihat-closed"}),
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-
-                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-open"}),
-                    null,
-
-                    // --- 04 ---
-
-                    new DrumMachineNote(new String[]{"kick", "hihat-closed"}),
-                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
-                    null,
-
-                    new DrumMachineNote(new String[]{"snare", "hihat-closed"}),
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-closed"}),
-
-                    new DrumMachineNote(new String[]{"hihat-semiopen"}),
-                    null,
-                    new DrumMachineNote(new String[]{"hihat-open"}),
-                    null,
-
             });
 
             Synth synth1 = new Synth(800, 0);
             synth1.setGenerator1(new SawWaveGenerator(), 0);
             synth1.setGenerator2(new SquareWaveGenerator(), 1);
+            synth1.setGenerator3(new SawWaveGenerator(), 101);
             synth1.setSequencer(sequencer1);
 
             Synth synth2 = new Synth(800);
             synth2.setGenerator1(new SquareWaveGenerator(), 0);
             synth2.setGenerator2(new SineWaveGenerator(), 1);
+            // synth2.setGenerator3(new SineWaveGenerator(), -100);
             synth2.setSequencer(sequencer2);
 
+            /*
             Synth synth3 = new Synth(800, 0);
-            synth3.setGenerator1(new TriangleWaveGenerator(), 0);
-            synth3.setGenerator2(new SineWaveGenerator(), 2);
+            synth3.setGenerator1(new SawWaveGenerator(), 0);
+            synth3.setGenerator2(new TriangleWaveGenerator(), 4);
             synth3.setGenerator3(new WhiteNoiseGenerator(), 0);
             // synth3.setGenerator2(new SineWaveGenerator(), 1);
             synth3.setSequencer(sequencer3);
+            */
 
             DrumMachine drumMachine = new DrumMachine();
             drumMachine.setSequencer(drumMachineSequencer);
@@ -433,8 +147,8 @@ public class TestConsole {
             Mixer mixer = new Mixer(4);
             mixer.setProducerForInput(0, synth1, (byte) 80);
             mixer.setProducerForInput(1, synth2, (byte) 80);
-            mixer.setProducerForInput(2, synth3, (byte) 60);
-            mixer.setProducerForInput(3, drumMachine, (byte) 100);
+            // mixer.setProducerForInput(2, synth3, (byte) 80);
+            mixer.setProducerForInput(3, drumMachine, (byte) 80);
 
             Output output = new Output(mixer);
             Thread outputThread = new Thread(output);

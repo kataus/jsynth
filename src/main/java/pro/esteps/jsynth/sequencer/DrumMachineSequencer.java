@@ -2,7 +2,7 @@ package pro.esteps.jsynth.sequencer;
 
 public class DrumMachineSequencer {
 
-    private DrumMachineNote[] sequence = new DrumMachineNote[64];
+    private DrumMachineNote[] sequence = new DrumMachineNote[16];
 
     private DrumMachineNote currentNote;
 
