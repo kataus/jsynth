@@ -6,13 +6,31 @@ import static pro.esteps.jsynth.fx.LowPassFilter.LOW_PASS_DEFAULT_FREQUENCY;
 
 public class Sequencer {
 
-    private Note[] sequence = new Note[64];
+    private Note[] sequence = new Note[16];
 
     private final NoteParser noteParser;
 
     private Note currentNote;
 
-    private int currentNoteIndex;
+    private byte currentNoteIndex;
+
+    public enum SequencerTempo {
+
+        ONE((byte) 1),
+        HALF((byte) 2),
+        QUARTER((byte) 4);
+
+        public final byte multiplier;
+
+        SequencerTempo(byte multiplier) {
+            this.multiplier = multiplier;
+        }
+
+    }
+
+    private SequencerTempo tempo;
+
+    private byte currentTempoIndex;
 
     public void setSequence(Note[] sequence) {
         // todo Guard clauses
@@ -21,19 +39,32 @@ public class Sequencer {
 
     public Sequencer() {
         this.noteParser = new NoteParser();
+        this.tempo = SequencerTempo.ONE;
+    }
+
+    public Sequencer(SequencerTempo tempo) {
+        this.noteParser = new NoteParser();
+        this.tempo = tempo;
     }
 
     public void advance() {
-        Note note = sequence[currentNoteIndex++];
-        if (currentNoteIndex >= sequence.length) {
-            currentNoteIndex = 0;
-        }
-        if (note != null) {
-            if (note instanceof EmptyNote) {
-                currentNote = null;
-            } else {
-                currentNote = note;
+
+        if (currentTempoIndex++ == 0) {
+            Note note = sequence[currentNoteIndex++];
+            if (currentNoteIndex >= sequence.length) {
+                currentNoteIndex = 0;
             }
+            if (note != null) {
+                if (note instanceof EmptyNote) {
+                    currentNote = null;
+                } else {
+                    currentNote = note;
+                }
+            }
+        }
+
+        if (currentTempoIndex >= tempo.multiplier) {
+            currentTempoIndex = 0;
         }
     }
 
