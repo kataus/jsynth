@@ -7,7 +7,7 @@ import pro.esteps.jsynth.iirj.Butterworth;
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
 import static pro.esteps.jsynth.App.SAMPLE_RATE;
 
-public class LowPassFilter implements SoundConsumer, SoundProducer {
+public class LowPassFilter implements Effect, SoundConsumer, SoundProducer {
 
     public static final float LOW_PASS_DEFAULT_FREQUENCY = 20000f;
 

@@ -5,7 +5,7 @@ import pro.esteps.jsynth.contract.SoundProducer;
 
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
 
-public class Distortion implements SoundConsumer, SoundProducer {
+public class Distortion implements Effect, SoundConsumer, SoundProducer {
 
     private SoundProducer producer;
 
