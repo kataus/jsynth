@@ -141,6 +141,47 @@ public class TestConsole {
                     System.out.println("Set new generator");
                 }
 
+                if (action.equals("cutoff") && currentSynth != null) {
+                    if (splitted.length != 3) {
+                        System.out.println("Parameters are not specified");
+                        continue;
+                    }
+                    float frequency = Float.parseFloat(splitted[2]);
+                    currentSynth.setCutoffFrequency(frequency);
+                    System.out.println("Cutoff set: " + frequency);
+                }
+
+                if (action.equals("resonance") && currentSynth != null) {
+                    if (splitted.length != 3) {
+                        System.out.println("Parameters are not specified");
+                        continue;
+                    }
+                    byte resonance = Byte.parseByte(splitted[2]);
+                    currentSynth.setResonance(resonance);
+                    System.out.println("Resonance set: " + resonance);
+                }
+
+                if (action.equals("decay") && currentSynth != null) {
+                    if (splitted.length != 3) {
+                        System.out.println("Parameters are not specified");
+                        continue;
+                    }
+                    byte decayLength = Byte.parseByte(splitted[2]);
+                    currentSynth.setDecayLength(decayLength);
+                    System.out.println("Decay set: " + decayLength);
+                }
+
+                if (action.equals("delay") && currentSynth != null) {
+                    if (splitted.length != 3) {
+                        System.out.println("Parameters are not specified");
+                        continue;
+                    }
+                    if (splitted[2].equals("1")) {
+                        currentSynth.enableDelay();
+                        System.out.println("Delay enabled");
+                    }
+                }
+
             }
 
             outputThread.interrupt();

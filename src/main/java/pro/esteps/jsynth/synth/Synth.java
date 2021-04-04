@@ -29,6 +29,8 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     private SimpleDecay simpleDecay;
 
+    private byte decayLength;
+
     private final Mixer generatorMixer;
 
     private final EffectsProcessor effectsProcessor;
@@ -60,7 +62,7 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         this.effectsProcessor = new EffectsProcessor(simpleDecay);
 
         this.outputMixer = new Mixer(1);
-        outputMixer.setProducerForInput(0, simpleDecay, (byte) 100);
+        outputMixer.setProducerForInput(0, effectsProcessor, (byte) 100);
     }
 
     @Override
@@ -71,11 +73,15 @@ public class Synth implements FrequencyConsumer, SoundProducer {
             sequencer.advance();
 
             // todo Reset index only when a note changes
+            /*
             if (simpleDecay != null) {
                 simpleDecay.resetIndex();
                 // simpleDecay.setDecayLength(sequencer.getCurrentDecayLength());
-                simpleDecay.setDecayLength((byte) 1);
+                simpleDecay.setDecayLength(decayLength);
             }
+            */
+            simpleDecay.resetIndex();
+            simpleDecay.setDecayLength(decayLength);
 
             float frequency = sequencer.getCurrentNoteFrequency();
             if (frequency == 0) {
@@ -129,6 +135,23 @@ public class Synth implements FrequencyConsumer, SoundProducer {
             frequencyGenerator.addConsumer((FrequencyConsumer) generator);
         }
         generatorMixer.setProducerForInput(index, (SoundProducer) generators.get(index), volume);
+    }
+
+    public void setCutoffFrequency(float frequency) {
+        this.effectsProcessor.setCutoffFrequency(frequency);
+    }
+
+    public void setResonance(byte resonance) {
+        this.effectsProcessor.setResonance(resonance);
+    }
+
+    // todo Add delay parameters
+    public void enableDelay() {
+        this.effectsProcessor.enableDelay();
+    }
+
+    public void setDecayLength(byte decayLength) {
+        this.decayLength = decayLength;
     }
 
 }
