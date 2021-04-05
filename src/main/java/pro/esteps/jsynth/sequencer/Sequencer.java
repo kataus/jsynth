@@ -96,4 +96,10 @@ public class Sequencer {
         return ((SynthNote) currentNote).getDecayLength();
     }
 
+    public void setTempo(SequencerTempo tempo) {
+        if (this.tempo != tempo) {
+            this.tempo = tempo;
+        }
+    }
+
 }

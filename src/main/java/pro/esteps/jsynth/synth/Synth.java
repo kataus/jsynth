@@ -65,6 +65,29 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         outputMixer.setProducerForInput(0, effectsProcessor, (byte) 100);
     }
 
+    public Synth(Sequencer.SequencerTempo tempo) {
+
+        this.sequencer = new Sequencer(tempo);
+        this.sequencer.setSequence(new Note[]{
+                null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+        });
+
+        this.frequencyGenerator = new FixedFrequencyGenerator();
+
+        this.generatorMixer = new Mixer(4);
+
+        this.simpleDecay = new SimpleDecay(generatorMixer, (byte) 1);
+
+        this.effectsProcessor = new EffectsProcessor(simpleDecay);
+
+        this.outputMixer = new Mixer(1);
+        outputMixer.setProducerForInput(0, effectsProcessor, (byte) 100);
+
+    }
+
     @Override
     public short[] getSoundChunk() {
 
@@ -152,6 +175,10 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     public void setDecayLength(byte decayLength) {
         this.decayLength = decayLength;
+    }
+
+    public void setTempo(Sequencer.SequencerTempo tempo) {
+        this.sequencer.setTempo(tempo);
     }
 
 }

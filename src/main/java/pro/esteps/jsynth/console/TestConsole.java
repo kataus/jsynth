@@ -38,7 +38,12 @@ public class TestConsole {
             List<Synth> synths = new ArrayList<>();
 
             for (byte i = 0; i < 4; i++) {
-                synths.add(i, new Synth());
+                if (i == 0) {
+                    // todo Sync tempo bet
+                    synths.add(i, new Synth(Sequencer.SequencerTempo.QUARTER));
+                } else {
+                    synths.add(i, new Synth());
+                }
             }
 
             // Init drum machines
@@ -182,6 +187,24 @@ public class TestConsole {
                             currentSynth.enableDelay();
                             System.out.println("Delay enabled");
                         }
+                    }
+
+                    if (action.equals("tempo") && currentSynth != null) {
+                        if (splitted.length != 3) {
+                            System.out.println("Parameters are not specified");
+                            continue;
+                        }
+                        Sequencer.SequencerTempo tempo = null;
+                        if (splitted[2].equals("one")) {
+                            tempo = Sequencer.SequencerTempo.ONE;
+                        }
+                        if (splitted[2].equals("half")) {
+                            tempo = Sequencer.SequencerTempo.HALF;
+                        }
+                        if (splitted[2].equals("quarter")) {
+                            tempo = Sequencer.SequencerTempo.QUARTER;
+                        }
+                        currentSynth.setTempo(tempo);
                     }
 
                 }
