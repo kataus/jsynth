@@ -200,11 +200,13 @@ public class TestConsole {
         Note note;
         for (int i = 0; i < 16; i++) {
             note = null;
-            str = splitted[i];
-            if (str.equals(".")) {
-                note = new EmptyNote();
-            } else if (!str.isEmpty()) {
-                note = new SynthNote(str);
+            if (splitted.length > i) {
+                str = splitted[i];
+                if (str.equals(".")) {
+                    note = new EmptyNote();
+                } else if (!str.isEmpty()) {
+                    note = new SynthNote(str);
+                }
             }
             notes[i] = note;
         }
