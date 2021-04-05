@@ -63,8 +63,10 @@ public class TestConsole {
             mixer.setProducerForInput(2, synths.get(2), (byte) 80);
             mixer.setProducerForInput(3, synths.get(3), (byte) 80);
 
+            // todo Add volume control
             mixer.setProducerForInput(4, drumMachines.get(0), (byte) 80);
-            mixer.setProducerForInput(5, drumMachines.get(1), (byte) 80);
+            // todo Add volume control
+            mixer.setProducerForInput(5, drumMachines.get(1), (byte) 50);
 
             // Start mixer in a separate thread
 
