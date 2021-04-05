@@ -3,8 +3,11 @@ package pro.esteps.jsynth.drum_machine;
 import pro.esteps.jsynth.contract.SoundProducer;
 import pro.esteps.jsynth.fx.FixedDelay;
 import pro.esteps.jsynth.fx.LowPassFilter;
+import pro.esteps.jsynth.mixer.EffectsProcessor;
 import pro.esteps.jsynth.mixer.Mixer;
+import pro.esteps.jsynth.sequencer.DrumMachineNote;
 import pro.esteps.jsynth.sequencer.DrumMachineSequencer;
+import pro.esteps.jsynth.sequencer.Note;
 import pro.esteps.jsynth.sequencer.Sequencer;
 
 import javax.sound.sampled.AudioInputStream;
@@ -63,8 +66,6 @@ public class DrumMachine implements SoundProducer {
                 }
             }
 
-            int k = 1;
-
         }
 
         public boolean hasRemainingData() {
@@ -120,7 +121,7 @@ public class DrumMachine implements SoundProducer {
 
         }
 
-        public void setNotes(String notes[]) throws IOException, UnsupportedAudioFileException {
+        public void setNotes(String[] notes) throws IOException, UnsupportedAudioFileException {
             this.notes = notes;
             List<String> nonEmptyNotes =
                     Arrays.stream(notes)
@@ -184,17 +185,15 @@ public class DrumMachine implements SoundProducer {
      */
     private int currentMixCursorIndex;
 
+    private DrumMachineSequencer sequencer;
+
     private DrumMachineSoundProducer drumMachineSoundProducer;
 
     private Mixer generatorMixer;
 
+    private final EffectsProcessor effectsProcessor;
+
     private Mixer outputMixer;
-
-    private FixedDelay fixedDelay;
-
-    private LowPassFilter lowPassFilter;
-
-    private DrumMachineSequencer sequencer;
 
     // todo Duplicate code
     private static final int CHUNKS_PER_NOTE = 5;
@@ -203,12 +202,25 @@ public class DrumMachine implements SoundProducer {
     private int currentChunk = 1;
 
     public DrumMachine() {
+
+        this.sequencer = new DrumMachineSequencer();
+        this.sequencer.setSequence(new DrumMachineNote[]{
+                null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+        });
+
         this.drumMachineSoundProducer = new DrumMachineSoundProducer();
+
         this.generatorMixer = new Mixer(1);
-        generatorMixer.setProducerForInput(0, drumMachineSoundProducer, (byte) 50);
-        // this.fixedDelay = new FixedDelay(generatorMixer);
+
+        generatorMixer.setProducerForInput(0, drumMachineSoundProducer, (byte) 80);
+
+        this.effectsProcessor = new EffectsProcessor(generatorMixer);
+
         this.outputMixer = new Mixer(1);
-        outputMixer.setProducerForInput(0, (SoundProducer) generatorMixer, (byte) 100);
+        outputMixer.setProducerForInput(0, effectsProcessor, (byte) 100);
     }
 
     public void setSequencer(DrumMachineSequencer sequencer) {
@@ -241,4 +253,14 @@ public class DrumMachine implements SoundProducer {
         return chunk;
 
     }
+
+    public void setSequence(DrumMachineNote[] notes) {
+        this.sequencer.setSequence(notes);
+    }
+
+    // todo Add delay parameters
+    public void enableDelay() {
+        this.effectsProcessor.enableDelay();
+    }
+
 }

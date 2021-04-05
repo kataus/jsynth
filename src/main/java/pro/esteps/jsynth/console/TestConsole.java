@@ -58,10 +58,8 @@ public class TestConsole {
             mixer.setProducerForInput(2, synths.get(2), (byte) 80);
             mixer.setProducerForInput(3, synths.get(3), (byte) 80);
 
-            /*
             mixer.setProducerForInput(4, drumMachines.get(0), (byte) 80);
             mixer.setProducerForInput(5, drumMachines.get(1), (byte) 80);
-            */
 
             // Start mixer in a separate thread
 
@@ -77,6 +75,7 @@ public class TestConsole {
             String action;
 
             Synth currentSynth = null;
+            DrumMachine currentDrumMachine = null;
 
             while (!(str = br.readLine()).equals("quit")) {
 
@@ -86,100 +85,137 @@ public class TestConsole {
                 synth = splitted[0];
                 action = splitted[1];
 
+                // Synths
+                // todo Refactor to separate classes/methods
+
                 if (synth.equals("s1") || synth.equals("s2") || synth.equals("s3") || synth.equals("s4")) {
+
                     int index = Integer.parseInt(synth.substring(1)) - 1;
                     currentSynth = synths.get(index);
                     System.out.println("Current synth: " + index);
+
+                    if (action.equals("sequence") && currentSynth != null) {
+                        if (splitted.length != 3) {
+                            System.out.println("Parameters are not specified");
+                            continue;
+                        }
+                        Note[] notes = parseSequence(splitted[2]);
+                        currentSynth.setSequence(notes);
+                        System.out.println("Set new sequence: " + Arrays.toString(notes));
+                    }
+
+                    if (action.equals("generator") && currentSynth != null) {
+
+                        if (splitted.length != 6) {
+                            System.out.println("Parameters are not specified");
+                            continue;
+                        }
+
+                        Generator generator = null;
+                        int generatorIndex = Integer.parseInt(splitted[2]);
+                        String generatorType = splitted[3];
+                        float frequencyDelta = Float.parseFloat(splitted[4]);
+                        byte volume = Byte.parseByte(splitted[5]);
+
+                        if (generatorType.equals("saw")) {
+                            generator = new SawWaveGenerator();
+                        }
+                        if (generatorType.equals("square")) {
+                            generator = new SquareWaveGenerator();
+                        }
+                        if (generatorType.equals("sine")) {
+                            generator = new SineWaveGenerator();
+                        }
+                        if (generatorType.equals("triangle")) {
+                            generator = new TriangleWaveGenerator();
+                        }
+                        if (generatorType.equals("white")) {
+                            generator = new WhiteNoiseGenerator();
+                        }
+
+                        currentSynth.setGenerator(
+                                generatorIndex,
+                                generator,
+                                frequencyDelta,
+                                volume
+                        );
+
+                        System.out.println("Set new generator");
+                    }
+
+                    if (action.equals("cutoff") && currentSynth != null) {
+                        if (splitted.length != 3) {
+                            System.out.println("Parameters are not specified");
+                            continue;
+                        }
+                        float frequency = Float.parseFloat(splitted[2]);
+                        currentSynth.setCutoffFrequency(frequency);
+                        System.out.println("Cutoff set: " + frequency);
+                    }
+
+                    if (action.equals("resonance") && currentSynth != null) {
+                        if (splitted.length != 3) {
+                            System.out.println("Parameters are not specified");
+                            continue;
+                        }
+                        byte resonance = Byte.parseByte(splitted[2]);
+                        currentSynth.setResonance(resonance);
+                        System.out.println("Resonance set: " + resonance);
+                    }
+
+                    if (action.equals("decay") && currentSynth != null) {
+                        if (splitted.length != 3) {
+                            System.out.println("Parameters are not specified");
+                            continue;
+                        }
+                        byte decayLength = Byte.parseByte(splitted[2]);
+                        currentSynth.setDecayLength(decayLength);
+                        System.out.println("Decay set: " + decayLength);
+                    }
+
+                    if (action.equals("delay") && currentSynth != null) {
+                        if (splitted.length != 3) {
+                            System.out.println("Parameters are not specified");
+                            continue;
+                        }
+                        if (splitted[2].equals("1")) {
+                            currentSynth.enableDelay();
+                            System.out.println("Delay enabled");
+                        }
+                    }
+
                 }
 
-                if (action.equals("sequence") && currentSynth != null) {
-                    if (splitted.length != 3) {
-                        System.out.println("Parameters are not specified");
-                        continue;
-                    }
-                    Note[] notes = parseSequence(splitted[2]);
-                    currentSynth.setSequence(notes);
-                    System.out.println("Set new sequence: " + Arrays.toString(notes));
-                }
+                // Drum Machines
+                // todo Refactor to separate classes/methods
 
-                if (action.equals("generator") && currentSynth != null) {
+                if (synth.equals("d1") || synth.equals("d2")) {
 
-                    if (splitted.length != 6) {
-                        System.out.println("Parameters are not specified");
-                        continue;
-                    }
+                    int index = Integer.parseInt(synth.substring(1)) - 1;
+                    currentDrumMachine = drumMachines.get(index);
+                    System.out.println("Current drum machine: " + index);
 
-                    Generator generator = null;
-                    int generatorIndex = Integer.parseInt(splitted[2]);
-                    String generatorType = splitted[3];
-                    float frequencyDelta = Float.parseFloat(splitted[4]);
-                    byte volume = Byte.parseByte(splitted[5]);
-
-                    if (generatorType.equals("saw")) {
-                        generator = new SawWaveGenerator();
-                    }
-                    if (generatorType.equals("square")) {
-                        generator = new SquareWaveGenerator();
-                    }
-                    if (generatorType.equals("sine")) {
-                        generator = new SineWaveGenerator();
-                    }
-                    if (generatorType.equals("triangle")) {
-                        generator = new TriangleWaveGenerator();
-                    }
-                    if (generatorType.equals("white")) {
-                        generator = new WhiteNoiseGenerator();
+                    if (action.equals("sequence") && currentDrumMachine != null) {
+                        if (splitted.length != 3) {
+                            System.out.println("Parameters are not specified");
+                            continue;
+                        }
+                        DrumMachineNote[] notes = parseDrumSequence(splitted[2]);
+                        currentDrumMachine.setSequence(notes);
+                        System.out.println("Set new sequence: " + Arrays.toString(notes));
                     }
 
-                    currentSynth.setGenerator(
-                            generatorIndex,
-                            generator,
-                            frequencyDelta,
-                            volume
-                    );
-
-                    System.out.println("Set new generator");
-                }
-
-                if (action.equals("cutoff") && currentSynth != null) {
-                    if (splitted.length != 3) {
-                        System.out.println("Parameters are not specified");
-                        continue;
+                    if (action.equals("delay") && currentDrumMachine != null) {
+                        if (splitted.length != 3) {
+                            System.out.println("Parameters are not specified");
+                            continue;
+                        }
+                        if (splitted[2].equals("1")) {
+                            currentDrumMachine.enableDelay();
+                            System.out.println("Delay enabled");
+                        }
                     }
-                    float frequency = Float.parseFloat(splitted[2]);
-                    currentSynth.setCutoffFrequency(frequency);
-                    System.out.println("Cutoff set: " + frequency);
-                }
 
-                if (action.equals("resonance") && currentSynth != null) {
-                    if (splitted.length != 3) {
-                        System.out.println("Parameters are not specified");
-                        continue;
-                    }
-                    byte resonance = Byte.parseByte(splitted[2]);
-                    currentSynth.setResonance(resonance);
-                    System.out.println("Resonance set: " + resonance);
-                }
-
-                if (action.equals("decay") && currentSynth != null) {
-                    if (splitted.length != 3) {
-                        System.out.println("Parameters are not specified");
-                        continue;
-                    }
-                    byte decayLength = Byte.parseByte(splitted[2]);
-                    currentSynth.setDecayLength(decayLength);
-                    System.out.println("Decay set: " + decayLength);
-                }
-
-                if (action.equals("delay") && currentSynth != null) {
-                    if (splitted.length != 3) {
-                        System.out.println("Parameters are not specified");
-                        continue;
-                    }
-                    if (splitted[2].equals("1")) {
-                        currentSynth.enableDelay();
-                        System.out.println("Delay enabled");
-                    }
                 }
 
             }
@@ -207,6 +243,26 @@ public class TestConsole {
                 } else if (!str.isEmpty()) {
                     note = new SynthNote(str);
                 }
+            }
+            notes[i] = note;
+        }
+        return notes;
+    }
+
+    private DrumMachineNote[] parseDrumSequence(String parameters) {
+        DrumMachineNote[] notes = new DrumMachineNote[16];
+        String[] splitted = parameters.split(",");
+        String str;
+        DrumMachineNote note;
+        for (int i = 0; i < 16; i++) {
+            note = null;
+            if (splitted.length > i) {
+                str = splitted[i];
+                if (!str.isEmpty()) {
+                    String[] splittedSamples = str.split("\\|");
+                    note = new DrumMachineNote(splittedSamples);
+                }
+
             }
             notes[i] = note;
         }
