@@ -7,11 +7,11 @@ import pro.esteps.jsynth.iirj.Butterworth;
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
 import static pro.esteps.jsynth.App.SAMPLE_RATE;
 
-public class LowPassFilter implements SoundConsumer, SoundProducer {
+public class LowPassFilter implements Effect, SoundConsumer, SoundProducer {
 
     public static final float LOW_PASS_DEFAULT_FREQUENCY = 20000f;
 
-    private static final int BAND_PASS_WIDTH_FREQUENCY = 600;
+    private static final int BAND_PASS_DEFAULT_WIDTH_FREQUENCY = 600;
 
     private SoundProducer producer;
 
@@ -36,7 +36,7 @@ public class LowPassFilter implements SoundConsumer, SoundProducer {
         butterworthLowPassFilter.lowPass(8, SAMPLE_RATE, this.frequency);
 
         this.butterworthBandPassFilter = new Butterworth();
-        butterworthBandPassFilter.bandPass(8, SAMPLE_RATE, this.frequency, BAND_PASS_WIDTH_FREQUENCY);
+        butterworthBandPassFilter.bandPass(8, SAMPLE_RATE, this.frequency, calculateBandPassWidthFrequency());
 
     }
 
@@ -44,14 +44,20 @@ public class LowPassFilter implements SoundConsumer, SoundProducer {
         if (this.frequency != frequency) {
             this.frequency = frequency;
             butterworthLowPassFilter.lowPass(8, SAMPLE_RATE, frequency);
+            butterworthBandPassFilter.bandPass(8, SAMPLE_RATE, frequency, calculateBandPassWidthFrequency());
         }
     }
 
     public void setResonanceAmount(byte resonanceAmount) {
         if (this.resonanceAmount != resonanceAmount) {
             this.resonanceAmount = resonanceAmount;
-            butterworthBandPassFilter.bandPass(8, SAMPLE_RATE, frequency, BAND_PASS_WIDTH_FREQUENCY);
+            butterworthBandPassFilter.bandPass(8, SAMPLE_RATE, frequency, calculateBandPassWidthFrequency());
         }
+    }
+
+    private int calculateBandPassWidthFrequency() {
+        int result = (int) (frequency / 6);
+        return Math.max(result, BAND_PASS_DEFAULT_WIDTH_FREQUENCY);
     }
 
     @Override
@@ -60,23 +66,19 @@ public class LowPassFilter implements SoundConsumer, SoundProducer {
         short[] mixedChunk = new short[BUFFER_SIZE];
         short[] producerChunk = producer.getSoundChunk();
 
-        /*
-        frequency += 30;
-        butterworthLowPassFilter.lowPass(8, SAMPLE_RATE, frequency);
-        butterworthBandPassFilter.bandPass(8, SAMPLE_RATE, frequency, BAND_PASS_WIDTH_FREQUENCY);
-        */
-
         double sample;
 
         for (int i = 0; i < BUFFER_SIZE; i++) {
 
+            sample = 0;
+
             // Low Pass
-            sample = (short) butterworthLowPassFilter.filter(producerChunk[i]);
+            sample += (short) butterworthLowPassFilter.filter(producerChunk[i]);
 
             // Band Pass
             // todo Use log. volume control
             if (resonanceAmount > 0) {
-                sample += (short) (butterworthBandPassFilter.filter(producerChunk[i]) / 100 * resonanceAmount);
+                sample += (short) (butterworthBandPassFilter.filter(sample) / 100 * resonanceAmount * 4);
             }
 
             if (sample > Short.MAX_VALUE) {

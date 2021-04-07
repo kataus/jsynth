@@ -7,7 +7,7 @@ import pro.esteps.jsynth.iirj.Butterworth;
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
 import static pro.esteps.jsynth.App.SAMPLE_RATE;
 
-public class FixedDelay implements SoundConsumer, SoundProducer {
+public class FixedDelay implements Effect, SoundConsumer, SoundProducer {
 
     private static final int DELAY_LINES = 3;
 

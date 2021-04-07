@@ -46,13 +46,13 @@ public class NoteParser {
         letter = letter.toUpperCase(Locale.ROOT);
         float frequency = frequencies.get(letter);
 
-        assert octave >= 2 && octave <= 6;
+        assert octave >= 1 && octave <= 6;
         int delta = Math.abs(4 - octave);
         if (octave < 4) {
-            frequency /= delta * 2;
+            frequency /= Math.pow(2, delta);
         }
         if (octave > 4) {
-            frequency *= delta * 2;
+            frequency *= Math.pow(2, delta);
         }
 
         return frequency;

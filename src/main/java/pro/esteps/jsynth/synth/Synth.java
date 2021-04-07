@@ -5,186 +5,128 @@ import pro.esteps.jsynth.contract.FrequencyConsumer;
 import pro.esteps.jsynth.contract.SoundProducer;
 import pro.esteps.jsynth.frequency_generator.FixedFrequencyGenerator;
 import pro.esteps.jsynth.frequency_generator.FrequencyShift;
-import pro.esteps.jsynth.fx.Distortion;
-import pro.esteps.jsynth.fx.FixedDelay;
-import pro.esteps.jsynth.fx.LowHighPassFilter;
-import pro.esteps.jsynth.fx.LowPassFilter;
+import pro.esteps.jsynth.fx.*;
+import pro.esteps.jsynth.mixer.EffectsProcessor;
 import pro.esteps.jsynth.mixer.Mixer;
+import pro.esteps.jsynth.sequencer.Note;
 import pro.esteps.jsynth.sequencer.Sequencer;
+import pro.esteps.jsynth.sequencer.SynthNote;
 import pro.esteps.jsynth.wave_generator.Generator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static pro.esteps.jsynth.App.BUFFER_SIZE;
 
 public class Synth implements FrequencyConsumer, SoundProducer {
 
-    private FixedFrequencyGenerator frequencyGenerator;
-
-    private Generator generator1;
-
-    private Generator generator2;
-
-    private Generator generator3;
-
-    private Mixer generatorMixer;
-
-    private Mixer outputMixer;
-
-    private FixedDelay fixedDelay;
-
-    private Distortion distortion;
-
-    private LowHighPassFilter lowHighPassFilter;
-
-    private LowPassFilter lowPassFilter;
-
     private Sequencer sequencer;
 
+    private final FixedFrequencyGenerator frequencyGenerator;
+
+    // todo Max 4 generators
+    private final List<Generator> generators = new ArrayList<>();
+
     private SimpleDecay simpleDecay;
+
+    private byte decayLength;
+
+    private final Mixer generatorMixer;
+
+    private final EffectsProcessor effectsProcessor;
+
+    private final Mixer outputMixer;
 
     // todo Duplicate code
     private static final int CHUNKS_PER_NOTE = 5;
 
     // todo Duplicate code
-    private int currentChunk = 1;
+    private byte currentChunk = 1;
 
-    // todo Remove overloaded constructor
-    public Synth(int frequency) {
-        this.frequencyGenerator = new FixedFrequencyGenerator();
-        this.generatorMixer = new Mixer(3);
-        /*
-        this.lowHighPassFilter = new LowHighPassFilter(
-                generatorMixer,
-                frequency,
-                LowHighPassFilter.PassType.Lowpass,
-                1f
-        );
-        */
-        this.lowPassFilter = new LowPassFilter(generatorMixer, frequency, (byte) 0);
-        // this.fixedDelay = new FixedDelay(lowPassFilter);
-        // this.fixedDelay = new FixedDelay(generatorMixer);
-        this.outputMixer = new Mixer(1);
-        outputMixer.setProducerForInput(0, (SoundProducer) lowPassFilter, (byte) 100);
-    }
-
-    // todo Remove overloaded constructor
-    public Synth(int frequency, int resonanceAmount) {
-        this.frequencyGenerator = new FixedFrequencyGenerator();
-        this.generatorMixer = new Mixer(3);
-        /*
-        this.lowHighPassFilter = new LowHighPassFilter(
-                generatorMixer,
-                frequency,
-                LowHighPassFilter.PassType.Lowpass,
-                1f
-        );
-        */
-        this.simpleDecay = new SimpleDecay(generatorMixer, (byte) 1);
-        this.lowPassFilter = new LowPassFilter(simpleDecay, frequency, (byte) resonanceAmount);
-        this.fixedDelay = new FixedDelay(lowPassFilter);
-        // this.fixedDelay = new FixedDelay(generatorMixer);
-        this.outputMixer = new Mixer(1);
-        outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
-    }
-
-    // todo Remove overloaded constructor
-    public Synth(int frequency, boolean hasDistortion) {
-        this.frequencyGenerator = new FixedFrequencyGenerator();
-        this.generatorMixer = new Mixer(3);
-        this.distortion = new Distortion(generatorMixer);
-        /*
-        this.lowHighPassFilter = new LowHighPassFilter(
-                distortion,
-                frequency,
-                LowHighPassFilter.PassType.Lowpass,
-                1f
-        );
-        */
-        // this.lowPassFilter = new LowPassFilter(generatorMixer, frequency);
-        // this.fixedDelay = new FixedDelay(lowPassFilter);
-        this.fixedDelay = new FixedDelay(generatorMixer);
-        this.outputMixer = new Mixer(1);
-        outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
-    }
-
-    // todo Remove overloaded constructor
     public Synth() {
+
+        this.sequencer = new Sequencer();
+        this.sequencer.setSequence(new Note[]{
+                null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+        });
+
         this.frequencyGenerator = new FixedFrequencyGenerator();
-        this.generatorMixer = new Mixer(2);
-        this.fixedDelay = new FixedDelay(generatorMixer);
+
+        this.generatorMixer = new Mixer(4);
+
+        this.simpleDecay = new SimpleDecay(generatorMixer, (byte) 1);
+
+        this.effectsProcessor = new EffectsProcessor(simpleDecay);
+
         this.outputMixer = new Mixer(1);
-        outputMixer.setProducerForInput(0, (SoundProducer) fixedDelay, (byte) 100);
+        outputMixer.setProducerForInput(0, effectsProcessor, (byte) 100);
     }
 
-    public void setGenerator1(Generator generator, float delta) {
-        this.generator1 = generator;
-        // todo Set consumer using index
-        if (delta != 0) {
-            FrequencyShift frequencyShift = new FrequencyShift(delta);
-            frequencyShift.addConsumer((FrequencyConsumer) generator1);
-            frequencyGenerator.addConsumer((FrequencyConsumer) frequencyShift);
-        } else {
-            frequencyGenerator.addConsumer((FrequencyConsumer) generator1);
-        }
-        generatorMixer.setProducerForInput(0, (SoundProducer) generator1, (byte) 25);
-    }
+    public Synth(Sequencer.SequencerTempo tempo) {
 
-    public void setGenerator2(Generator generator, float delta) {
-        this.generator2 = generator;
-        // todo Set consumer using index
-        if (delta != 0) {
-            FrequencyShift frequencyShift = new FrequencyShift(delta);
-            frequencyShift.addConsumer((FrequencyConsumer) generator2);
-            frequencyGenerator.addConsumer((FrequencyConsumer) frequencyShift);
-        } else {
-            frequencyGenerator.addConsumer((FrequencyConsumer) generator2);
-        }
-        generatorMixer.setProducerForInput(1, (SoundProducer) generator2, (byte) 15);
-    }
+        this.sequencer = new Sequencer(tempo);
+        this.sequencer.setSequence(new Note[]{
+                null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+                null, null, null, null,
+        });
 
-    public void setGenerator3(Generator generator, float delta) {
-        this.generator3 = generator;
-        // todo Set consumer using index
-        if (delta != 0) {
-            FrequencyShift frequencyShift = new FrequencyShift(delta);
-            frequencyShift.addConsumer((FrequencyConsumer) generator3);
-            frequencyGenerator.addConsumer((FrequencyConsumer) frequencyShift);
-        } else {
-            frequencyGenerator.addConsumer((FrequencyConsumer) generator3);
-        }
-        generatorMixer.setProducerForInput(2, (SoundProducer) generator3, (byte) 15);
-    }
+        this.frequencyGenerator = new FixedFrequencyGenerator();
 
-    public void setSequencer(Sequencer sequencer) {
-        this.sequencer = sequencer;
+        this.generatorMixer = new Mixer(4);
+
+        this.simpleDecay = new SimpleDecay(generatorMixer, (byte) 1);
+
+        this.effectsProcessor = new EffectsProcessor(simpleDecay);
+
+        this.outputMixer = new Mixer(1);
+        outputMixer.setProducerForInput(0, effectsProcessor, (byte) 100);
+
     }
 
     @Override
     public short[] getSoundChunk() {
 
         if (currentChunk == 1) {
+
             sequencer.advance();
+
             // todo Reset index only when a note changes
+            /*
             if (simpleDecay != null) {
                 simpleDecay.resetIndex();
-                simpleDecay.setDecayLength(sequencer.getCurrentDecayLength());
+                // simpleDecay.setDecayLength(sequencer.getCurrentDecayLength());
+                simpleDecay.setDecayLength(decayLength);
             }
+            */
+            simpleDecay.resetIndex();
+            simpleDecay.setDecayLength(decayLength);
+
             float frequency = sequencer.getCurrentNoteFrequency();
             if (frequency == 0) {
                 frequencyGenerator.clearFrequency();
             } else {
                 frequencyGenerator.setFrequency(frequency);
             }
+
+            /*
             this.lowPassFilter.setFrequency(sequencer.getCurrentNoteLowPassFilterFrequency());
             this.lowPassFilter.setResonanceAmount(sequencer.getCurrentNoteLowPassFilterResonance());
+            */
         }
+
         currentChunk++;
         if (currentChunk > CHUNKS_PER_NOTE) {
             currentChunk = 1;
         }
 
         short[] chunk = new short[BUFFER_SIZE];
-        // todo Use FX Mixer
         System.arraycopy(outputMixer.getSoundChunk(), 0, chunk, 0, BUFFER_SIZE);
+
         return chunk;
     }
 
@@ -195,6 +137,48 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     public void clearFrequency() {
         frequencyGenerator.clearFrequency();
+    }
+
+    public void setSequence(Note[] notes) {
+        this.sequencer.setSequence(notes);
+    }
+
+    public void setGenerator(int index, Generator generator, float delta, byte volume) {
+        assert index >= 0 && index < generators.size();
+        if (index >= generators.size() - 1) {
+            generators.add(index, generator);
+        } else {
+            generators.set(index, generator);
+        }
+        if (delta != 0) {
+            FrequencyShift frequencyShift = new FrequencyShift(delta);
+            frequencyShift.addConsumer((FrequencyConsumer) generator);
+            frequencyGenerator.addConsumer(frequencyShift);
+        } else {
+            frequencyGenerator.addConsumer((FrequencyConsumer) generator);
+        }
+        generatorMixer.setProducerForInput(index, (SoundProducer) generators.get(index), volume);
+    }
+
+    public void setCutoffFrequency(float frequency) {
+        this.effectsProcessor.setCutoffFrequency(frequency);
+    }
+
+    public void setResonance(byte resonance) {
+        this.effectsProcessor.setResonance(resonance);
+    }
+
+    // todo Add delay parameters
+    public void enableDelay() {
+        this.effectsProcessor.enableDelay();
+    }
+
+    public void setDecayLength(byte decayLength) {
+        this.decayLength = decayLength;
+    }
+
+    public void setTempo(Sequencer.SequencerTempo tempo) {
+        this.sequencer.setTempo(tempo);
     }
 
 }
