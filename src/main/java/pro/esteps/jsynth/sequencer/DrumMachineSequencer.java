@@ -4,6 +4,8 @@ public class DrumMachineSequencer {
 
     private DrumMachineNote[] sequence = new DrumMachineNote[16];
 
+    private DrumMachineNote[] nextSequence;
+
     private DrumMachineNote currentNote;
 
     private int currentNoteIndex;
@@ -12,10 +14,16 @@ public class DrumMachineSequencer {
 
     public void setSequence(DrumMachineNote[] sequence) {
         // todo Guard clauses
-        this.sequence = sequence;
+        this.nextSequence = sequence;
     }
 
     public void advance() {
+        if (currentNoteIndex == 0) {
+            if (nextSequence != null) {
+                System.arraycopy(nextSequence, 0,sequence, 0, nextSequence.length);
+                nextSequence = null;
+            }
+        }
         DrumMachineNote note = sequence[currentNoteIndex++];
         if (currentNoteIndex >= sequence.length) {
             currentNoteIndex = 0;

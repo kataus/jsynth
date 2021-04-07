@@ -8,6 +8,8 @@ public class Sequencer {
 
     private Note[] sequence = new Note[16];
 
+    private Note[] nextSequence;
+
     private final NoteParser noteParser;
 
     private Note currentNote;
@@ -34,7 +36,7 @@ public class Sequencer {
 
     public void setSequence(Note[] sequence) {
         // todo Guard clauses
-        this.sequence = sequence;
+        this.nextSequence = sequence;
     }
 
     public Sequencer() {
@@ -50,6 +52,12 @@ public class Sequencer {
     public void advance() {
 
         if (currentTempoIndex++ == 0) {
+            if (currentNoteIndex == 0) {
+                if (nextSequence != null) {
+                    System.arraycopy(nextSequence, 0,sequence, 0, nextSequence.length);
+                    nextSequence = null;
+                }
+            }
             Note note = sequence[currentNoteIndex++];
             if (currentNoteIndex >= sequence.length) {
                 currentNoteIndex = 0;
