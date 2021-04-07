@@ -38,7 +38,7 @@ public class TestConsole {
             List<Synth> synths = new ArrayList<>();
 
             for (byte i = 0; i < 4; i++) {
-                if (i == 0) {
+                if (i == 0 || i == 3) {
                     // todo Sync tempo bet
                     synths.add(i, new Synth(Sequencer.SequencerTempo.QUARTER));
                 } else {
