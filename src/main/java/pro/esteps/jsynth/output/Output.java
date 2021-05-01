@@ -1,5 +1,6 @@
 package pro.esteps.jsynth.output;
 
+import pro.esteps.jsynth.api.server.SynthServer;
 import pro.esteps.jsynth.contract.SoundProducer;
 
 import javax.sound.sampled.AudioFormat;
@@ -14,6 +15,9 @@ import static pro.esteps.jsynth.App.SAMPLE_RATE;
 
 public class Output implements Runnable {
 
+    // todo Duplicate code
+    private static final int CHUNKS_PER_NOTE = 5;
+
     private static final AudioFormat FORMAT = new AudioFormat(
             AudioFormat.Encoding.PCM_SIGNED,
             SAMPLE_RATE,
@@ -25,9 +29,11 @@ public class Output implements Runnable {
     );
 
     private final SoundProducer producer;
+    private final SynthServer webSocketServer;
 
-    public Output(SoundProducer producer) {
+    public Output(SoundProducer producer, SynthServer webSocketServer) {
         this.producer = producer;
+        this.webSocketServer = webSocketServer;
     }
 
     // todo Process interrupts
@@ -44,6 +50,8 @@ public class Output implements Runnable {
 
             ByteBuffer bb = ByteBuffer.allocate(2);
 
+            int counter = 0;
+            int tickIndex = 0;
             do {
                 short[] chunk = producer.getSoundChunk();
                 for (int i = 0; i < BUFFER_SIZE; i++) {
@@ -52,6 +60,16 @@ public class Output implements Runnable {
                     buffer[i * 2] = bb.get(1);
                 }
                 soundLine.write(buffer, 0, BUFFER_SIZE * 2);
+                if (counter == 0) {
+                    webSocketServer.sendMessage("tick " + tickIndex++);
+                    if (tickIndex == 16) {
+                        tickIndex = 0;
+                    }
+                }
+                counter++;
+                if (counter == CHUNKS_PER_NOTE) {
+                    counter = 0;
+                }
             } while (true);
 
         } catch (LineUnavailableException e) {
