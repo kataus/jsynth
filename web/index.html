@@ -10,7 +10,29 @@
 <body>
 <main>
     <div id="app">
-        <input type="text" v-model="message">
+
+        <div>
+            <label for="synth">Synth</label>
+            <input id="synth" type="text" v-model="synth">
+        </div>
+        <div>
+            <label for="oscillator">Oscillator</label>
+            <input id="oscillator" type="text" v-model.number="oscillator">
+        </div>
+        <div>
+            <label for="waveform">Waveform</label>
+            <input id="waveform" type="text" v-model="waveform">
+        </div>
+        <div>
+            <label for="volume">Volume</label>
+            <input id="volume" type="text" v-model.number="volume">
+        </div>
+        <div>
+            <label for="tune">Tune</label>
+            <input id="tune" type="text" v-model.number="tune">
+        </div>
+
+
         <button type="button" @click="sendMessage">Send</button>
     </div>
 </main>
@@ -20,12 +42,25 @@
     const app = new Vue({
         el: '#app',
         data: {
-            message: ''
+            synth: 's1',
+            oscillator: 0,
+            waveform: 'sine',
+            volume: 25,
+            tune: 0
         },
         methods: {
-            sendMessage: function() {
-                console.log(this.message);
-                exampleSocket.send(this.message)
+            sendMessage: function () {
+                const data = {
+                    synth: this.synth,
+                    oscillator: {
+                        index: this.oscillator,
+                        waveform: this.waveform,
+                        volume: this.volume,
+                        tune: this.tune
+                    }
+                }
+                console.log(data);
+                exampleSocket.send(JSON.stringify(data));
             }
         }
     })

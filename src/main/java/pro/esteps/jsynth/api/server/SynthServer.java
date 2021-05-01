@@ -5,9 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import pro.esteps.jsynth.api.input.SequencerMessage;
+import pro.esteps.jsynth.api.output.TickMessage;
 import pro.esteps.jsynth.pubsub.broker.MessageBroker;
 import pro.esteps.jsynth.pubsub.message.Message;
-import pro.esteps.jsynth.pubsub.message.OutboundWebMessage;
 import pro.esteps.jsynth.pubsub.subscriber.Subscriber;
 
 import java.net.InetSocketAddress;
@@ -42,6 +43,13 @@ public class SynthServer extends WebSocketServer implements Subscriber {
     @Override
     public void onMessage(WebSocket conn, String message) {
         System.out.println(conn + ": " + message);
+        try {
+            SequencerMessage sequencerMessage = objectMapper.readValue(message, SequencerMessage.class);
+            messageBroker.publish(sequencerMessage);
+        } catch (JsonProcessingException e) {
+            // todo Обработка исключений
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -58,7 +66,7 @@ public class SynthServer extends WebSocketServer implements Subscriber {
 
     @Override
     public void onMessage(Message message) {
-        if (message instanceof OutboundWebMessage) {
+        if (message instanceof TickMessage) {
             // todo Обработка ситуации, когда текущее соединение отсутствует
             if (currentConn != null) {
                 try {

@@ -1,11 +1,11 @@
 package pro.esteps.jsynth.api.output;
 
-import pro.esteps.jsynth.pubsub.message.OutboundWebMessage;
+import pro.esteps.jsynth.pubsub.message.Message;
 
 /**
  * Сообщение, которое отправляется при каждом изменении текущей ноты в секвенсоре.
  */
-public class TickMessage implements OutboundWebMessage {
+public class TickMessage implements Message {
 
     private int tick;
 
