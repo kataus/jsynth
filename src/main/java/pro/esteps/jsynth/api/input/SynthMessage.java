@@ -90,7 +90,7 @@ public class SynthMessage extends Message {
         }
     }
 
-    private int synth;
+    private int index;
     private Oscillator[] oscillators;
     @JsonProperty("has_decay")
     private boolean hasDecay;
@@ -104,8 +104,8 @@ public class SynthMessage extends Message {
         return type;
     }
 
-    public int getSynth() {
-        return synth;
+    public int getIndex() {
+        return index;
     }
 
     public Oscillator[] getOscillators() {

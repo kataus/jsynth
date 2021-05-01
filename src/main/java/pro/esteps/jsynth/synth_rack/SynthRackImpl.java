@@ -8,10 +8,7 @@ import pro.esteps.jsynth.output.Output;
 import pro.esteps.jsynth.pubsub.broker.MessageBroker;
 import pro.esteps.jsynth.pubsub.message.Message;
 import pro.esteps.jsynth.pubsub.subscriber.Subscriber;
-import pro.esteps.jsynth.sequencer.EmptyNote;
-import pro.esteps.jsynth.sequencer.Note;
-import pro.esteps.jsynth.sequencer.Sequencer;
-import pro.esteps.jsynth.sequencer.SynthNote;
+import pro.esteps.jsynth.sequencer.*;
 import pro.esteps.jsynth.synth.Synth;
 import pro.esteps.jsynth.wave_generator.*;
 
@@ -100,11 +97,12 @@ public class SynthRackImpl implements SynthRack, Subscriber {
         }
         if (message instanceof DrumMachineMessage) {
             // todo
+            handleDrumMachineMessage((DrumMachineMessage) message);
         }
     }
 
     private void handleSynthMessage(SynthMessage message) {
-        Synth synth = synths.get(message.getSynth());
+        Synth synth = synths.get(message.getIndex());
 
         // Oscillators
         // todo Change existing generator settings instead of replacing it
@@ -172,6 +170,21 @@ public class SynthRackImpl implements SynthRack, Subscriber {
             synth.enableDelay();
         }
 
+    }
+
+    private void handleDrumMachineMessage(DrumMachineMessage message){
+        DrumMachine drumMachine = drumMachines.get(message.getIndex());
+
+        // Sequence
+        DrumMachineNote[] notes = new DrumMachineNote[16];
+        DrumMachineNote note;
+        int i = 0;
+        for (var inputNote : message.getSequence()) {
+            note = new DrumMachineNote(inputNote.getSamples());
+            notes[i++] = note;
+        }
+
+        drumMachine.setSequence(notes);
     }
 
 }

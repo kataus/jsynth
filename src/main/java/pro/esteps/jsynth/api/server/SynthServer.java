@@ -51,7 +51,7 @@ public class SynthServer extends WebSocketServer implements Subscriber {
             if (messageObject.getType().equals("synth")) {
                 messageToPublish = objectMapper.readValue(message, SynthMessage.class);
             }
-            if (messageObject.getType().equals("drum")) {
+            if (messageObject.getType().equals("drumMachine")) {
                 messageToPublish = objectMapper.readValue(message, DrumMachineMessage.class);
             }
             // todo Handle possible null value for messageToPublish

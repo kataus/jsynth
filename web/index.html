@@ -11,7 +11,7 @@
 <main>
     <div id="app">
 
-        <div style="margin: 20px 0;" v-for="(synth, synthIndex) in synths" :key="synthIndex">
+        <div style="margin: 20px 0;" v-for="(synth, synthIndex) in synths" :key="'s' + synthIndex">
 
             <h2>Synth {{ synthIndex }}</h2>
 
@@ -58,7 +58,27 @@
                 <input type="text" v-model="synths[synthIndex].sequence[noteIndex].note">
             </div>
 
-            <button type="button" @click="sendSynthMessage(synthIndex)">Send message for synth {{ synthIndex }}</button>
+            <button type="button" @click="sendSynthMessage(synthIndex)">Send message to synth {{ synthIndex }}</button>
+
+            <hr>
+        </div>
+
+        <div style="margin: 20px 0;" v-for="(drumMachine, drumMachineIndex) in drumMachines" :key="'d' + drumMachineIndex">
+
+            <h2>Drum machine {{ drumMachineIndex }}</h2>
+
+            <h3>Sequence</h3>
+            <div style="margin: 10px 0;" v-for="(item, noteIndex) in drumMachine.sequence" :key="noteIndex">
+                <label>Note {{ noteIndex }}</label>
+                <input type="text" v-model="drumMachines[drumMachineIndex].sequence[noteIndex].samples[0]">
+                <input type="text" v-model="drumMachines[drumMachineIndex].sequence[noteIndex].samples[1]">
+                <input type="text" v-model="drumMachines[drumMachineIndex].sequence[noteIndex].samples[2]">
+                <input type="text" v-model="drumMachines[drumMachineIndex].sequence[noteIndex].samples[3]">
+            </div>
+
+            <button type="button" @click="sendDrumMachineMessage(drumMachineIndex)">Send message to drum machine {{
+                drumMachineIndex }}
+            </button>
 
             <hr>
         </div>
@@ -259,16 +279,59 @@
                         {isEmpty: true, note: ''},
                         {isEmpty: true, note: ''}
                     ]
+                }
+            ],
+            drumMachines: [
+                // Drum machine 0
+                {
+                    sequence: [
+                        {samples: ['kick', 'hihat-closed', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['hihat-closed', '', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['snare', 'hihat-closed', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['hihat-closed', '', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['', '', '', '']},
+                    ]
                 },
+                // Drum machine 1
+                {
+                    sequence: [
+                        {samples: ['hihat-closed', '', '', '']},
+                        {samples: ['hihat-semiopen', '', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['hihat-closed', '', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['hihat-semiopen', '', '', '']},
+                        {samples: ['hihat-open', 'clap', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['hihat-closed', '', '', '']},
+                        {samples: ['hihat-semiopen', '', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['hihat-closed', 'clap', '', '']},
+                        {samples: ['', '', '', '']},
+                        {samples: ['hihat-semiopen', '', '', '']},
+                        {samples: ['hihat-open', 'cricket', '', '']},
+                        {samples: ['', '', '', '']},
+                    ]
+                }
             ]
         },
         methods: {
-            sendSynthMessage: function (synthIndex) {
-                const synth = this.synths[synthIndex];
-                console.log(synth);
+            sendSynthMessage: function (index) {
+                const synth = this.synths[index];
                 const data = {
                     type: 'synth',
-                    synth: synthIndex,
+                    index: index,
                     oscillators: synth.oscillators,
                     has_decay: synth.hasDecay === 1,
                     has_delay: synth.hasDelay === 1,
@@ -276,8 +339,15 @@
                     resonance: synth.resonance,
                     sequence: synth.sequence
                 }
-
-                console.log(data);
+                exampleSocket.send(JSON.stringify(data));
+            },
+            sendDrumMachineMessage: function (index) {
+                const drumMachine = this.drumMachines[index];
+                const data = {
+                    type: 'drumMachine',
+                    index: index,
+                    sequence: drumMachine.sequence
+                }
                 exampleSocket.send(JSON.stringify(data));
             }
         }

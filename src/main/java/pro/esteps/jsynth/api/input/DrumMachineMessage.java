@@ -26,18 +26,18 @@ public class DrumMachineMessage extends Message {
 
     }
 
-    private String drumMachine;
-    private Note sequence;
+    private int index;
+    private Note[] sequence;
 
     public String getType() {
         return type;
     }
 
-    public String getDrumMachine() {
-        return drumMachine;
+    public int getIndex() {
+        return index;
     }
 
-    public Note getSequence() {
+    public Note[] getSequence() {
         return sequence;
     }
 
