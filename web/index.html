@@ -31,7 +31,30 @@
             <label for="tune">Tune</label>
             <input id="tune" type="text" v-model.number="tune">
         </div>
+        <div>
+            <label for="hasDecay">Has decay</label>
+            <input id="hasDecay" type="text" v-model.number="hasDecay">
+        </div>
+        <div>
+            <label for="hasDelay">Has delay</label>
+            <input id="hasDelay" type="text" v-model.number="hasDelay">
+        </div>
+        <div>
+            <label for="cutoff">Cutoff</label>
+            <input id="cutoff" type="text" v-model.number="cutoff">
+        </div>
+        <div>
+            <label for="resonance">Resonance</label>
+            <input id="resonance" type="text" v-model.number="resonance">
+        </div>
 
+        <h2>Sequence</h2>
+
+        <div style="margin: 10px 0;" v-for="(item, index) in sequence" :key="index">
+            <label>Note {{ index + 1 }}</label>
+            <input type="text" v-model="sequence[index].key">
+            <input type="text" v-model="sequence[index].octave">
+        </div>
 
         <button type="button" @click="sendMessage">Send</button>
     </div>
@@ -46,7 +69,29 @@
             oscillator: 0,
             waveform: 'sine',
             volume: 25,
-            tune: 0
+            tune: 0,
+            hasDecay: 0,
+            hasDelay: 0,
+            cutoff: 20000,
+            resonance: 0,
+            sequence: [
+                {isEmpty: false, key: 'd', octave: 3, isSharp: false},
+                {isEmpty: false, key: 'a', octave: 3, isSharp: false},
+                {isEmpty: false, key: 'f', octave: 5, isSharp: false},
+                {isEmpty: false, key: 'd', octave: 3, isSharp: false},
+                {isEmpty: false, key: 'a', octave: 3, isSharp: false},
+                {isEmpty: false, key: 'e', octave: 5, isSharp: false},
+                {isEmpty: false, key: 'd', octave: 3, isSharp: false},
+                {isEmpty: false, key: 'a', octave: 3, isSharp: false},
+                {isEmpty: false, key: 'd', octave: 5, isSharp: false},
+                {isEmpty: false, key: 'd', octave: 3, isSharp: false},
+                {isEmpty: false, key: 'a', octave: 3, isSharp: false},
+                {isEmpty: false, key: 'c', octave: 5, isSharp: false},
+                {isEmpty: false, key: 'd', octave: 3, isSharp: false},
+                {isEmpty: false, key: 'a', octave: 4, isSharp: false},
+                {isEmpty: false, key: 'c', octave: 5, isSharp: false},
+                {isEmpty: false, key: 'c', octave: 5, isSharp: false}
+            ]
         },
         methods: {
             sendMessage: function () {
@@ -58,8 +103,14 @@
                         waveform: this.waveform,
                         volume: this.volume,
                         tune: this.tune
-                    }
+                    },
+                    hasDecay: this.hasDecay === 1,
+                    hasDelay: this.hasDelay === 1,
+                    cutoff: this.cutoff,
+                    resonance: this.resonance,
+                    sequence: this.sequence
                 }
+
                 console.log(data);
                 exampleSocket.send(JSON.stringify(data));
             }
