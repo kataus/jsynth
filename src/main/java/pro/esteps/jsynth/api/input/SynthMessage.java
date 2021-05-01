@@ -108,9 +108,14 @@ public class SynthMessage implements Message {
 
     public static class Note {
 
+        private boolean isEmpty;
         private Key key;
         private boolean isSharp;
         private int octave;
+
+        public boolean isEmpty() {
+            return isEmpty;
+        }
 
         public Key getKey() {
             return key;
@@ -123,6 +128,7 @@ public class SynthMessage implements Message {
         public int getOctave() {
             return octave;
         }
+
     }
 
     // todo Use enum
