@@ -11,52 +11,58 @@
 <main>
     <div id="app">
 
-        <div>
-            <label for="synth">Synth</label>
-            <input id="synth" type="text" v-model="synth">
-        </div>
-        <div>
-            <label for="oscillator">Oscillator</label>
-            <input id="oscillator" type="text" v-model.number="oscillator">
-        </div>
-        <div>
-            <label for="waveform">Waveform</label>
-            <input id="waveform" type="text" v-model="waveform">
-        </div>
-        <div>
-            <label for="volume">Volume</label>
-            <input id="volume" type="text" v-model.number="volume">
-        </div>
-        <div>
-            <label for="tune">Tune</label>
-            <input id="tune" type="text" v-model.number="tune">
-        </div>
-        <div>
-            <label for="hasDecay">Has decay</label>
-            <input id="hasDecay" type="text" v-model.number="hasDecay">
-        </div>
-        <div>
-            <label for="hasDelay">Has delay</label>
-            <input id="hasDelay" type="text" v-model.number="hasDelay">
-        </div>
-        <div>
-            <label for="cutoff">Cutoff</label>
-            <input id="cutoff" type="text" v-model.number="cutoff">
-        </div>
-        <div>
-            <label for="resonance">Resonance</label>
-            <input id="resonance" type="text" v-model.number="resonance">
+        <div style="margin: 20px 0;" v-for="(synth, synthIndex) in synths" :key="synthIndex">
+
+            <h2>Synth {{ synthIndex }}</h2>
+
+            <h3>Oscillators</h3>
+            <div style="overflow:hidden;">
+                <div v-for="(oscillator, oscillatorIndex) in synth.oscillators" style="width: 300px; float:left;">
+                    <h4>Oscillator {{ oscillatorIndex }}</h4>
+                    <div>
+                        <label>Waveform</label>
+                        <input type="text" v-model="synths[synthIndex].oscillators[oscillatorIndex].waveform">
+                    </div>
+                    <div>
+                        <label>Volume</label>
+                        <input type="text" v-model.number="synths[synthIndex].oscillators[oscillatorIndex].volume">
+                    </div>
+                    <div>
+                        <label>Tune</label>
+                        <input type="text" v-model.number="synths[synthIndex].oscillators[oscillatorIndex].tune">
+                    </div>
+                </div>
+            </div>
+
+            <h3>Effects</h3>
+            <div>
+                <label>Has decay</label>
+                <input type="text" v-model.number="synths[synthIndex].hasDecay">
+            </div>
+            <div>
+                <label>Has delay</label>
+                <input type="text" v-model.number="synths[synthIndex].hasDelay">
+            </div>
+            <div>
+                <label>Cutoff</label>
+                <input type="text" v-model.number="synths[synthIndex].cutoff">
+            </div>
+            <div>
+                <label>Resonance</label>
+                <input type="text" v-model.number="synths[synthIndex].resonance">
+            </div>
+
+            <h3>Sequence</h3>
+            <div style="margin: 10px 0;" v-for="(item, noteIndex) in synth.sequence" :key="noteIndex">
+                <label>Note {{ noteIndex }}</label>
+                <input type="text" v-model="synths[synthIndex].sequence[noteIndex].note">
+            </div>
+
+            <button type="button" @click="sendSynthMessage(synthIndex)">Send message for synth {{ synthIndex }}</button>
+
+            <hr>
         </div>
 
-        <h2>Sequence</h2>
-
-        <div style="margin: 10px 0;" v-for="(item, index) in sequence" :key="index">
-            <label>Note {{ index + 1 }}</label>
-            <input type="text" v-model="sequence[index].key">
-            <input type="text" v-model="sequence[index].octave">
-        </div>
-
-        <button type="button" @click="sendMessage">Send</button>
     </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -65,50 +71,210 @@
     const app = new Vue({
         el: '#app',
         data: {
-            synth: 's1',
-            oscillator: 0,
-            waveform: 'sine',
-            volume: 25,
-            tune: 0,
-            hasDecay: 0,
-            hasDelay: 0,
-            cutoff: 20000,
-            resonance: 0,
-            sequence: [
-                {isEmpty: false, key: 'd', octave: 3, isSharp: false},
-                {isEmpty: false, key: 'a', octave: 3, isSharp: false},
-                {isEmpty: false, key: 'f', octave: 5, isSharp: false},
-                {isEmpty: false, key: 'd', octave: 3, isSharp: false},
-                {isEmpty: false, key: 'a', octave: 3, isSharp: false},
-                {isEmpty: false, key: 'e', octave: 5, isSharp: false},
-                {isEmpty: false, key: 'd', octave: 3, isSharp: false},
-                {isEmpty: false, key: 'a', octave: 3, isSharp: false},
-                {isEmpty: false, key: 'd', octave: 5, isSharp: false},
-                {isEmpty: false, key: 'd', octave: 3, isSharp: false},
-                {isEmpty: false, key: 'a', octave: 3, isSharp: false},
-                {isEmpty: false, key: 'c', octave: 5, isSharp: false},
-                {isEmpty: false, key: 'd', octave: 3, isSharp: false},
-                {isEmpty: false, key: 'a', octave: 4, isSharp: false},
-                {isEmpty: false, key: 'c', octave: 5, isSharp: false},
-                {isEmpty: false, key: 'c', octave: 5, isSharp: false}
+            synths: [
+                // Synth 0
+                {
+                    oscillators: [
+                        {
+                            waveform: 'square',
+                            volume: 25,
+                            tune: 0
+                        },
+                        {
+                            waveform: 'square',
+                            volume: 15,
+                            tune: 1
+                        },
+                        {
+                            waveform: 'sine',
+                            volume: 0,
+                            tune: 0
+                        },
+                        {
+                            waveform: 'sine',
+                            volume: 0,
+                            tune: 0
+                        },
+                    ],
+                    hasDecay: 0,
+                    hasDelay: 0,
+                    cutoff: 20000,
+                    resonance: 0,
+                    sequence: [
+                        {isEmpty: false, note: 'd2'},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: false, note: 'g2'},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: false, note: 'a#1'},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                    ]
+                },
+                // Synth 1
+                {
+                    oscillators: [
+                        {
+                            waveform: 'saw',
+                            volume: 25,
+                            tune: 0
+                        },
+                        {
+                            waveform: 'saw',
+                            volume: 10,
+                            tune: 1
+                        },
+                        {
+                            waveform: 'triangle',
+                            volume: 0,
+                            tune: 101
+                        },
+                        {
+                            waveform: 'sine',
+                            volume: 0,
+                            tune: 0
+                        },
+                    ],
+                    hasDecay: 0,
+                    hasDelay: 0,
+                    cutoff: 20000,
+                    resonance: 0,
+                    sequence: [
+                        {isEmpty: false, note: 'd3'},
+                        {isEmpty: false, note: 'a3'},
+                        {isEmpty: false, note: 'f5'},
+                        {isEmpty: false, note: 'd3'},
+                        {isEmpty: false, note: 'a3'},
+                        {isEmpty: false, note: 'e5'},
+                        {isEmpty: false, note: 'd3'},
+                        {isEmpty: false, note: 'a3'},
+                        {isEmpty: false, note: 'd5'},
+                        {isEmpty: false, note: 'd3'},
+                        {isEmpty: false, note: 'a3'},
+                        {isEmpty: false, note: 'c5'},
+                        {isEmpty: false, note: 'd3'},
+                        {isEmpty: false, note: 'a4'},
+                        {isEmpty: false, note: 'c5'},
+                        {isEmpty: false, note: 'd5'}
+                    ]
+                },
+                // Synth 2
+                {
+                    oscillators: [
+                        {
+                            waveform: 'sine',
+                            volume: 0,
+                            tune: 0
+                        },
+                        {
+                            waveform: 'sine',
+                            volume: 0,
+                            tune: 0
+                        },
+                        {
+                            waveform: 'sine',
+                            volume: 0,
+                            tune: 0
+                        },
+                        {
+                            waveform: 'sine',
+                            volume: 0,
+                            tune: 0
+                        },
+                    ],
+                    hasDecay: 0,
+                    hasDelay: 0,
+                    cutoff: 20000,
+                    resonance: 0,
+                    sequence: [
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''}
+                    ]
+                },
+                // Synth 3
+                {
+                    oscillators: [
+                        {
+                            waveform: 'sine',
+                            volume: 0,
+                            tune: 0
+                        },
+                        {
+                            waveform: 'sine',
+                            volume: 0,
+                            tune: 0
+                        },
+                        {
+                            waveform: 'sine',
+                            volume: 0,
+                            tune: 0
+                        },
+                        {
+                            waveform: 'sine',
+                            volume: 0,
+                            tune: 0
+                        },
+                    ],
+                    hasDecay: 0,
+                    hasDelay: 0,
+                    cutoff: 20000,
+                    resonance: 0,
+                    sequence: [
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''},
+                        {isEmpty: true, note: ''}
+                    ]
+                },
             ]
         },
         methods: {
-            sendMessage: function () {
+            sendSynthMessage: function (synthIndex) {
+                const synth = this.synths[synthIndex];
+                console.log(synth);
                 const data = {
                     type: 'synth',
-                    synth: this.synth,
-                    oscillator: {
-                        index: this.oscillator,
-                        waveform: this.waveform,
-                        volume: this.volume,
-                        tune: this.tune
-                    },
-                    hasDecay: this.hasDecay === 1,
-                    hasDelay: this.hasDelay === 1,
-                    cutoff: this.cutoff,
-                    resonance: this.resonance,
-                    sequence: this.sequence
+                    synth: synthIndex,
+                    oscillators: synth.oscillators,
+                    hasDecay: synth.hasDecay === 1,
+                    hasDelay: synth.hasDelay === 1,
+                    cutoff: synth.cutoff,
+                    resonance: synth.resonance,
+                    sequence: synth.sequence
                 }
 
                 console.log(data);
