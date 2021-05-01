@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import pro.esteps.jsynth.api.input.DrumMachineMessage;
 import pro.esteps.jsynth.api.input.SynthMessage;
 import pro.esteps.jsynth.api.output.TickMessage;
 import pro.esteps.jsynth.pubsub.broker.MessageBroker;
@@ -44,10 +45,19 @@ public class SynthServer extends WebSocketServer implements Subscriber {
     public void onMessage(WebSocket conn, String message) {
         System.out.println(conn + ": " + message);
         try {
-            SynthMessage synthMessage = objectMapper.readValue(message, SynthMessage.class);
-            messageBroker.publish(synthMessage);
+            // todo Naming!
+            Message messageObject = objectMapper.readValue(message, Message.class);
+            Message messageToPublish = null;
+            if (messageObject.getType().equals("synth")) {
+                messageToPublish = objectMapper.readValue(message, SynthMessage.class);
+            }
+            if (messageObject.getType().equals("drum")) {
+                messageToPublish = objectMapper.readValue(message, DrumMachineMessage.class);
+            }
+            // todo Handle possible null value for messageToPublish
+            messageBroker.publish(messageToPublish);
         } catch (JsonProcessingException e) {
-            // todo Обработка исключений
+            // todo Handle exception
             e.printStackTrace();
         }
     }
@@ -67,14 +77,14 @@ public class SynthServer extends WebSocketServer implements Subscriber {
     @Override
     public void onMessage(Message message) {
         if (message instanceof TickMessage) {
-            // todo Обработка ситуации, когда текущее соединение отсутствует
+            // todo Handle possible null value for currentConn
             if (currentConn != null) {
                 try {
                     String json = objectMapper.writeValueAsString(message);
                     currentConn.send(json);
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
-                    // todo Обработка исключения
+                    // todo Handle exception
                 }
             }
         }

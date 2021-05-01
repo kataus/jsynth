@@ -2,7 +2,14 @@ package pro.esteps.jsynth.api.input;
 
 import pro.esteps.jsynth.pubsub.message.Message;
 
-public class DrumMachineMessage implements Message {
+public class DrumMachineMessage extends Message {
+
+    public DrumMachineMessage() {
+    }
+
+    protected DrumMachineMessage(String type) {
+        super(type);
+    }
 
     public static class Note {
 
@@ -19,8 +26,6 @@ public class DrumMachineMessage implements Message {
 
     }
 
-    // todo Use enum
-    private String type;
     private String drumMachine;
     private Note sequence;
 

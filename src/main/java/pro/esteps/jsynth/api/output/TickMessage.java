@@ -5,14 +5,12 @@ import pro.esteps.jsynth.pubsub.message.Message;
 /**
  * Сообщение, которое отправляется при каждом изменении текущей ноты в секвенсоре.
  */
-public class TickMessage implements Message {
+public class TickMessage extends Message {
 
-    // todo Use enum
-    private String type;
     private int tick;
 
     public TickMessage(int tick) {
-        this.type = "tick";
+        super("tick");
         this.tick = tick;
     }
 

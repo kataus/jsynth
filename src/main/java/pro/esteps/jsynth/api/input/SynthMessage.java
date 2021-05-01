@@ -7,7 +7,14 @@ import pro.esteps.jsynth.pubsub.message.Message;
 /**
  * Сообщение, которое приходит при каждом изменении в веб-секвенсоре.
  */
-public class SynthMessage implements Message {
+public class SynthMessage extends Message {
+
+    public SynthMessage() {
+    }
+
+    protected SynthMessage(String type) {
+        super(type);
+    }
 
     public enum Waveform {
 
@@ -131,8 +138,6 @@ public class SynthMessage implements Message {
 
     }
 
-    // todo Use enum
-    private String type;
     private String synth;
     private Oscillator oscillator;
     private boolean hasDecay;

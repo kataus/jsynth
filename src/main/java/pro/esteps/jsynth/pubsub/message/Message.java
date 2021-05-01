@@ -1,7 +1,18 @@
 package pro.esteps.jsynth.pubsub.message;
 
-/**
- * Маркерный интерфейс сообщения.
- */
-public interface Message {
+public class Message {
+
+    public Message() {
+    }
+
+    // todo Use enum
+    protected String type;
+
+    protected Message(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
 }

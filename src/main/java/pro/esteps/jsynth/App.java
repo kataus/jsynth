@@ -1,5 +1,6 @@
 package pro.esteps.jsynth;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pro.esteps.jsynth.api.server.SynthServer;
 import pro.esteps.jsynth.console.TestConsole;
@@ -32,7 +33,9 @@ public class App {
     public static void main(String[] args) throws IOException {
 
         MessageBroker messageBroker = MessageBrokerImpl.getInstance();
+
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         String host = "localhost";
         int port = 8887;
