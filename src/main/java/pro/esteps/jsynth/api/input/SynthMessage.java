@@ -1,6 +1,7 @@
 package pro.esteps.jsynth.api.input;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import pro.esteps.jsynth.pubsub.message.Message;
 
@@ -91,7 +92,9 @@ public class SynthMessage extends Message {
 
     private int synth;
     private Oscillator[] oscillators;
+    @JsonProperty("has_decay")
     private boolean hasDecay;
+    @JsonProperty("has_delay")
     private boolean hasDelay;
     private int cutoff;
     private int resonance;
@@ -109,11 +112,11 @@ public class SynthMessage extends Message {
         return oscillators;
     }
 
-    public boolean isHasDecay() {
+    public boolean hasDecay() {
         return hasDecay;
     }
 
-    public boolean isHasDelay() {
+    public boolean hasDelay() {
         return hasDelay;
     }
 

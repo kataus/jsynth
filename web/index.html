@@ -98,7 +98,7 @@
                     ],
                     hasDecay: 0,
                     hasDelay: 0,
-                    cutoff: 20000,
+                    cutoff: 600,
                     resonance: 0,
                     sequence: [
                         {isEmpty: false, note: 'd2'},
@@ -134,7 +134,7 @@
                         },
                         {
                             waveform: 'triangle',
-                            volume: 0,
+                            volume: 10,
                             tune: 101
                         },
                         {
@@ -143,10 +143,10 @@
                             tune: 0
                         },
                     ],
-                    hasDecay: 0,
-                    hasDelay: 0,
-                    cutoff: 20000,
-                    resonance: 0,
+                    hasDecay: 1,
+                    hasDelay: 1,
+                    cutoff: 1200,
+                    resonance: 100,
                     sequence: [
                         {isEmpty: false, note: 'd3'},
                         {isEmpty: false, note: 'a3'},
@@ -270,8 +270,8 @@
                     type: 'synth',
                     synth: synthIndex,
                     oscillators: synth.oscillators,
-                    hasDecay: synth.hasDecay === 1,
-                    hasDelay: synth.hasDelay === 1,
+                    has_decay: synth.hasDecay === 1,
+                    has_delay: synth.hasDelay === 1,
                     cutoff: synth.cutoff,
                     resonance: synth.resonance,
                     sequence: synth.sequence

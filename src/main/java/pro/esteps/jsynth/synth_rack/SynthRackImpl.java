@@ -110,7 +110,7 @@ public class SynthRackImpl implements SynthRack, Subscriber {
         // todo Change existing generator settings instead of replacing it
 
         var oscillatorMessages = message.getOscillators();
-        for (int i = 0; i < 4 ; i++) {
+        for (int i = 0; i < 4; i++) {
 
             Generator generator = null;
 
@@ -137,8 +137,6 @@ public class SynthRackImpl implements SynthRack, Subscriber {
             );
         }
 
-
-
         // Sequence
 
         Note[] notes = new Note[16];
@@ -156,6 +154,23 @@ public class SynthRackImpl implements SynthRack, Subscriber {
 
         synth.setSequence(notes);
 
+        // Effects
+        // todo Change existing values instead of replacing them
+
+        synth.setCutoffFrequency(message.getCutoff());
+
+        synth.setResonance((byte) message.getResonance());
+
+        if (message.hasDecay()) {
+            synth.setDecayLength((byte) 1);
+        } else {
+            synth.setDecayLength((byte) 0);
+        }
+
+        // todo Disable delay
+        if (message.hasDelay()) {
+            synth.enableDelay();
+        }
 
     }
 
