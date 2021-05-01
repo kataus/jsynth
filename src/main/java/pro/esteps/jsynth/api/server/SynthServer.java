@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import pro.esteps.jsynth.api.input.SequencerMessage;
+import pro.esteps.jsynth.api.input.SynthMessage;
 import pro.esteps.jsynth.api.output.TickMessage;
 import pro.esteps.jsynth.pubsub.broker.MessageBroker;
 import pro.esteps.jsynth.pubsub.message.Message;
@@ -44,8 +44,8 @@ public class SynthServer extends WebSocketServer implements Subscriber {
     public void onMessage(WebSocket conn, String message) {
         System.out.println(conn + ": " + message);
         try {
-            SequencerMessage sequencerMessage = objectMapper.readValue(message, SequencerMessage.class);
-            messageBroker.publish(sequencerMessage);
+            SynthMessage synthMessage = objectMapper.readValue(message, SynthMessage.class);
+            messageBroker.publish(synthMessage);
         } catch (JsonProcessingException e) {
             // todo Обработка исключений
             e.printStackTrace();
