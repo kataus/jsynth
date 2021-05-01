@@ -6,6 +6,9 @@ import pro.esteps.jsynth.api.server.SynthServer;
 import pro.esteps.jsynth.console.TestConsole;
 import pro.esteps.jsynth.pubsub.broker.MessageBroker;
 import pro.esteps.jsynth.pubsub.broker.MessageBrokerImpl;
+import pro.esteps.jsynth.pubsub.subscriber.Subscriber;
+import pro.esteps.jsynth.synth_rack.SynthRack;
+import pro.esteps.jsynth.synth_rack.SynthRackImpl;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -41,13 +44,19 @@ public class App {
         int port = 8887;
         SynthServer server = new SynthServer(new InetSocketAddress(host, port), objectMapper, messageBroker);
 
-        messageBroker.addSubscriber(server);
+        SynthRack synthRack = SynthRackImpl.getInstance(messageBroker);
 
+        messageBroker.addSubscriber(server);
+        messageBroker.addSubscriber((Subscriber) synthRack);
+
+        /*
         Thread thread = new ServerThread(server);
         thread.start();
+        */
+        server.run();
 
-        TestConsole console = new TestConsole(messageBroker);
-        console.processConsoleInput();
+        // TestConsole console = new TestConsole(messageBroker);
+        // console.processConsoleInput();
 
     }
 }
