@@ -8,8 +8,12 @@ import pro.esteps.jsynth.output.Output;
 import pro.esteps.jsynth.pubsub.broker.MessageBroker;
 import pro.esteps.jsynth.pubsub.message.Message;
 import pro.esteps.jsynth.pubsub.subscriber.Subscriber;
+import pro.esteps.jsynth.sequencer.EmptyNote;
+import pro.esteps.jsynth.sequencer.Note;
 import pro.esteps.jsynth.sequencer.Sequencer;
+import pro.esteps.jsynth.sequencer.SynthNote;
 import pro.esteps.jsynth.synth.Synth;
+import pro.esteps.jsynth.wave_generator.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +51,7 @@ public class SynthRackImpl implements SynthRack, Subscriber {
     private void initSynths() {
         synths = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            if (i == 3) {
+            if (i == 0) {
                 // todo Make synth tempo configurable
                 synths.add(i, new Synth(Sequencer.SequencerTempo.QUARTER));
             } else {
@@ -92,9 +96,67 @@ public class SynthRackImpl implements SynthRack, Subscriber {
     @Override
     public void onMessage(Message message) {
         if (message instanceof SynthMessage) {
-
+            handleSynthMessage((SynthMessage) message);
         }
         if (message instanceof DrumMachineMessage) {
+            // todo
         }
     }
+
+    private void handleSynthMessage(SynthMessage message) {
+        Synth synth = synths.get(message.getSynth());
+
+        // Oscillators
+        // todo Change existing generator settings instead of replacing it
+
+        var oscillatorMessages = message.getOscillators();
+        for (int i = 0; i < 4 ; i++) {
+
+            Generator generator = null;
+
+            var oscillatorMessage = oscillatorMessages[i];
+            if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.SAW) {
+                generator = new SawWaveGenerator();
+            }
+            if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.SQUARE) {
+                generator = new SquareWaveGenerator();
+            }
+            if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.SINE) {
+                generator = new SineWaveGenerator();
+            }
+            if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.TRIANGLE) {
+                generator = new TriangleWaveGenerator();
+            }
+            // todo Handle other (i.e. missing or invalid) values
+
+            synth.setGenerator(
+                    i,
+                    generator,
+                    oscillatorMessage.getTune(),
+                    (byte) oscillatorMessage.getVolume()
+            );
+        }
+
+
+
+        // Sequence
+
+        Note[] notes = new Note[16];
+        Note note;
+        int i = 0;
+        for (var inputNote : message.getSequence()) {
+            note = null;
+            if (inputNote.isEmpty()) {
+                note = new EmptyNote();
+            } else if (!inputNote.getNote().isEmpty()) {
+                note = new SynthNote(inputNote.getNote());
+            }
+            notes[i++] = note;
+        }
+
+        synth.setSequence(notes);
+
+
+    }
+
 }

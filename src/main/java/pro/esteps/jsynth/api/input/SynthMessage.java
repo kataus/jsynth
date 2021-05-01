@@ -21,7 +21,7 @@ public class SynthMessage extends Message {
         SAW("saw"),
         SQUARE("square"),
         SINE("sine"),
-        TRIANGLE("sine");
+        TRIANGLE("triangle");
 
         private final String value;
 
@@ -75,71 +75,22 @@ public class SynthMessage extends Message {
         }
     }
 
-    public enum Key {
-
-        A("a"),
-        B("b"),
-        C("c"),
-        D("d"),
-        E("e"),
-        F("f"),
-        G("g"),
-        H("h");
-
-        private final String value;
-
-        Key(String value) {
-            this.value = value;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        @Override
-        @JsonValue
-        public String toString() {
-            return String.valueOf(value);
-        }
-
-        @JsonCreator
-        public static Key fromValue(String text) {
-            for (Key b : Key.values()) {
-                if (String.valueOf(b.value).equals(text)) {
-                    return b;
-                }
-            }
-            return null;
-        }
-    }
-
     public static class Note {
 
         private boolean isEmpty;
-        private Key key;
-        private boolean isSharp;
-        private int octave;
+        private String note;
 
         public boolean isEmpty() {
             return isEmpty;
         }
 
-        public Key getKey() {
-            return key;
+        public String getNote() {
+            return note;
         }
-
-        public boolean isSharp() {
-            return isSharp;
-        }
-
-        public int getOctave() {
-            return octave;
-        }
-
     }
 
-    private String synth;
-    private Oscillator oscillator;
+    private int synth;
+    private Oscillator[] oscillators;
     private boolean hasDecay;
     private boolean hasDelay;
     private int cutoff;
@@ -150,12 +101,12 @@ public class SynthMessage extends Message {
         return type;
     }
 
-    public String getSynth() {
+    public int getSynth() {
         return synth;
     }
 
-    public Oscillator getOscillator() {
-        return oscillator;
+    public Oscillator[] getOscillators() {
+        return oscillators;
     }
 
     public boolean isHasDecay() {
