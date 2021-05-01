@@ -1,17 +1,27 @@
 package pro.esteps.jsynth.api.server;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import pro.esteps.jsynth.pubsub.broker.MessageBroker;
+import pro.esteps.jsynth.pubsub.message.Message;
+import pro.esteps.jsynth.pubsub.message.OutboundWebMessage;
+import pro.esteps.jsynth.pubsub.subscriber.Subscriber;
 
 import java.net.InetSocketAddress;
 
-public class SynthServer extends WebSocketServer {
+public class SynthServer extends WebSocketServer implements Subscriber {
 
     private WebSocket currentConn;
+    private final ObjectMapper objectMapper;
+    private final MessageBroker messageBroker;
 
-    public SynthServer(InetSocketAddress address) {
+    public SynthServer(InetSocketAddress address, ObjectMapper objectMapper, MessageBroker messageBroker) {
         super(address);
+        this.objectMapper = objectMapper;
+        this.messageBroker = messageBroker;
     }
 
     @Override
@@ -46,10 +56,19 @@ public class SynthServer extends WebSocketServer {
         setConnectionLostTimeout(100);
     }
 
-    public void sendMessage(String message) {
-        if (currentConn != null) {
-            currentConn.send(message);
+    @Override
+    public void onMessage(Message message) {
+        if (message instanceof OutboundWebMessage) {
+            // todo Обработка ситуации, когда текущее соединение отсутствует
+            if (currentConn != null) {
+                try {
+                    String json = objectMapper.writeValueAsString(message);
+                    currentConn.send(json);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                    // todo Обработка исключения
+                }
+            }
         }
     }
-
 }

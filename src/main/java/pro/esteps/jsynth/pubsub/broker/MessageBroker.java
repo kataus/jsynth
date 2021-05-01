@@ -13,14 +13,14 @@ public interface MessageBroker {
      *
      * @param subscriber Подписчик
      */
-    void subscribe(Subscriber subscriber);
+    void addSubscriber(Subscriber subscriber);
 
     /**
      * Отменяет подписку.
      *
      * @param subscriber Подписчик
      */
-    void unsubscribe(Subscriber subscriber);
+    void removeSubscriber(Subscriber subscriber);
 
     /**
      * Пересылает сообщение всем подписчикам.

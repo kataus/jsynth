@@ -1,9 +1,9 @@
 package pro.esteps.jsynth.console;
 
-import pro.esteps.jsynth.api.server.SynthServer;
 import pro.esteps.jsynth.drum_machine.DrumMachine;
 import pro.esteps.jsynth.mixer.Mixer;
 import pro.esteps.jsynth.parser.NoteParser;
+import pro.esteps.jsynth.pubsub.broker.MessageBroker;
 import pro.esteps.jsynth.sequencer.*;
 import pro.esteps.jsynth.synth.Synth;
 import pro.esteps.jsynth.output.Output;
@@ -19,11 +19,11 @@ import java.util.List;
 public class TestConsole {
 
     private NoteParser noteParser;
-    private SynthServer webSocketServer;
+    private final MessageBroker messageBroker;
 
-    public TestConsole(SynthServer webSocketServer) {
+    public TestConsole(MessageBroker messageBroker) {
         this.noteParser = new NoteParser();
-        this.webSocketServer = webSocketServer;
+        this.messageBroker = messageBroker;
     }
 
     /**
@@ -72,7 +72,7 @@ public class TestConsole {
 
             // Start mixer in a separate thread
 
-            Output output = new Output(mixer, webSocketServer);
+            Output output = new Output(mixer, messageBroker);
             Thread outputThread = new Thread(output);
             outputThread.start();
 

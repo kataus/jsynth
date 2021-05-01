@@ -11,16 +11,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MessageBrokerImpl implements MessageBroker {
 
-    private MessageBrokerImpl instance;
+    private static MessageBrokerImpl instance;
 
-    private List<Subscriber> subscribers;
+    private final List<Subscriber> subscribers;
 
     private MessageBrokerImpl() {
         // todo Продумать другие варианты потокобезопасных коллекций
         this.subscribers = new CopyOnWriteArrayList<>();
     }
 
-    public MessageBrokerImpl getInstance() {
+    public static MessageBrokerImpl getInstance() {
         if (instance == null) {
             instance = new MessageBrokerImpl();
         }
@@ -33,7 +33,7 @@ public class MessageBrokerImpl implements MessageBroker {
      * @param subscriber Подписчик
      */
     @Override
-    public void subscribe(Subscriber subscriber) {
+    public void addSubscriber(Subscriber subscriber) {
         if (!subscribers.contains(subscriber)) {
             synchronized (this) {
                 if (!subscribers.contains(subscriber)) {
@@ -49,7 +49,7 @@ public class MessageBrokerImpl implements MessageBroker {
      * @param subscriber Подписчик
      */
     @Override
-    public void unsubscribe(Subscriber subscriber) {
+    public void removeSubscriber(Subscriber subscriber) {
         if (subscribers.contains(subscriber)) {
             synchronized (this) {
                 subscribers.remove(subscriber);

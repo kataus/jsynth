@@ -1,7 +1,8 @@
 package pro.esteps.jsynth.output;
 
-import pro.esteps.jsynth.api.server.SynthServer;
+import pro.esteps.jsynth.api.output.TickMessage;
 import pro.esteps.jsynth.contract.SoundProducer;
+import pro.esteps.jsynth.pubsub.broker.MessageBroker;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -29,11 +30,11 @@ public class Output implements Runnable {
     );
 
     private final SoundProducer producer;
-    private final SynthServer webSocketServer;
+    private final MessageBroker messageBroker;
 
-    public Output(SoundProducer producer, SynthServer webSocketServer) {
+    public Output(SoundProducer producer, MessageBroker messageBroker) {
         this.producer = producer;
-        this.webSocketServer = webSocketServer;
+        this.messageBroker = messageBroker;
     }
 
     // todo Process interrupts
@@ -61,7 +62,7 @@ public class Output implements Runnable {
                 }
                 soundLine.write(buffer, 0, BUFFER_SIZE * 2);
                 if (counter == 0) {
-                    webSocketServer.sendMessage("tick " + tickIndex++);
+                    messageBroker.publish(new TickMessage(tickIndex++));
                     if (tickIndex == 16) {
                         tickIndex = 0;
                     }
