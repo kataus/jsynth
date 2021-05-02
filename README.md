@@ -1,10 +1,10 @@
 # jSynth
 
-This is a virtual analog synthesizer written in Java.
+A virtual analog synthesizer written in Java.
 
 ## Specs
 
-The functionality is somehow limited at the moment:
+The functionality is somehow limited at the moment.
 
 ### Synthesizer
 
@@ -50,6 +50,10 @@ Usual stuff with a couple of notes:
 
 WIP.
 
+## Testing
+
+No tests have been written so far.
+
 ## License
 
-Not decided yet, GPL or MIT.
+Not decided yet.
