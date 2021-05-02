@@ -4,7 +4,7 @@ A virtual analog synthesizer written in Java.
 
 ## Specs
 
-The functionality is somehow limited at the moment.
+The functionality is somehow limited at the moment and includes:
 
 ### Synthesizer
 
@@ -29,13 +29,13 @@ The functionality is somehow limited at the moment.
 
 ## Implementation details
 
-- to ensure precise tempo accuracy, buffer readouts are currently used to sync the application
+- to ensure a precise tempo accuracy, buffer readouts are currently used to sync the application
 - all sound producers are running in a single thread and are iterated upon on each tick
-- API and Synth Rack are communicating via a PubSub message broker
+- API and Synth Rack are communicating via the PubSub message broker
 
 ## Libraries
 
-This repository includes a local copy of the berndporr/iirj library with several important changes in its code. A proper
+This repository includes a local copy of the berndporr/iirj library with several important changes to its code. A proper
 fork will be made in the foreseeable future.
 
 ## Building and running the Java application
@@ -44,7 +44,7 @@ Usual stuff with a couple of notes:
 
 - no additional configuration is necessary at the moment, but since the WS port is hardcoded, it has to be free
   system-wide, otherwise the application won't run
-- for licensing reasons, the resources/drums directory is currently excluded from VCS
+- for licensing reasons, the resources/drums directory is currently excluded from the VCS
 
 ## Building and running the web application
 
