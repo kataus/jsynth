@@ -14,7 +14,7 @@ import pro.esteps.jsynth.synth_rack.oscillator.Oscillator;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pro.esteps.jsynth.App.BUFFER_SIZE;
+import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
 
 public class Synth implements FrequencyConsumer, SoundProducer {
 

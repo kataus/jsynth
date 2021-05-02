@@ -3,8 +3,8 @@ package pro.esteps.jsynth.synth_rack.oscillator;
 import pro.esteps.jsynth.synth_rack.contract.FrequencyConsumer;
 import pro.esteps.jsynth.synth_rack.contract.SoundProducer;
 
-import static pro.esteps.jsynth.App.BUFFER_SIZE;
-import static pro.esteps.jsynth.App.SAMPLE_RATE;
+import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
+import static pro.esteps.jsynth.synth_rack.config.Config.SAMPLE_RATE;
 
 // todo Add abstract parent
 public class SawWaveOscillator implements Oscillator, FrequencyConsumer, SoundProducer {

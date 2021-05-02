@@ -29,7 +29,7 @@ The functionality is somehow limited at the moment.
 
 ## Implementation details
 
-- to ensure precise tempo accuracy, a buffer readout is currently used to sync the application
+- to ensure precise tempo accuracy, buffer readouts are currently used to sync the application
 - all sound producers are running in a single thread and are iterated upon on each tick
 - API and Synth Rack are communicating via a PubSub message broker
 

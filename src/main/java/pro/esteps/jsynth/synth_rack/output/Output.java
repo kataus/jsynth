@@ -4,77 +4,76 @@ import pro.esteps.jsynth.websocket_api.output.SequencerStepMessage;
 import pro.esteps.jsynth.synth_rack.contract.SoundProducer;
 import pro.esteps.jsynth.messaging.broker.MessageBroker;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
 import java.nio.ByteBuffer;
 
-import static pro.esteps.jsynth.App.BUFFER_SIZE;
-import static pro.esteps.jsynth.App.SAMPLE_RATE;
+import static pro.esteps.jsynth.App.*;
+import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
+import static pro.esteps.jsynth.synth_rack.config.Config.TICKS_PER_SEQUENCER_STEP;
 
+/**
+ * This class produces sound output to the AudioSystem source data line.
+ */
 public class Output implements Runnable {
 
-    // todo Duplicate code
-    private static final int CHUNKS_PER_NOTE = 5;
-
-    private static final AudioFormat FORMAT = new AudioFormat(
-            AudioFormat.Encoding.PCM_SIGNED,
-            SAMPLE_RATE,
-            16,
-            1,
-            2,
-            SAMPLE_RATE,
-            false
-    );
-
+    private final SourceDataLine soundLine;
     private final SoundProducer producer;
     private final MessageBroker messageBroker;
 
-    public Output(SoundProducer producer, MessageBroker messageBroker) {
+    private final byte[] buffer;
+    private final ByteBuffer byteBuffer;
+
+    private int tick;
+    private int sequencerStep;
+
+    public Output(SourceDataLine soundLine, SoundProducer producer, MessageBroker messageBroker) {
+        this.soundLine = soundLine;
         this.producer = producer;
         this.messageBroker = messageBroker;
+        this.buffer = new byte[BUFFER_SIZE * 2];
+        this.byteBuffer = ByteBuffer.allocate(2);
     }
 
-    // todo Process interrupts
     public void run() {
+        // TODO: Add interrupts
+        soundLine.start();
+        do {
+            outputSoundChunk(producer.getSoundChunk());
+            processTick();
+        } while (true);
+    }
 
-        SourceDataLine soundLine;
+    /**
+     * Send sound chunk to the AudioSystem source data line.
+     *
+     * @param chunk
+     */
+    private void outputSoundChunk(short[] chunk) {
+        for (int i = 0; i < BUFFER_SIZE; i++) {
+            byteBuffer.putShort(0, chunk[i]);
+            buffer[i * 2 + 1] = byteBuffer.get(0);
+            buffer[i * 2] = byteBuffer.get(1);
+        }
+        soundLine.write(buffer, 0, BUFFER_SIZE * 2);
+    }
 
-        try {
-
-            soundLine = AudioSystem.getSourceDataLine(FORMAT);
-            final byte[] buffer = new byte[BUFFER_SIZE * 2];
-            soundLine.open(FORMAT, BUFFER_SIZE * 2);
-            soundLine.start();
-
-            ByteBuffer bb = ByteBuffer.allocate(2);
-
-            int counter = 0;
-            int tickIndex = 0;
-            do {
-                short[] chunk = producer.getSoundChunk();
-                for (int i = 0; i < BUFFER_SIZE; i++) {
-                    bb.putShort(0, chunk[i]);
-                    buffer[i * 2 + 1] = bb.get(0);
-                    buffer[i * 2] = bb.get(1);
-                }
-                soundLine.write(buffer, 0, BUFFER_SIZE * 2);
-                if (counter == 0) {
-                    messageBroker.publish(new SequencerStepMessage(tickIndex++));
-                    if (tickIndex == 16) {
-                        tickIndex = 0;
-                    }
-                }
-                counter++;
-                if (counter == CHUNKS_PER_NOTE) {
-                    counter = 0;
-                }
-            } while (true);
-
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
+    /**
+     * Process a tick.
+     * <p>
+     * To ensure precise tempo accuracy, buffer readouts are currently used to sync the application,
+     * and each readout triggers a new tick.
+     */
+    private void processTick() {
+        if (tick == 0) {
+            messageBroker.publish(new SequencerStepMessage(sequencerStep++));
+            if (sequencerStep == 16) {
+                sequencerStep = 0;
+            }
+        }
+        tick++;
+        if (tick == TICKS_PER_SEQUENCER_STEP) {
+            tick = 0;
         }
     }
 

@@ -3,7 +3,7 @@ package pro.esteps.jsynth.synth_rack.fx;
 import pro.esteps.jsynth.synth_rack.contract.SoundConsumer;
 import pro.esteps.jsynth.synth_rack.contract.SoundProducer;
 
-import static pro.esteps.jsynth.App.BUFFER_SIZE;
+import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
 
 public class Distortion implements Effect, SoundConsumer, SoundProducer {
 

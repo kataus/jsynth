@@ -13,6 +13,7 @@ import pro.esteps.jsynth.messaging.subscriber.Subscriber;
 import pro.esteps.jsynth.synth_rack.sequencer.*;
 import pro.esteps.jsynth.synth_rack.synth.Synth;
 
+import javax.sound.sampled.SourceDataLine;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class SynthRackImpl implements SynthRack, Subscriber {
 
     private final MessageBroker messageBroker;
     private static SynthRackImpl synthRack;
+    private final SourceDataLine soundLine;
 
     private final SynthMessageHandler synthMessageHandler;
     private final DrumMachineMessageHandler drumMachineMessageHandler;
@@ -31,7 +33,8 @@ public class SynthRackImpl implements SynthRack, Subscriber {
     private List<DrumMachine> drumMachines;
     private Mixer mixer;
 
-    private SynthRackImpl(MessageBroker messageBroker) {
+    private SynthRackImpl(SourceDataLine soundLine, MessageBroker messageBroker) {
+        this.soundLine = soundLine;
         this.messageBroker = messageBroker;
         this.synthMessageHandler = new SynthMessageHandler(this);
         this.drumMachineMessageHandler = new DrumMachineMessageHandler(this);
@@ -41,9 +44,9 @@ public class SynthRackImpl implements SynthRack, Subscriber {
         initOutput();
     }
 
-    public static SynthRackImpl getInstance(MessageBroker messageBroker) {
+    public static SynthRackImpl getInstance(SourceDataLine soundLine, MessageBroker messageBroker) {
         if (synthRack == null) {
-            synthRack = new SynthRackImpl(messageBroker);
+            synthRack = new SynthRackImpl(soundLine, messageBroker);
         }
         return synthRack;
     }
@@ -134,9 +137,11 @@ public class SynthRackImpl implements SynthRack, Subscriber {
 
     /**
      * Init the output and run its thread.
+     *
+     * TODO: Handle output thread
      */
     private void initOutput() {
-        Output output = new Output(mixer, messageBroker);
+        Output output = new Output(soundLine, mixer, messageBroker);
         Thread outputThread = new Thread(output);
         outputThread.start();
     }

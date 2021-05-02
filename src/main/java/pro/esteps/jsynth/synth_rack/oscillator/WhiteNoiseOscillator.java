@@ -3,7 +3,7 @@ package pro.esteps.jsynth.synth_rack.oscillator;
 import pro.esteps.jsynth.synth_rack.contract.FrequencyConsumer;
 import pro.esteps.jsynth.synth_rack.contract.SoundProducer;
 
-import static pro.esteps.jsynth.App.BUFFER_SIZE;
+import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
 
 public class WhiteNoiseOscillator implements Oscillator, FrequencyConsumer, SoundProducer {
 

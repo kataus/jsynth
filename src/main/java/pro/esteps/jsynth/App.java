@@ -7,41 +7,52 @@ import pro.esteps.jsynth.websocket_api.server.SynthServer;
 import pro.esteps.jsynth.messaging.broker.MessageBrokerImpl;
 import pro.esteps.jsynth.synth_rack.SynthRackImpl;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.SourceDataLine;
 import java.net.InetSocketAddress;
 
-public class App {
+import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
+import static pro.esteps.jsynth.synth_rack.config.Config.FORMAT;
 
-    public static final int SAMPLE_RATE = 44100;
-    public static final int BUFFER_SIZE = 1024;
-    public static final int TICKS_PER_SEQUENCER_STEP = 5;
+public class App {
 
     public static final String WEBSOCKET_HOST = "localhost";
     public static final int WEBSOCKET_PORT = 8887;
 
     public static void main(String[] args) {
 
-        var messageBroker = MessageBrokerImpl.getInstance();
+        try (SourceDataLine soundLine = AudioSystem.getSourceDataLine(FORMAT)) {
 
-        var objectMapper = new ObjectMapper();
-        // TODO: consider other options to address the partial JSON issue
-        objectMapper.configure(
-                DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                false);
+            var messageBroker = MessageBrokerImpl.getInstance();
 
-        var messageMapper = new MessageMapperImpl(objectMapper);
+            var objectMapper = new ObjectMapper();
+            // TODO: consider other options to address the partial JSON issue
+            objectMapper.configure(
+                    DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                    false);
 
-        var inetSocketAddress = new InetSocketAddress(WEBSOCKET_HOST, WEBSOCKET_PORT);
-        var server = new SynthServer(
-                inetSocketAddress,
-                messageMapper,
-                messageBroker);
+            var messageMapper = new MessageMapperImpl(objectMapper);
 
-        var synthRack = SynthRackImpl.getInstance(messageBroker);
+            var inetSocketAddress = new InetSocketAddress(WEBSOCKET_HOST, WEBSOCKET_PORT);
+            var server = new SynthServer(
+                    inetSocketAddress,
+                    messageMapper,
+                    messageBroker);
 
-        messageBroker.addSubscriber(server);
-        messageBroker.addSubscriber(synthRack);
+            soundLine.open(FORMAT, BUFFER_SIZE * 2);
+            var synthRack = SynthRackImpl.getInstance(soundLine, messageBroker);
 
-        server.run();
+            messageBroker.addSubscriber(server);
+            messageBroker.addSubscriber(synthRack);
+
+            server.run();
+
+        } catch (Exception e) {
+            // TODO: Handle exception
+            e.printStackTrace();
+        }
+
+
 
     }
 }

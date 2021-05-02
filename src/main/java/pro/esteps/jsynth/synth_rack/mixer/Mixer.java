@@ -6,7 +6,7 @@ import pro.esteps.jsynth.synth_rack.contract.SoundProducer;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static pro.esteps.jsynth.App.BUFFER_SIZE;
+import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
 
 public class Mixer implements SoundConsumer, SoundProducer {
 
