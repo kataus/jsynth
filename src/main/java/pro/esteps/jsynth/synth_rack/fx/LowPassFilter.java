@@ -7,22 +7,26 @@ import pro.esteps.jsynth.lib.iirj.Butterworth;
 import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
 import static pro.esteps.jsynth.synth_rack.config.Config.SAMPLE_RATE;
 
+/**
+ * Low-pass filter.
+ * <p>
+ * This effect removes high frequencies from the provided sound.
+ */
 public class LowPassFilter implements Effect, SoundConsumer, SoundProducer {
 
     public static final float LOW_PASS_DEFAULT_FREQUENCY = 20000f;
-
     private static final int BAND_PASS_DEFAULT_WIDTH_FREQUENCY = 600;
 
-    private SoundProducer producer;
+    private final SoundProducer producer;
 
     private float frequency;
 
     // Positive 0..100
     private byte resonanceAmount;
 
-    private Butterworth butterworthLowPassFilter;
+    private final Butterworth butterworthLowPassFilter;
 
-    private Butterworth butterworthBandPassFilter;
+    private final Butterworth butterworthBandPassFilter;
 
     public LowPassFilter(SoundProducer producer, float frequency, byte resonanceAmount) {
 
@@ -76,7 +80,7 @@ public class LowPassFilter implements Effect, SoundConsumer, SoundProducer {
             sample += (short) butterworthLowPassFilter.filter(producerChunk[i]);
 
             // Band Pass
-            // todo Use log. volume control
+            // TODO: Use log. volume control
             if (resonanceAmount > 0) {
                 sample += (short) (butterworthBandPassFilter.filter(sample) / 100 * resonanceAmount * 4);
             }

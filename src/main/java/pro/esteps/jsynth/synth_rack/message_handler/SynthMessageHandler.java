@@ -57,7 +57,7 @@ public class SynthMessageHandler implements MessageHandler {
                 case TRIANGLE -> new TriangleWaveOscillator();
             };
 
-            synth.setGenerator(
+            synth.setOscillator(
                     i,
                     oscillator,
                     oscillatorMessage.getTune(),

@@ -6,7 +6,12 @@ import pro.esteps.jsynth.synth_rack.contract.FrequencyProducer;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class FixedFrequencyGenerator implements FrequencyProducer {
+/**
+ * Bypass frequency generator.
+ * <p>
+ * This generator passes the provided frequency to its consumers as is.
+ */
+public class BypassFrequencyGenerator implements FrequencyProducer {
 
     private final Set<FrequencyConsumer> consumers = new LinkedHashSet<>();
 

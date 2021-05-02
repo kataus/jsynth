@@ -4,9 +4,12 @@ import pro.esteps.jsynth.synth_rack.parser.NoteParser;
 
 import static pro.esteps.jsynth.synth_rack.fx.LowPassFilter.LOW_PASS_DEFAULT_FREQUENCY;
 
+/**
+ * Sequencer.
+ */
 public class Sequencer {
 
-    private Note[] sequence = new Note[16];
+    private final Note[] sequence = new Note[16];
 
     private Note[] nextSequence;
 
@@ -35,7 +38,7 @@ public class Sequencer {
     private byte currentTempoIndex;
 
     public void setSequence(Note[] sequence) {
-        // todo Guard clauses
+        // todo Add guard clauses
         this.nextSequence = sequence;
     }
 

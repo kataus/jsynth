@@ -1,8 +1,11 @@
 package pro.esteps.jsynth.synth_rack.sequencer;
 
+/**
+ * Drum machine Sequencer
+ */
 public class DrumMachineSequencer {
 
-    private DrumMachineNote[] sequence = new DrumMachineNote[16];
+    private final DrumMachineNote[] sequence = new DrumMachineNote[16];
 
     private DrumMachineNote[] nextSequence;
 
@@ -13,7 +16,7 @@ public class DrumMachineSequencer {
     private static final String[] EMPTY_NOTES = new String[0];
 
     public void setSequence(DrumMachineNote[] sequence) {
-        // todo Guard clauses
+        // TODO: Add guard clauses
         this.nextSequence = sequence;
     }
 

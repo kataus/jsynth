@@ -5,6 +5,11 @@ import pro.esteps.jsynth.synth_rack.contract.SoundProducer;
 
 import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
 
+/**
+ * Distortion.
+ * <p>
+ * WIP.
+ */
 public class Distortion implements Effect, SoundConsumer, SoundProducer {
 
     private SoundProducer producer;
@@ -22,7 +27,7 @@ public class Distortion implements Effect, SoundConsumer, SoundProducer {
         int sample;
         for (int i = 0; i < BUFFER_SIZE; i++) {
             sample = producerChunk[i] * 20;
-            // todo Use clipping algorithm
+            // TODO: Use clipping algorithm
             if (sample > Short.MAX_VALUE) {
                 sample = Short.MAX_VALUE;
             }

@@ -3,7 +3,7 @@ package pro.esteps.jsynth.synth_rack.synth;
 import pro.esteps.jsynth.synth_rack.amplitude.SimpleDecay;
 import pro.esteps.jsynth.synth_rack.contract.FrequencyConsumer;
 import pro.esteps.jsynth.synth_rack.contract.SoundProducer;
-import pro.esteps.jsynth.synth_rack.frequency_generator.FixedFrequencyGenerator;
+import pro.esteps.jsynth.synth_rack.frequency_generator.BypassFrequencyGenerator;
 import pro.esteps.jsynth.synth_rack.frequency_generator.FrequencyShift;
 import pro.esteps.jsynth.synth_rack.mixer.EffectsProcessor;
 import pro.esteps.jsynth.synth_rack.mixer.Mixer;
@@ -15,30 +15,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
+import static pro.esteps.jsynth.synth_rack.config.Config.TICKS_PER_SEQUENCER_STEP;
 
+/**
+ * Synth.
+ * <p>
+ * TODO: Refactor this class
+ */
 public class Synth implements FrequencyConsumer, SoundProducer {
 
-    private Sequencer sequencer;
+    private final Sequencer sequencer;
 
-    private final FixedFrequencyGenerator frequencyGenerator;
+    private final BypassFrequencyGenerator frequencyGenerator;
 
-    // todo Max 4 generators
+    // TODO: Max 4 oscillators
     private final List<Oscillator> oscillators = new ArrayList<>();
 
-    private SimpleDecay simpleDecay;
+    private final SimpleDecay simpleDecay;
 
     private byte decayLength;
 
-    private final Mixer generatorMixer;
+    private final Mixer oscillatorMixer;
 
     private final EffectsProcessor effectsProcessor;
 
     private final Mixer outputMixer;
 
-    // todo Duplicate code
-    private static final int CHUNKS_PER_NOTE = 5;
-
-    // todo Duplicate code
     private byte currentChunk = 1;
 
     public Synth() {
@@ -51,11 +53,11 @@ public class Synth implements FrequencyConsumer, SoundProducer {
                 null, null, null, null,
         });
 
-        this.frequencyGenerator = new FixedFrequencyGenerator();
+        this.frequencyGenerator = new BypassFrequencyGenerator();
 
-        this.generatorMixer = new Mixer(4);
+        this.oscillatorMixer = new Mixer(4);
 
-        this.simpleDecay = new SimpleDecay(generatorMixer, (byte) 1);
+        this.simpleDecay = new SimpleDecay(oscillatorMixer, (byte) 1);
 
         this.effectsProcessor = new EffectsProcessor(simpleDecay);
 
@@ -73,11 +75,11 @@ public class Synth implements FrequencyConsumer, SoundProducer {
                 null, null, null, null,
         });
 
-        this.frequencyGenerator = new FixedFrequencyGenerator();
+        this.frequencyGenerator = new BypassFrequencyGenerator();
 
-        this.generatorMixer = new Mixer(4);
+        this.oscillatorMixer = new Mixer(4);
 
-        this.simpleDecay = new SimpleDecay(generatorMixer, (byte) 1);
+        this.simpleDecay = new SimpleDecay(oscillatorMixer, (byte) 1);
 
         this.effectsProcessor = new EffectsProcessor(simpleDecay);
 
@@ -93,14 +95,7 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
             sequencer.advance();
 
-            // todo Reset index only when a note changes
-            /*
-            if (simpleDecay != null) {
-                simpleDecay.resetIndex();
-                // simpleDecay.setDecayLength(sequencer.getCurrentDecayLength());
-                simpleDecay.setDecayLength(decayLength);
-            }
-            */
+            // TODO: Reset index only when a note changes
             simpleDecay.resetIndex();
             simpleDecay.setDecayLength(decayLength);
 
@@ -111,14 +106,10 @@ public class Synth implements FrequencyConsumer, SoundProducer {
                 frequencyGenerator.setFrequency(frequency);
             }
 
-            /*
-            this.lowPassFilter.setFrequency(sequencer.getCurrentNoteLowPassFilterFrequency());
-            this.lowPassFilter.setResonanceAmount(sequencer.getCurrentNoteLowPassFilterResonance());
-            */
         }
 
         currentChunk++;
-        if (currentChunk > CHUNKS_PER_NOTE) {
+        if (currentChunk > TICKS_PER_SEQUENCER_STEP) {
             currentChunk = 1;
         }
 
@@ -128,20 +119,41 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         return chunk;
     }
 
+    /**
+     * Set Synth frequency.
+     *
+     * @param frequency
+     */
     public void setFrequency(float frequency) {
         assert frequency > 0;
         frequencyGenerator.setFrequency(frequency);
     }
 
+    /**
+     * Clear Synth frequency.
+     */
     public void clearFrequency() {
         frequencyGenerator.clearFrequency();
     }
 
+    /**
+     * Set a new sequence.
+     *
+     * @param notes
+     */
     public void setSequence(Note[] notes) {
         this.sequencer.setSequence(notes);
     }
 
-    public void setGenerator(int index, Oscillator oscillator, float delta, byte volume) {
+    /**
+     * Set an oscillator.
+     *
+     * @param index
+     * @param oscillator
+     * @param delta
+     * @param volume
+     */
+    public void setOscillator(int index, Oscillator oscillator, float delta, byte volume) {
         assert index >= 0 && index < oscillators.size();
         if (index >= oscillators.size() - 1) {
             oscillators.add(index, oscillator);
@@ -155,28 +167,43 @@ public class Synth implements FrequencyConsumer, SoundProducer {
         } else {
             frequencyGenerator.addConsumer((FrequencyConsumer) oscillator);
         }
-        generatorMixer.setProducerForInput(index, (SoundProducer) oscillators.get(index), volume);
+        oscillatorMixer.setProducerForInput(index, (SoundProducer) oscillators.get(index), volume);
     }
 
+    /**
+     * Set the cutoff frequency.
+     *
+     * @param frequency
+     */
     public void setCutoffFrequency(float frequency) {
         this.effectsProcessor.setCutoffFrequency(frequency);
     }
 
+    /**
+     * Set the resonance.
+     *
+     * @param resonance
+     */
     public void setResonance(byte resonance) {
         this.effectsProcessor.setResonance(resonance);
     }
 
-    // todo Add delay parameters
+    /**
+     * Enable the delay.
+     * <p>
+     * TODO: Add delay parameters
+     */
     public void enableDelay() {
         this.effectsProcessor.enableDelay();
     }
 
+    /**
+     * Set the decay length.
+     *
+     * @param decayLength
+     */
     public void setDecayLength(byte decayLength) {
         this.decayLength = decayLength;
-    }
-
-    public void setTempo(Sequencer.SequencerTempo tempo) {
-        this.sequencer.setTempo(tempo);
     }
 
 }

@@ -10,11 +10,14 @@ import pro.esteps.jsynth.synth_rack.fx.LowPassFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Effects processor mixer.
+ */
 public class EffectsProcessor implements SoundConsumer, SoundProducer {
 
-    private SoundProducer producer;
+    private final SoundProducer producer;
 
-    // todo Max 2 effects
+    // TODO: Max 2 effects
     private final List<Effect> effects = new ArrayList<>();
 
     public EffectsProcessor(SoundProducer producer) {
@@ -42,7 +45,7 @@ public class EffectsProcessor implements SoundConsumer, SoundProducer {
     public void setResonance(byte resonance) {
         Effect effect = effects.get(0);
         if (!(effect instanceof LowPassFilter)) {
-            // todo Handle error
+            // TODO: Handle error
         } else {
             ((LowPassFilter) effect).setResonanceAmount(resonance);
         }

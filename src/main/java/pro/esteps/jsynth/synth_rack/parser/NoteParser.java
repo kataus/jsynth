@@ -4,12 +4,15 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Note parser.
+ */
 public class NoteParser {
 
     private static final Map<String, Float> frequencies = new HashMap<>();
 
     static {
-        // todo Store full list with octaves
+        // TODO: Use larger list (with octaves)
         frequencies.put("C", 261.63f);
         frequencies.put("C#", 277.18f);
         frequencies.put("D", 293.66f);
@@ -24,8 +27,13 @@ public class NoteParser {
         frequencies.put("B", 493.88f);
     }
 
-    // todo Validate note
-    // todo Use regex
+    /**
+     * Get a note frequency.
+     *
+     * @param note
+     * @return TODO: Validate note
+     * TODO: Consider using regex
+     */
     public float parseNote(String note) {
 
         if (note == null) {

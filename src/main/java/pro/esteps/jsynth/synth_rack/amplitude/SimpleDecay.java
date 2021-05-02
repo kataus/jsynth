@@ -4,18 +4,16 @@ import pro.esteps.jsynth.synth_rack.contract.SoundConsumer;
 import pro.esteps.jsynth.synth_rack.contract.SoundProducer;
 
 import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
+import static pro.esteps.jsynth.synth_rack.config.Config.TICKS_PER_SEQUENCER_STEP;
 
+/**
+ * Simple decay.
+ */
 public class SimpleDecay implements SoundConsumer, SoundProducer {
 
-    // todo Duplicate code
-    private static final int CHUNKS_PER_NOTE = 5;
-
     private final SoundProducer producer;
-
     private byte decayLength;
-
     private byte[] envelope = new byte[0];
-
     private int envelopeIndex;
 
     public SimpleDecay(SoundProducer producer, byte decayLength) {
@@ -25,12 +23,12 @@ public class SimpleDecay implements SoundConsumer, SoundProducer {
     }
 
     private void regenerateEnvelope() {
-        // todo Add dynamic calculations
+        // TODO: Add dynamic calculations
         int envelopeSize;
         if (decayLength == 0) {
-            envelopeSize = BUFFER_SIZE * CHUNKS_PER_NOTE;
+            envelopeSize = BUFFER_SIZE * TICKS_PER_SEQUENCER_STEP;
         } else {
-            envelopeSize = decayLength * BUFFER_SIZE * CHUNKS_PER_NOTE;
+            envelopeSize = decayLength * BUFFER_SIZE * TICKS_PER_SEQUENCER_STEP;
         }
         envelope = new byte[envelopeSize];
         if (decayLength == 0) {
@@ -59,7 +57,6 @@ public class SimpleDecay implements SoundConsumer, SoundProducer {
     public short[] getSoundChunk() {
 
         short[] mixedChunk = new short[BUFFER_SIZE];
-
         if (envelopeIndex >= envelope.length - 1) {
             return mixedChunk;
         }

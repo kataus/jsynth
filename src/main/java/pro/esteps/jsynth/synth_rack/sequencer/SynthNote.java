@@ -2,6 +2,9 @@ package pro.esteps.jsynth.synth_rack.sequencer;
 
 import static pro.esteps.jsynth.synth_rack.fx.LowPassFilter.LOW_PASS_DEFAULT_FREQUENCY;
 
+/**
+ * Synth note.
+ */
 public class SynthNote extends Note {
 
     private final String note;
@@ -13,12 +16,12 @@ public class SynthNote extends Note {
     private byte decayLength = 0;
 
     public SynthNote(String note) {
-        // todo Guard clauses
+        // TODO: Add guard clauses
         this.note = note;
     }
 
     public SynthNote(String note, float lowPassFilterFrequency, byte lowPassFilterResonance, byte decayLength) {
-        // todo Guard clauses
+        // TODO: Add guard clauses
         this.note = note;
         this.lowPassFilterFrequency = lowPassFilterFrequency;
         this.lowPassFilterResonance = lowPassFilterResonance;

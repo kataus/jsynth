@@ -3,6 +3,11 @@ package pro.esteps.jsynth.synth_rack.frequency_generator;
 import pro.esteps.jsynth.synth_rack.contract.FrequencyConsumer;
 import pro.esteps.jsynth.synth_rack.contract.FrequencyProducer;
 
+/**
+ * Frequency shift generator.
+ * <p>
+ * This generator alters the provided frequency using the delta (tune) value.
+ */
 public class FrequencyShift implements FrequencyConsumer, FrequencyProducer {
 
     private FrequencyConsumer consumer;
@@ -25,7 +30,7 @@ public class FrequencyShift implements FrequencyConsumer, FrequencyProducer {
 
     @Override
     public void addConsumer(FrequencyConsumer consumer) {
-        // todo Consider using Set<FrequencyConsumer>
+        // TODO: Consider using Set<FrequencyConsumer>
         this.consumer = consumer;
     }
 }

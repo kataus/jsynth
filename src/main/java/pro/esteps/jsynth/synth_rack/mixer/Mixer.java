@@ -8,15 +8,17 @@ import java.util.stream.Collectors;
 
 import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
 
+/**
+ * Mixer.
+ */
 public class Mixer implements SoundConsumer, SoundProducer {
 
     private static class MixerSoundProducerWithVolume {
 
-        private SoundProducer producer;
+        private final SoundProducer producer;
 
-        // todo Add data type
-        // todo Use log. volume control
-        private byte volume;
+        // TODO: Use log. volume control
+        private final byte volume;
 
         public MixerSoundProducerWithVolume(SoundProducer producer, byte volume) {
             assert volume >= 0 && volume <= 100;
@@ -44,7 +46,7 @@ public class Mixer implements SoundConsumer, SoundProducer {
             return mixedChunk;
         }
 
-        // todo Add changeVolume() method
+        // TODO: Add changeVolume() method
 
     }
 
@@ -80,7 +82,7 @@ public class Mixer implements SoundConsumer, SoundProducer {
             short[] producerChunk = producer.getMixedSoundChunk();
             for (int i = 0; i < BUFFER_SIZE; i++) {
                 sample = chunk[i] + producerChunk[i];
-                // todo Use clipping algorithm
+                // TODO: Use clipping algorithm
                 if (sample > Short.MAX_VALUE) {
                     sample = Short.MAX_VALUE;
                 } else if (sample < Short.MIN_VALUE) {

@@ -17,10 +17,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
+import static pro.esteps.jsynth.synth_rack.config.Config.TICKS_PER_SEQUENCER_STEP;
 
+/**
+ * Drum machine.
+ * <p>
+ * TODO: Refactor this class
+ */
 public class DrumMachine implements SoundProducer {
 
-    // todo Cache files instead of loading them again
+    // TODO: Refactor this class to a separate file
+    // TODO: Cache files instead of reloading them
     private static class FileSoundProducer implements SoundProducer {
 
         private short[] data;
@@ -29,39 +36,48 @@ public class DrumMachine implements SoundProducer {
 
         public FileSoundProducer(File file) throws IOException, UnsupportedAudioFileException {
 
-            // todo Distinguish 44- and 46-byte WAV headers
+            // TODO: Distinguish 44- and 46-byte WAV headers
+            try (AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file)) {
 
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(file);
+                int bytesPerFrame = audioInputStream.getFormat().getFrameSize();
+                if (bytesPerFrame == AudioSystem.NOT_SPECIFIED) {
+                    // some audio formats may have unspecified frame size
+                    // in that case we may read any amount of bytes
+                    bytesPerFrame = 1;
+                }
 
-            int bytesPerFrame = audioInputStream.getFormat().getFrameSize();
-            if (bytesPerFrame == AudioSystem.NOT_SPECIFIED) {
-                // some audio formats may have unspecified frame size
-                // in that case we may read any amount of bytes
-                bytesPerFrame = 1;
-            }
+                long frames = audioInputStream.getFrameLength();
+                this.data = new short[(int) frames];
 
-            long frames = audioInputStream.getFrameLength();
-            this.data = new short[(int) frames];
+                // Set an arbitrary buffer size of 1024 frames.
+                int numBytes = 1024 * bytesPerFrame;
+                byte[] audioBytes = new byte[numBytes];
 
-            // Set an arbitrary buffer size of 1024 frames.
-            int numBytes = 1024 * bytesPerFrame;
-            byte[] audioBytes = new byte[numBytes];
+                int numBytesRead = 0;
+                int index = 0;
 
-            int numBytesRead = 0;
-            int index = 0;
-
-            // Try to read numBytes bytes from the file.
-            while ((numBytesRead =
-                    audioInputStream.read(audioBytes)) != -1) {
-                if (numBytesRead != 0) {
-                    for (int i = 0; i < numBytesRead / 2; i++) {
-                        data[index++] = ((short) ((audioBytes[i * 2] & 0xff) | (audioBytes[i * 2 + 1] << 8)));
+                // Try to read numBytes bytes from the file.
+                while ((numBytesRead =
+                        audioInputStream.read(audioBytes)) != -1) {
+                    if (numBytesRead != 0) {
+                        for (int i = 0; i < numBytesRead / 2; i++) {
+                            data[index++] = ((short) ((audioBytes[i * 2] & 0xff) | (audioBytes[i * 2 + 1] << 8)));
+                        }
                     }
                 }
+
+            } catch (Exception e) {
+                // TODO: Handle exceptions
+                throw e;
             }
 
         }
 
+        /**
+         * Check whether the file has not been completely processed yet.
+         *
+         * @return
+         */
         public boolean hasRemainingData() {
             return currentCursorIndex < data.length;
         }
@@ -79,59 +95,46 @@ public class DrumMachine implements SoundProducer {
         }
     }
 
+    // TODO: Refactor this class to a separate file
     private static class DrumMachineSoundProducer implements SoundProducer {
-
-
-        /**
-         * Cursor position within current period.
-         */
-        private int currentMixCursorIndex;
 
         private short[] mix = new short[0];
 
         private String[] notes = new String[0];
 
-        private List<FileSoundProducer> fileSoundProducers = new ArrayList<>();
+        private final List<FileSoundProducer> fileSoundProducers = new ArrayList<>();
 
         private void regenerateMix() {
-
-            /*
-            // todo
-
-            int currentMixSize = mix.length;
-            int newMixSize = 0; // todo
-            mix = new short[newMixSize];
-
-            if (currentMixSize == 0) {
-                currentMixCursorIndex = 0;
-            } else if (currentMixCursorIndex > 0) {
-                if (currentMixCursorIndex == currentMixSize - 1) {
-                    currentMixCursorIndex = newMixSize - 1;
-                } else {
-                    currentMixCursorIndex = currentMixCursorIndex * newMixSize / currentMixSize;
-                }
-            }
-            */
-
+            // TODO: Implement this method
         }
 
+        /**
+         * Update file sound producers.
+         *
+         * @param notes
+         * @throws IOException
+         * @throws UnsupportedAudioFileException
+         */
         public void setNotes(String[] notes) throws IOException, UnsupportedAudioFileException {
+
             this.notes = notes;
+
             List<String> nonEmptyNotes =
                     Arrays.stream(notes)
                             .filter(s -> !s.isEmpty())
                             .collect(Collectors.toList());
+
             if (!nonEmptyNotes.isEmpty()) {
                 // regenerateMix();
                 for (String note : nonEmptyNotes) {
-                    // todo Load file as a resource
-                    // todo handle file errors
+                    // TODO: Load file as a resource
+                    // TODO: Handle file errors
                     File file = new File("src/main/resources/drums/" + note + ".wav");
                     FileSoundProducer fileSoundProducer = new FileSoundProducer(file);
                     fileSoundProducers.add(fileSoundProducer);
                 }
-
             }
+
         }
 
         @Override
@@ -151,7 +154,7 @@ public class DrumMachine implements SoundProducer {
                 producerChunk = fileSoundProducer.getSoundChunk();
                 for (int i = 0; i < producerChunk.length; i++) {
                     sample = chunk[i] + producerChunk[i];
-                    // todo Use clipping algorithm
+                    // TODO: Use clipping algorithm
                     if (sample > Short.MAX_VALUE) {
                         sample = Short.MAX_VALUE;
                     } else if (sample < Short.MIN_VALUE) {
@@ -174,25 +177,16 @@ public class DrumMachine implements SoundProducer {
         }
     }
 
-    /**
-     * Cursor position within current mix.
-     */
-    private int currentMixCursorIndex;
-
     private DrumMachineSequencer sequencer;
 
-    private DrumMachineSoundProducer drumMachineSoundProducer;
+    private final DrumMachineSoundProducer drumMachineSoundProducer;
 
-    private Mixer generatorMixer;
+    private final Mixer generatorMixer;
 
     private final EffectsProcessor effectsProcessor;
 
-    private Mixer outputMixer;
+    private final Mixer outputMixer;
 
-    // todo Duplicate code
-    private static final int CHUNKS_PER_NOTE = 5;
-
-    // todo Duplicate code
     private int currentChunk = 1;
 
     public DrumMachine() {
@@ -224,37 +218,34 @@ public class DrumMachine implements SoundProducer {
     @Override
     public short[] getSoundChunk() {
 
-        // todo Handle exceptions
         if (currentChunk == 1) {
             sequencer.advance();
             String[] samples = sequencer.getCurrentNoteSamples();
             try {
                 drumMachineSoundProducer.setNotes(samples);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (UnsupportedAudioFileException e) {
-                e.printStackTrace();
+            } catch (IOException | UnsupportedAudioFileException e) {
+                // TODO: Handle exceptions
             }
         }
         currentChunk++;
-        if (currentChunk > CHUNKS_PER_NOTE) {
+        if (currentChunk > TICKS_PER_SEQUENCER_STEP) {
             currentChunk = 1;
         }
 
         short[] chunk = new short[BUFFER_SIZE];
-        // todo Use FX Mixer
+        // TODO: Use FX Mixer
         System.arraycopy(outputMixer.getSoundChunk(), 0, chunk, 0, BUFFER_SIZE);
         return chunk;
 
     }
 
+    /**
+     * Set new sequence.
+     *
+     * @param notes
+     */
     public void setSequence(DrumMachineNote[] notes) {
         this.sequencer.setSequence(notes);
-    }
-
-    // todo Add delay parameters
-    public void enableDelay() {
-        this.effectsProcessor.enableDelay();
     }
 
 }
