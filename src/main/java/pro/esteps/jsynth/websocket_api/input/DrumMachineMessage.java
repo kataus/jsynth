@@ -2,6 +2,10 @@ package pro.esteps.jsynth.websocket_api.input;
 
 import pro.esteps.jsynth.messaging.message.Message;
 
+/**
+ * Drum machine message.
+ * TODO: Add javadoc
+ */
 public class DrumMachineMessage extends Message {
 
     public DrumMachineMessage() {
@@ -14,6 +18,7 @@ public class DrumMachineMessage extends Message {
     public static class Note {
 
         private boolean isEmpty;
+
         private String[] samples;
 
         public boolean isEmpty() {
@@ -27,11 +32,8 @@ public class DrumMachineMessage extends Message {
     }
 
     private int index;
-    private Note[] sequence;
 
-    public String getType() {
-        return type;
-    }
+    private Note[] sequence;
 
     public int getIndex() {
         return index;

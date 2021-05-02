@@ -11,7 +11,7 @@
 <main>
     <div id="app">
 
-        <p>Current tick: {{ currentTick }}</p>
+        <p>Current step: {{ currentSequencerStep }}</p>
 
         <div style="margin: 20px 0;" v-for="(synth, synthIndex) in synths" :key="'s' + synthIndex">
 
@@ -93,7 +93,7 @@
     const app = new Vue({
         el: '#app',
         data: {
-            currentTick: 0,
+            currentSequencerStep: 0,
             synths: [
                 // Synth 0
                 {
@@ -360,7 +360,7 @@
     socket.onmessage = function (event) {
         // console.log(event.data);
         const obj = JSON.parse(event.data);
-        app.currentTick = obj.tick;
+        app.currentSequencerStep = obj.sequencerStep;
     }
 
 </script>

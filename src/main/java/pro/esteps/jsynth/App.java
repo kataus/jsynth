@@ -2,6 +2,7 @@ package pro.esteps.jsynth;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import pro.esteps.jsynth.websocket_api.mapper.MessageMapperImpl;
 import pro.esteps.jsynth.websocket_api.server.SynthServer;
 import pro.esteps.jsynth.messaging.broker.MessageBrokerImpl;
 import pro.esteps.jsynth.synth_rack.SynthRackImpl;
@@ -27,10 +28,12 @@ public class App {
                 DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                 false);
 
+        var messageMapper = new MessageMapperImpl(objectMapper);
+
         var inetSocketAddress = new InetSocketAddress(WEBSOCKET_HOST, WEBSOCKET_PORT);
         var server = new SynthServer(
                 inetSocketAddress,
-                objectMapper,
+                messageMapper,
                 messageBroker);
 
         var synthRack = SynthRackImpl.getInstance(messageBroker);

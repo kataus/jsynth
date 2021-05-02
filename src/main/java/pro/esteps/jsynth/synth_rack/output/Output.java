@@ -1,6 +1,6 @@
 package pro.esteps.jsynth.synth_rack.output;
 
-import pro.esteps.jsynth.websocket_api.output.TickMessage;
+import pro.esteps.jsynth.websocket_api.output.SequencerStepMessage;
 import pro.esteps.jsynth.synth_rack.contract.SoundProducer;
 import pro.esteps.jsynth.messaging.broker.MessageBroker;
 
@@ -62,7 +62,7 @@ public class Output implements Runnable {
                 }
                 soundLine.write(buffer, 0, BUFFER_SIZE * 2);
                 if (counter == 0) {
-                    messageBroker.publish(new TickMessage(tickIndex++));
+                    messageBroker.publish(new SequencerStepMessage(tickIndex++));
                     if (tickIndex == 16) {
                         tickIndex = 0;
                     }

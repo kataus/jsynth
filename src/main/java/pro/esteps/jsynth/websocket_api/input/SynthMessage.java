@@ -6,7 +6,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import pro.esteps.jsynth.messaging.message.Message;
 
 /**
- * Сообщение, которое приходит при каждом изменении в веб-секвенсоре.
+ * Synth message.
+ * TODO: Add javadoc
  */
 public class SynthMessage extends Message {
 
@@ -55,8 +56,11 @@ public class SynthMessage extends Message {
     public static class Oscillator {
 
         private int index;
+
         private Waveform waveform;
+
         private int volume;
+
         private int tune;
 
         public int getIndex() {
@@ -79,6 +83,7 @@ public class SynthMessage extends Message {
     public static class Note {
 
         private boolean isEmpty;
+
         private String note;
 
         public boolean isEmpty() {
@@ -91,18 +96,20 @@ public class SynthMessage extends Message {
     }
 
     private int index;
+
     private Oscillator[] oscillators;
+
     @JsonProperty("has_decay")
     private boolean hasDecay;
+
     @JsonProperty("has_delay")
     private boolean hasDelay;
-    private int cutoff;
-    private int resonance;
-    private Note[] sequence;
 
-    public String getType() {
-        return type;
-    }
+    private int cutoff;
+
+    private int resonance;
+
+    private Note[] sequence;
 
     public int getIndex() {
         return index;
