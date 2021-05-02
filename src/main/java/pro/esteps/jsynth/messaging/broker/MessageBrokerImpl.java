@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Брокер сообщений.
+ * Message broker.
  */
 public class MessageBrokerImpl implements MessageBroker {
 
@@ -16,7 +16,7 @@ public class MessageBrokerImpl implements MessageBroker {
     private final List<Subscriber> subscribers;
 
     private MessageBrokerImpl() {
-        // todo Продумать другие варианты потокобезопасных коллекций
+        // TODO: Consider other thread-safe alternatives
         this.subscribers = new CopyOnWriteArrayList<>();
     }
 
@@ -28,9 +28,9 @@ public class MessageBrokerImpl implements MessageBroker {
     }
 
     /**
-     * Добавляет подписчика.
+     * Add a new subscriber.
      *
-     * @param subscriber Подписчик
+     * @param subscriber
      */
     @Override
     public void addSubscriber(Subscriber subscriber) {
@@ -44,9 +44,9 @@ public class MessageBrokerImpl implements MessageBroker {
     }
 
     /**
-     * Отменяет подписку.
+     * Cancel a subscription.
      *
-     * @param subscriber Подписчик
+     * @param subscriber
      */
     @Override
     public void removeSubscriber(Subscriber subscriber) {
@@ -58,9 +58,9 @@ public class MessageBrokerImpl implements MessageBroker {
     }
 
     /**
-     * Пересылает сообщение всем подписчикам.
+     * Forward a message to all subscribers.
      *
-     * @param message Сообщение
+     * @param message
      */
     @Override
     public void publish(Message message) {

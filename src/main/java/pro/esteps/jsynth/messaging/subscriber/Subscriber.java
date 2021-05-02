@@ -3,14 +3,14 @@ package pro.esteps.jsynth.messaging.subscriber;
 import pro.esteps.jsynth.messaging.message.Message;
 
 /**
- * Подписчик на сообщения.
+ * Message subscriber.
  */
 public interface Subscriber {
 
     /**
-     * Выполняет действие в ответ на сообщение.
+     * Handle a new message event.
      *
-     * @param message Сообщение
+     * @param message
      */
     void onMessage(Message message);
 

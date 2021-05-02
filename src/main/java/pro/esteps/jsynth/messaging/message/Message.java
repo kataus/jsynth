@@ -1,11 +1,14 @@
 package pro.esteps.jsynth.messaging.message;
 
+/**
+ * Message.
+ */
 public class Message {
 
     public Message() {
     }
 
-    // todo Use enum
+    // TODO: Use enum instead of String
     protected String type;
 
     protected Message(String type) {

@@ -4,28 +4,28 @@ import pro.esteps.jsynth.messaging.message.Message;
 import pro.esteps.jsynth.messaging.subscriber.Subscriber;
 
 /**
- * Брокер сообщений.
+ * Message broker.
  */
 public interface MessageBroker {
 
     /**
-     * Добавляет подписчика.
+     * Add a new subscriber.
      *
-     * @param subscriber Подписчик
+     * @param subscriber
      */
     void addSubscriber(Subscriber subscriber);
 
     /**
-     * Отменяет подписку.
+     * Cancel a subscription.
      *
-     * @param subscriber Подписчик
+     * @param subscriber
      */
     void removeSubscriber(Subscriber subscriber);
 
     /**
-     * Пересылает сообщение всем подписчикам.
+     * Forward a message to all subscribers.
      *
-     * @param message Сообщение
+     * @param message
      */
     void publish(Message message);
 
