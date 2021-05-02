@@ -13,7 +13,7 @@ public class App {
 
     public static final int SAMPLE_RATE = 44100;
     public static final int BUFFER_SIZE = 1024;
-    public static final int TICKS_PER_NOTE = 5;
+    public static final int TICKS_PER_SEQUENCER_STEP = 5;
 
     public static final String WEBSOCKET_HOST = "localhost";
     public static final int WEBSOCKET_PORT = 8887;

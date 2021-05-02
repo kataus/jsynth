@@ -8,7 +8,7 @@ import pro.esteps.jsynth.messaging.message.Message;
 public interface Subscriber {
 
     /**
-     * Handle a new message event.
+     * Handle a PubSub message.
      *
      * @param message
      */
