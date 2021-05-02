@@ -3,59 +3,42 @@ package pro.esteps.jsynth;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import pro.esteps.jsynth.websocket_api.server.SynthServer;
-import pro.esteps.jsynth.messaging.broker.MessageBroker;
 import pro.esteps.jsynth.messaging.broker.MessageBrokerImpl;
-import pro.esteps.jsynth.messaging.subscriber.Subscriber;
-import pro.esteps.jsynth.synth_rack.SynthRack;
 import pro.esteps.jsynth.synth_rack.SynthRackImpl;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public class App {
 
-    public static int SAMPLE_RATE = 44100;
-    public static int BUFFER_SIZE = 1024;
+    public static final int SAMPLE_RATE = 44100;
+    public static final int BUFFER_SIZE = 1024;
+    public static final int TICKS_PER_NOTE = 5;
 
-    private static class ServerThread extends Thread {
+    public static final String WEBSOCKET_HOST = "localhost";
+    public static final int WEBSOCKET_PORT = 8887;
 
-        private SynthServer synthServer;
+    public static void main(String[] args) {
 
-        private ServerThread(SynthServer synthServer) {
-            this.synthServer = synthServer;
-        }
+        var messageBroker = MessageBrokerImpl.getInstance();
 
-        @Override
-        public void run() {
-            synthServer.run();
-        }
+        var objectMapper = new ObjectMapper();
+        // TODO: consider other options to address the partial JSON issue
+        objectMapper.configure(
+                DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                false);
 
-    }
+        var inetSocketAddress = new InetSocketAddress(WEBSOCKET_HOST, WEBSOCKET_PORT);
+        var server = new SynthServer(
+                inetSocketAddress,
+                objectMapper,
+                messageBroker);
 
-    public static void main(String[] args) throws IOException {
-
-        MessageBroker messageBroker = MessageBrokerImpl.getInstance();
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        String host = "localhost";
-        int port = 8887;
-        SynthServer server = new SynthServer(new InetSocketAddress(host, port), objectMapper, messageBroker);
-
-        SynthRack synthRack = SynthRackImpl.getInstance(messageBroker);
+        var synthRack = SynthRackImpl.getInstance(messageBroker);
 
         messageBroker.addSubscriber(server);
-        messageBroker.addSubscriber((Subscriber) synthRack);
+        messageBroker.addSubscriber(synthRack);
 
-        /*
-        Thread thread = new ServerThread(server);
-        thread.start();
-        */
         server.run();
-
-        // TestConsole console = new TestConsole(messageBroker);
-        // console.processConsoleInput();
 
     }
 }
