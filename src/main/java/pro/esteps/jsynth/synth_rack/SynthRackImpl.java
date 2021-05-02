@@ -1,59 +1,112 @@
 package pro.esteps.jsynth.synth_rack;
 
-import pro.esteps.jsynth.api.input.DrumMachineMessage;
-import pro.esteps.jsynth.api.input.SynthMessage;
-import pro.esteps.jsynth.drum_machine.DrumMachine;
-import pro.esteps.jsynth.mixer.Mixer;
-import pro.esteps.jsynth.output.Output;
-import pro.esteps.jsynth.pubsub.broker.MessageBroker;
-import pro.esteps.jsynth.pubsub.message.Message;
-import pro.esteps.jsynth.pubsub.subscriber.Subscriber;
-import pro.esteps.jsynth.sequencer.*;
-import pro.esteps.jsynth.synth.Synth;
-import pro.esteps.jsynth.wave_generator.*;
+import pro.esteps.jsynth.synth_rack.message_handler.DrumMachineMessageHandler;
+import pro.esteps.jsynth.synth_rack.message_handler.SynthMessageHandler;
+import pro.esteps.jsynth.websocket_api.input.DrumMachineMessage;
+import pro.esteps.jsynth.websocket_api.input.SynthMessage;
+import pro.esteps.jsynth.synth_rack.drum_machine.DrumMachine;
+import pro.esteps.jsynth.synth_rack.mixer.Mixer;
+import pro.esteps.jsynth.synth_rack.output.Output;
+import pro.esteps.jsynth.messaging.broker.MessageBroker;
+import pro.esteps.jsynth.messaging.message.Message;
+import pro.esteps.jsynth.messaging.subscriber.Subscriber;
+import pro.esteps.jsynth.synth_rack.sequencer.*;
+import pro.esteps.jsynth.synth_rack.synth.Synth;
 
+import javax.sound.sampled.SourceDataLine;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Synth rack containing synthesizers and drum machines.
+ * Synth rack with synthesizers and drum machines.
  */
 public class SynthRackImpl implements SynthRack, Subscriber {
 
     private final MessageBroker messageBroker;
     private static SynthRackImpl synthRack;
+    private final SourceDataLine soundLine;
+
+    private final SynthMessageHandler synthMessageHandler;
+    private final DrumMachineMessageHandler drumMachineMessageHandler;
+
     private List<Synth> synths;
     private List<DrumMachine> drumMachines;
     private Mixer mixer;
 
-    private SynthRackImpl(MessageBroker messageBroker) {
+    private SynthRackImpl(SourceDataLine soundLine, MessageBroker messageBroker) {
+        this.soundLine = soundLine;
         this.messageBroker = messageBroker;
+        this.synthMessageHandler = new SynthMessageHandler(this);
+        this.drumMachineMessageHandler = new DrumMachineMessageHandler(this);
         initSynths();
         initDrumMachines();
         initMixer();
         initOutput();
     }
 
-    public static SynthRackImpl getInstance(MessageBroker messageBroker) {
+    public static SynthRackImpl getInstance(SourceDataLine soundLine, MessageBroker messageBroker) {
         if (synthRack == null) {
-            synthRack = new SynthRackImpl(messageBroker);
+            synthRack = new SynthRackImpl(soundLine, messageBroker);
         }
         return synthRack;
     }
 
     /**
+     * Get a synth by index.
+     *
+     * @param index
+     * @return
+     * @throws IndexOutOfBoundsException if provided index is too large
+     */
+    @Override
+    public Synth getSynthByIndex(int index) {
+        if (index > synths.size() - 1) {
+            throw new IndexOutOfBoundsException("Synth index is out of bounds: " + index);
+        }
+        return synths.get(index);
+    }
+
+    /**
+     * Get a drum machine by index.
+     *
+     * @param index
+     * @return
+     * @throws IndexOutOfBoundsException if provided index is too large
+     */
+    @Override
+    public DrumMachine getDrumMachineByIndex(int index) {
+        if (index > drumMachines.size() - 1) {
+            throw new IndexOutOfBoundsException("DrumMachine index is out of bounds: " + index);
+        }
+        return drumMachines.get(index);
+    }
+
+    /**
+     * Handle a PubSub message.
+     *
+     * @param message
+     */
+    @Override
+    public void onMessage(Message message) {
+        if (message instanceof SynthMessage) {
+            handleSynthMessage((SynthMessage) message);
+        }
+        if (message instanceof DrumMachineMessage) {
+            handleDrumMachineMessage((DrumMachineMessage) message);
+        }
+    }
+
+    /**
      * Init 4 synths.
-     * Last synth has 1/4 tempo setting.
+     * 1st synth (bass) has a 1/4 tempo.
+     * <p>
+     * TODO: Add tempo controls to API
      */
     private void initSynths() {
         synths = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            if (i == 0) {
-                // todo Make synth tempo configurable
-                synths.add(i, new Synth(Sequencer.SequencerTempo.QUARTER));
-            } else {
-                synths.add(i, new Synth());
-            }
+        synths.add(0, new Synth(Sequencer.SequencerTempo.QUARTER));
+        for (int i = 1; i < 4; i++) {
+            synths.add(i, new Synth());
         }
     }
 
@@ -68,10 +121,11 @@ public class SynthRackImpl implements SynthRack, Subscriber {
     }
 
     /**
-     * Init global mixer.
+     * Init the global mixer.
+     * <p>
+     * TODO: Add volume controls to API
      */
     private void initMixer() {
-        // todo Add volume control
         mixer = new Mixer(6);
         mixer.setProducerForInput(0, synths.get(0), (byte) 80);
         mixer.setProducerForInput(1, synths.get(1), (byte) 80);
@@ -82,109 +136,22 @@ public class SynthRackImpl implements SynthRack, Subscriber {
     }
 
     /**
-     * Init output  and run its thread.
+     * Init the output and run its thread.
+     *
+     * TODO: Handle output thread
      */
     private void initOutput() {
-        Output output = new Output(mixer, messageBroker);
+        Output output = new Output(soundLine, mixer, messageBroker);
         Thread outputThread = new Thread(output);
         outputThread.start();
     }
 
-    @Override
-    public void onMessage(Message message) {
-        if (message instanceof SynthMessage) {
-            handleSynthMessage((SynthMessage) message);
-        }
-        if (message instanceof DrumMachineMessage) {
-            // todo
-            handleDrumMachineMessage((DrumMachineMessage) message);
-        }
-    }
-
     private void handleSynthMessage(SynthMessage message) {
-        Synth synth = synths.get(message.getIndex());
-
-        // Oscillators
-        // todo Change existing generator settings instead of replacing it
-
-        var oscillatorMessages = message.getOscillators();
-        for (int i = 0; i < 4; i++) {
-
-            Generator generator = null;
-
-            var oscillatorMessage = oscillatorMessages[i];
-            if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.SAW) {
-                generator = new SawWaveGenerator();
-            }
-            if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.SQUARE) {
-                generator = new SquareWaveGenerator();
-            }
-            if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.SINE) {
-                generator = new SineWaveGenerator();
-            }
-            if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.TRIANGLE) {
-                generator = new TriangleWaveGenerator();
-            }
-            // todo Handle other (i.e. missing or invalid) values
-
-            synth.setGenerator(
-                    i,
-                    generator,
-                    oscillatorMessage.getTune(),
-                    (byte) oscillatorMessage.getVolume()
-            );
-        }
-
-        // Sequence
-
-        Note[] notes = new Note[16];
-        Note note;
-        int i = 0;
-        for (var inputNote : message.getSequence()) {
-            note = null;
-            if (inputNote.isEmpty()) {
-                note = new EmptyNote();
-            } else if (!inputNote.getNote().isEmpty()) {
-                note = new SynthNote(inputNote.getNote());
-            }
-            notes[i++] = note;
-        }
-
-        synth.setSequence(notes);
-
-        // Effects
-        // todo Change existing values instead of replacing them
-
-        synth.setCutoffFrequency(message.getCutoff());
-
-        synth.setResonance((byte) message.getResonance());
-
-        if (message.hasDecay()) {
-            synth.setDecayLength((byte) 1);
-        } else {
-            synth.setDecayLength((byte) 0);
-        }
-
-        // todo Disable delay
-        if (message.hasDelay()) {
-            synth.enableDelay();
-        }
-
+        synthMessageHandler.handleMessage(message);
     }
 
-    private void handleDrumMachineMessage(DrumMachineMessage message){
-        DrumMachine drumMachine = drumMachines.get(message.getIndex());
-
-        // Sequence
-        DrumMachineNote[] notes = new DrumMachineNote[16];
-        DrumMachineNote note;
-        int i = 0;
-        for (var inputNote : message.getSequence()) {
-            note = new DrumMachineNote(inputNote.getSamples());
-            notes[i++] = note;
-        }
-
-        drumMachine.setSequence(notes);
+    private void handleDrumMachineMessage(DrumMachineMessage message) {
+        drumMachineMessageHandler.handleMessage(message);
     }
 
 }

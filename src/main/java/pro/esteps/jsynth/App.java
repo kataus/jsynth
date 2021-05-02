@@ -2,61 +2,57 @@ package pro.esteps.jsynth;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import pro.esteps.jsynth.api.server.SynthServer;
-import pro.esteps.jsynth.console.TestConsole;
-import pro.esteps.jsynth.pubsub.broker.MessageBroker;
-import pro.esteps.jsynth.pubsub.broker.MessageBrokerImpl;
-import pro.esteps.jsynth.pubsub.subscriber.Subscriber;
-import pro.esteps.jsynth.synth_rack.SynthRack;
+import pro.esteps.jsynth.websocket_api.mapper.MessageMapperImpl;
+import pro.esteps.jsynth.websocket_api.server.SynthServer;
+import pro.esteps.jsynth.messaging.broker.MessageBrokerImpl;
 import pro.esteps.jsynth.synth_rack.SynthRackImpl;
 
-import java.io.IOException;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.SourceDataLine;
 import java.net.InetSocketAddress;
+
+import static pro.esteps.jsynth.synth_rack.config.Config.BUFFER_SIZE;
+import static pro.esteps.jsynth.synth_rack.config.Config.FORMAT;
 
 public class App {
 
-    public static int SAMPLE_RATE = 44100;
-    public static int BUFFER_SIZE = 1024;
+    public static final String WEBSOCKET_HOST = "localhost";
+    public static final int WEBSOCKET_PORT = 8887;
 
-    private static class ServerThread extends Thread {
+    public static void main(String[] args) {
 
-        private SynthServer synthServer;
+        try (SourceDataLine soundLine = AudioSystem.getSourceDataLine(FORMAT)) {
 
-        private ServerThread(SynthServer synthServer) {
-            this.synthServer = synthServer;
+            var messageBroker = MessageBrokerImpl.getInstance();
+
+            var objectMapper = new ObjectMapper();
+            // TODO: consider other options to address the partial JSON issue
+            objectMapper.configure(
+                    DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                    false);
+
+            var messageMapper = new MessageMapperImpl(objectMapper);
+
+            var inetSocketAddress = new InetSocketAddress(WEBSOCKET_HOST, WEBSOCKET_PORT);
+            var server = new SynthServer(
+                    inetSocketAddress,
+                    messageMapper,
+                    messageBroker);
+
+            soundLine.open(FORMAT, BUFFER_SIZE * 2);
+            var synthRack = SynthRackImpl.getInstance(soundLine, messageBroker);
+
+            messageBroker.addSubscriber(server);
+            messageBroker.addSubscriber(synthRack);
+
+            server.run();
+
+        } catch (Exception e) {
+            // TODO: Handle exception
+            e.printStackTrace();
         }
 
-        @Override
-        public void run() {
-            synthServer.run();
-        }
 
-    }
-
-    public static void main(String[] args) throws IOException {
-
-        MessageBroker messageBroker = MessageBrokerImpl.getInstance();
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        String host = "localhost";
-        int port = 8887;
-        SynthServer server = new SynthServer(new InetSocketAddress(host, port), objectMapper, messageBroker);
-
-        SynthRack synthRack = SynthRackImpl.getInstance(messageBroker);
-
-        messageBroker.addSubscriber(server);
-        messageBroker.addSubscriber((Subscriber) synthRack);
-
-        /*
-        Thread thread = new ServerThread(server);
-        thread.start();
-        */
-        server.run();
-
-        // TestConsole console = new TestConsole(messageBroker);
-        // console.processConsoleInput();
 
     }
 }
