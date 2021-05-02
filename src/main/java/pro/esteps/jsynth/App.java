@@ -2,11 +2,10 @@ package pro.esteps.jsynth;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import pro.esteps.jsynth.api.server.SynthServer;
-import pro.esteps.jsynth.console.TestConsole;
-import pro.esteps.jsynth.pubsub.broker.MessageBroker;
-import pro.esteps.jsynth.pubsub.broker.MessageBrokerImpl;
-import pro.esteps.jsynth.pubsub.subscriber.Subscriber;
+import pro.esteps.jsynth.websocket_api.server.SynthServer;
+import pro.esteps.jsynth.messaging.broker.MessageBroker;
+import pro.esteps.jsynth.messaging.broker.MessageBrokerImpl;
+import pro.esteps.jsynth.messaging.subscriber.Subscriber;
 import pro.esteps.jsynth.synth_rack.SynthRack;
 import pro.esteps.jsynth.synth_rack.SynthRackImpl;
 

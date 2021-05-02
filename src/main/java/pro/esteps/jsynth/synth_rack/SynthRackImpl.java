@@ -1,16 +1,16 @@
 package pro.esteps.jsynth.synth_rack;
 
-import pro.esteps.jsynth.api.input.DrumMachineMessage;
-import pro.esteps.jsynth.api.input.SynthMessage;
-import pro.esteps.jsynth.drum_machine.DrumMachine;
-import pro.esteps.jsynth.mixer.Mixer;
-import pro.esteps.jsynth.output.Output;
-import pro.esteps.jsynth.pubsub.broker.MessageBroker;
-import pro.esteps.jsynth.pubsub.message.Message;
-import pro.esteps.jsynth.pubsub.subscriber.Subscriber;
-import pro.esteps.jsynth.sequencer.*;
-import pro.esteps.jsynth.synth.Synth;
-import pro.esteps.jsynth.wave_generator.*;
+import pro.esteps.jsynth.websocket_api.input.DrumMachineMessage;
+import pro.esteps.jsynth.websocket_api.input.SynthMessage;
+import pro.esteps.jsynth.synth_rack.drum_machine.DrumMachine;
+import pro.esteps.jsynth.synth_rack.mixer.Mixer;
+import pro.esteps.jsynth.synth_rack.output.Output;
+import pro.esteps.jsynth.messaging.broker.MessageBroker;
+import pro.esteps.jsynth.messaging.message.Message;
+import pro.esteps.jsynth.messaging.subscriber.Subscriber;
+import pro.esteps.jsynth.synth_rack.sequencer.*;
+import pro.esteps.jsynth.synth_rack.synth.Synth;
+import pro.esteps.jsynth.synth_rack.oscillator.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,26 +110,26 @@ public class SynthRackImpl implements SynthRack, Subscriber {
         var oscillatorMessages = message.getOscillators();
         for (int i = 0; i < 4; i++) {
 
-            Generator generator = null;
+            Oscillator oscillator = null;
 
             var oscillatorMessage = oscillatorMessages[i];
             if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.SAW) {
-                generator = new SawWaveGenerator();
+                oscillator = new SawWaveOscillator();
             }
             if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.SQUARE) {
-                generator = new SquareWaveGenerator();
+                oscillator = new SquareWaveOscillator();
             }
             if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.SINE) {
-                generator = new SineWaveGenerator();
+                oscillator = new SineWaveOscillator();
             }
             if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.TRIANGLE) {
-                generator = new TriangleWaveGenerator();
+                oscillator = new TriangleWaveOscillator();
             }
             // todo Handle other (i.e. missing or invalid) values
 
             synth.setGenerator(
                     i,
-                    generator,
+                    oscillator,
                     oscillatorMessage.getTune(),
                     (byte) oscillatorMessage.getVolume()
             );
