@@ -6,6 +6,7 @@ import pro.esteps.jsynth.synth_rack.oscillator.*;
 import pro.esteps.jsynth.synth_rack.sequencer.EmptyNote;
 import pro.esteps.jsynth.synth_rack.sequencer.Note;
 import pro.esteps.jsynth.synth_rack.sequencer.SynthNote;
+import pro.esteps.jsynth.synth_rack.synth.Synth;
 import pro.esteps.jsynth.websocket_api.input.SynthMessage;
 
 /**
@@ -14,6 +15,8 @@ import pro.esteps.jsynth.websocket_api.input.SynthMessage;
 public class SynthMessageHandler implements MessageHandler {
 
     private final SynthRack synthRack;
+    private SynthMessage message;
+    private Synth synth;
 
     public SynthMessageHandler(SynthRack synthRack) {
         this.synthRack = synthRack;
@@ -25,32 +28,34 @@ public class SynthMessageHandler implements MessageHandler {
         if (!(message instanceof SynthMessage)) {
             throw new IllegalArgumentException("Message has an illegal type: " + message.getClass());
         }
-        var synthMessage = (SynthMessage) message;
 
-        var synth = synthRack.getSynthByIndex(synthMessage.getIndex());
+        this.message = (SynthMessage) message;
+        this.synth = synthRack.getSynthByIndex(this.message.getIndex());
 
-        // Oscillators
-        // todo Change existing generator settings instead of replacing it
+        updateOscillators();
+        updateSequence();
+        updateEffects();
+    }
 
-        var oscillatorMessages = synthMessage.getOscillators();
+    /**
+     * Update oscillators.
+     * <p>
+     * TODO: Change existing settings instead of replacing them
+     * TODO: Handle invalid values
+     */
+    private void updateOscillators() {
+
+        var oscillatorMessages = message.getOscillators();
         for (int i = 0; i < 4; i++) {
 
-            Oscillator oscillator = null;
-
             var oscillatorMessage = oscillatorMessages[i];
-            if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.SAW) {
-                oscillator = new SawWaveOscillator();
-            }
-            if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.SQUARE) {
-                oscillator = new SquareWaveOscillator();
-            }
-            if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.SINE) {
-                oscillator = new SineWaveOscillator();
-            }
-            if (oscillatorMessage.getWaveform() == SynthMessage.Waveform.TRIANGLE) {
-                oscillator = new TriangleWaveOscillator();
-            }
-            // todo Handle other (i.e. missing or invalid) values
+
+            Oscillator oscillator = switch (oscillatorMessage.getWaveform()) {
+                case SAW -> new SawWaveOscillator();
+                case SQUARE -> new SquareWaveOscillator();
+                case SINE -> new SineWaveOscillator();
+                case TRIANGLE -> new TriangleWaveOscillator();
+            };
 
             synth.setGenerator(
                     i,
@@ -60,12 +65,19 @@ public class SynthMessageHandler implements MessageHandler {
             );
         }
 
-        // Sequence
+    }
+
+    /**
+     * Update sequence.
+     * <p>
+     * TODO: Change existing settings instead of replacing them
+     */
+    private void updateSequence() {
 
         Note[] notes = new Note[16];
         Note note;
         int i = 0;
-        for (var inputNote : synthMessage.getSequence()) {
+        for (var inputNote : message.getSequence()) {
             note = null;
             if (inputNote.isEmpty()) {
                 note = new EmptyNote();
@@ -76,25 +88,28 @@ public class SynthMessageHandler implements MessageHandler {
         }
 
         synth.setSequence(notes);
+    }
 
-        // Effects
-        // todo Change existing values instead of replacing them
+    /**
+     * Update effects.
+     * <p>
+     * TODO: Change existing settings instead of replacing them
+     */
+    private void updateEffects() {
 
-        synth.setCutoffFrequency(synthMessage.getCutoff());
+        synth.setCutoffFrequency(message.getCutoff());
+        synth.setResonance((byte) message.getResonance());
 
-        synth.setResonance((byte) synthMessage.getResonance());
-
-        if (synthMessage.hasDecay()) {
+        if (message.hasDecay()) {
             synth.setDecayLength((byte) 1);
         } else {
             synth.setDecayLength((byte) 0);
         }
 
-        // todo Disable delay
-        if (synthMessage.hasDelay()) {
+        // TODO: Add the possibility to disable delay
+        if (message.hasDelay()) {
             synth.enableDelay();
         }
-
-
     }
+
 }

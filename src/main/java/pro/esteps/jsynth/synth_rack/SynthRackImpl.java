@@ -12,7 +12,6 @@ import pro.esteps.jsynth.messaging.message.Message;
 import pro.esteps.jsynth.messaging.subscriber.Subscriber;
 import pro.esteps.jsynth.synth_rack.sequencer.*;
 import pro.esteps.jsynth.synth_rack.synth.Synth;
-import pro.esteps.jsynth.synth_rack.oscillator.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -13,6 +13,8 @@ import pro.esteps.jsynth.websocket_api.input.DrumMachineMessage;
 public class DrumMachineMessageHandler implements MessageHandler {
 
     private final SynthRack synthRack;
+    private DrumMachineMessage message;
+    private DrumMachine drumMachine;
 
     public DrumMachineMessageHandler(SynthRack synthRack) {
         this.synthRack = synthRack;
@@ -24,20 +26,23 @@ public class DrumMachineMessageHandler implements MessageHandler {
         if (!(message instanceof DrumMachineMessage)) {
             throw new IllegalArgumentException("Message has an illegal type: " + message.getClass());
         }
-        var drumMachineMessage = (DrumMachineMessage) message;
 
-        var drumMachine = synthRack.getDrumMachineByIndex(drumMachineMessage.getIndex());
+        this.message = (DrumMachineMessage) message;
+        this.drumMachine = synthRack.getDrumMachineByIndex(this.message.getIndex());
 
-        // Sequence
+        updateSequence();
+    }
+
+    private void updateSequence() {
         DrumMachineNote[] notes = new DrumMachineNote[16];
         DrumMachineNote note;
         int i = 0;
-        for (var inputNote : drumMachineMessage.getSequence()) {
+        for (var inputNote : message.getSequence()) {
             note = new DrumMachineNote(inputNote.getSamples());
             notes[i++] = note;
         }
 
         drumMachine.setSequence(notes);
-
     }
+
 }
