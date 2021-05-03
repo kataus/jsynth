@@ -54,10 +54,24 @@
                         </div><!-- /.waveforms -->
                         <div class="knobs">
                             <div class="knob-wrapper">
-                                <div class="knob" data-value="0" data-arc="320"></div>
+                                <div class="knob"
+                                     data-app-component="oscillator"
+                                     data-app-model="volume"
+                                     :data-app-synth-index="synthIndex"
+                                     :data-app-oscillator-index="oscillatorIndex"
+                                     :data-value="oscillator.volume"
+                                     data-arc="320"></div>
                             </div>
                             <div class="knob-wrapper">
-                                <div class="knob" data-value="0" data-arc="320"></div>
+                                <div class="knob"
+                                     data-app-component="oscillator"
+                                     data-app-model="tune"
+                                     :data-app-synth-index="synthIndex"
+                                     :data-app-oscillator-index="oscillatorIndex"
+                                     :data-value="oscillator.tune"
+                                     data-steps="200"
+                                     data-type="pan"
+                                     data-arc="320"></div>
                             </div>
                         </div><!-- /.knobs -->
                     </div><!-- /.oscillator -->
@@ -75,10 +89,20 @@
                 <div class="effects">
                     <div class="knobs">
                         <div class="knob-wrapper">
-                            <div class="knob" data-value="0" data-arc="320"></div>
+                            <div class="knob"
+                                 data-app-component="effects"
+                                 data-app-model="cutoff"
+                                 :data-app-synth-index="synthIndex"
+                                 :data-value="synth.cutoff"
+                                 data-arc="320"></div>
                         </div>
                         <div class="knob-wrapper">
-                            <div class="knob" data-value="0" data-arc="320"></div>
+                            <div class="knob"
+                                 data-app-component="effects"
+                                 data-app-model="resonance"
+                                 :data-app-synth-index="synthIndex"
+                                 :data-value="synth.resonance"
+                                 data-arc="320"></div>
                         </div>
                     </div><!-- /.knobs -->
                     <div class="delay">
@@ -242,13 +266,13 @@
 
 <script src="js/jquery-3.6.0.min.js"></script>
 <script src="js/jquery-ui-1.12.1.min.js"></script>
-<script src="js/jquery.knob.min.js"></script>
+<script src="js/jquery.knob.js"></script>
 <script src="js/vue-2.6.12.js"></script>
 
 <script>
     $(function () {
 
-        const app = new Vue({
+        window.app = new Vue({
             el: '#app',
             data: {
                 synths: [
@@ -257,12 +281,12 @@
                         oscillators: [
                             {
                                 waveform: 'square',
-                                volume: 25,
+                                volume: 100,
                                 tune: 0
                             },
                             {
                                 waveform: 'square',
-                                volume: 15,
+                                volume: 70,
                                 tune: 1
                             },
                             {
@@ -278,7 +302,7 @@
                         ],
                         hasDecay: 0,
                         hasDelay: 0,
-                        cutoff: 600,
+                        cutoff: 3,
                         resonance: 0,
                         sequence: [
                             {isEmpty: false, note: 'd2'},
@@ -304,18 +328,18 @@
                         oscillators: [
                             {
                                 waveform: 'saw',
-                                volume: 25,
+                                volume: 100,
                                 tune: 0
                             },
                             {
                                 waveform: 'saw',
-                                volume: 10,
+                                volume: 50,
                                 tune: 1
                             },
                             {
                                 waveform: 'triangle',
-                                volume: 10,
-                                tune: 101
+                                volume: 50,
+                                tune: 99
                             },
                             {
                                 waveform: 'sine',
@@ -325,7 +349,7 @@
                         ],
                         hasDecay: 1,
                         hasDelay: 1,
-                        cutoff: 1200,
+                        cutoff: 6,
                         resonance: 100,
                         sequence: [
                             {isEmpty: false, note: 'd3'},
@@ -372,7 +396,7 @@
                         ],
                         hasDecay: 0,
                         hasDelay: 0,
-                        cutoff: 20000,
+                        cutoff: 100,
                         resonance: 0,
                         sequence: [
                             {isEmpty: true, note: ''},
@@ -446,16 +470,34 @@
                 editSequencerStep: null,
             },
             methods: {
+                calculateOscillatorVolumeFromKnobValue: function (volume) {
+                    return Math.floor(volume / 4);
+                },
+                calculateOscillatorTuneFromKnobValue: function (tune) {
+                    return tune;
+                },
+                calculateCutoffFromKnobValue: function (cutoff) {
+                    // TODO: Use log. scale
+                    return cutoff * 200;
+                },
+                calculateResonanceFromKnobValue: function (resonance) {
+                    return resonance;
+                },
                 sendSynthMessage: function (index) {
                     const synth = this.synths[index];
                     const data = {
                         type: 'synth',
                         index: index,
-                        oscillators: synth.oscillators,
+                        oscillators: synth.oscillators.map(o => {
+                            const newOscillator = Object.assign({}, o);
+                            newOscillator.volume = this.calculateOscillatorVolumeFromKnobValue(newOscillator.volume);
+                            newOscillator.tune = this.calculateOscillatorTuneFromKnobValue(newOscillator.tune);
+                            return newOscillator;
+                        }),
                         has_decay: synth.hasDecay === 1,
                         has_delay: synth.hasDelay === 1,
-                        cutoff: synth.cutoff,
-                        resonance: synth.resonance,
+                        cutoff: this.calculateCutoffFromKnobValue(synth.cutoff),
+                        resonance: this.calculateResonanceFromKnobValue(synth.resonance),
                         sequence: synth.sequence
                     }
                     socket.send(JSON.stringify(data));
@@ -619,6 +661,30 @@
                 setOscillatorWaveform: function (synthIndex, oscillatorIndex, waveform) {
                     this.synths[synthIndex].oscillators[oscillatorIndex].waveform = waveform;
                 },
+            },
+            mounted: function () {
+
+                $(".knob").knob()
+                    .on('grab', function () {
+                    })
+                    .on('turn', function (e, value) {
+                        const component = $(this).data('app-component');
+                        const model = $(this).data('app-model');
+                        if (component === 'oscillator') {
+                            const synthIndex = $(this).data('app-synth-index');
+                            const oscillatorIndex = $(this).data('app-oscillator-index');
+                            window.app.synths[synthIndex].oscillators[oscillatorIndex][model] = value;
+                        }
+                        if (component === 'effects') {
+                            const synthIndex = $(this).data('app-synth-index');
+                            window.app.synths[synthIndex][model] = value;
+                        }
+                    })
+                    .on('release', function () {
+                    })
+                    .on('rest', function () {
+                    });
+
             }
         })
 
@@ -628,15 +694,7 @@
             app.currentSequencerStep = obj.sequencerStep;
         }
 
-        $(".knob").knob()
-            .on('grab', function () {
-            })
-            .on('turn', function () {
-            })
-            .on('release', function () {
-            })
-            .on('rest', function () {
-            })
+
     });
 </script>
 
