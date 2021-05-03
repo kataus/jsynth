@@ -20,7 +20,7 @@
             </div><!-- /.controls -->
         </div>
 
-        <div class="unit">
+        <div class="unit" v-for="(synth, synthIndex) in synths" :key="'synth-' + synthIndex">
             <div class="synth">
 
                 <div class="oscillators">
@@ -144,53 +144,8 @@
 
                 <div class="sequencer">
                     <div class="steps">
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
+                        <div class="step" v-for="step in 16" :key="step">
+                            <button type="button" :class="getSequencerButtonClass('synth', synthIndex, step - 1)"></button>
                         </div>
                     </div><!-- /.steps -->
                     <div class="clear">
@@ -246,58 +201,13 @@
             </div><!-- /.synth -->
         </div><!-- /.unit -->
 
-        <div class="unit">
+        <div class="unit" v-for="(drumMachine, drumMachineIndex) in drumMachines" :key="'drumMachine-' + drumMachineIndex">
             <div class="drum-machine">
 
                 <div class="sequencer">
                     <div class="steps">
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
-                        </div>
-                        <div class="step">
-                            <button type="button"></button>
+                        <div class="step" v-for="step in 16" :key="step">
+                            <button type="button" :class="getSequencerButtonClass('drumMachine', drumMachineIndex, step - 1)"></button>
                         </div>
                     </div><!-- /.steps -->
                     <div class="clear">
@@ -338,10 +248,242 @@
 <script src="js/jquery-3.6.0.min.js"></script>
 <script src="js/jquery-ui-1.12.1.min.js"></script>
 <script src="js/jquery.knob.min.js"></script>
+<script src="js/vue-2.6.12.js"></script>
 
 <script>
-
     $(function () {
+
+        const app = new Vue({
+            el: '#app',
+            data: {
+                currentSequencerStep: 0,
+                synths: [
+                    // Synth 0
+                    {
+                        oscillators: [
+                            {
+                                waveform: 'square',
+                                volume: 25,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'square',
+                                volume: 15,
+                                tune: 1
+                            },
+                            {
+                                waveform: 'sine',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'sine',
+                                volume: 0,
+                                tune: 0
+                            },
+                        ],
+                        hasDecay: 0,
+                        hasDelay: 0,
+                        cutoff: 600,
+                        resonance: 0,
+                        sequence: [
+                            {isEmpty: false, note: 'd2'},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: false, note: 'g2'},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: false, note: 'a#1'},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                        ]
+                    },
+                    // Synth 1
+                    {
+                        oscillators: [
+                            {
+                                waveform: 'saw',
+                                volume: 25,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'saw',
+                                volume: 10,
+                                tune: 1
+                            },
+                            {
+                                waveform: 'triangle',
+                                volume: 10,
+                                tune: 101
+                            },
+                            {
+                                waveform: 'sine',
+                                volume: 0,
+                                tune: 0
+                            },
+                        ],
+                        hasDecay: 1,
+                        hasDelay: 1,
+                        cutoff: 1200,
+                        resonance: 100,
+                        sequence: [
+                            {isEmpty: false, note: 'd3'},
+                            {isEmpty: false, note: 'a3'},
+                            {isEmpty: false, note: 'f5'},
+                            {isEmpty: false, note: 'd3'},
+                            {isEmpty: false, note: 'a3'},
+                            {isEmpty: false, note: 'e5'},
+                            {isEmpty: false, note: 'd3'},
+                            {isEmpty: false, note: 'a3'},
+                            {isEmpty: false, note: 'd5'},
+                            {isEmpty: false, note: 'd3'},
+                            {isEmpty: false, note: 'a3'},
+                            {isEmpty: false, note: 'c5'},
+                            {isEmpty: false, note: 'd3'},
+                            {isEmpty: false, note: 'a4'},
+                            {isEmpty: false, note: 'c5'},
+                            {isEmpty: false, note: 'd5'}
+                        ]
+                    },
+                    // Synth 2
+                    {
+                        oscillators: [
+                            {
+                                waveform: 'sine',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'sine',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'sine',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'sine',
+                                volume: 0,
+                                tune: 0
+                            },
+                        ],
+                        hasDecay: 0,
+                        hasDelay: 0,
+                        cutoff: 20000,
+                        resonance: 0,
+                        sequence: [
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''}
+                        ]
+                    },
+                ],
+                drumMachines: [
+                    // Drum machine 0
+                    {
+                        sequence: [
+                            {samples: ['kick', 'hihat-closed', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['hihat-closed', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['snare', 'hihat-closed', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['hihat-closed', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                        ]
+                    },
+                    // Drum machine 1
+                    {
+                        sequence: [
+                            {samples: ['hihat-closed', '', '', '']},
+                            {samples: ['hihat-semiopen', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['hihat-closed', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['hihat-semiopen', '', '', '']},
+                            {samples: ['hihat-open', 'clap', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['hihat-closed', '', '', '']},
+                            {samples: ['hihat-semiopen', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['hihat-closed', 'clap', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['hihat-semiopen', '', '', '']},
+                            {samples: ['hihat-open', 'cricket', '', '']},
+                            {samples: ['', '', '', '']},
+                        ]
+                    }
+                ]
+            },
+            methods: {
+                sendSynthMessage: function (index) {
+                    const synth = this.synths[index];
+                    const data = {
+                        type: 'synth',
+                        index: index,
+                        oscillators: synth.oscillators,
+                        has_decay: synth.hasDecay === 1,
+                        has_delay: synth.hasDelay === 1,
+                        cutoff: synth.cutoff,
+                        resonance: synth.resonance,
+                        sequence: synth.sequence
+                    }
+                    socket.send(JSON.stringify(data));
+                },
+                sendDrumMachineMessage: function (index) {
+                    const drumMachine = this.drumMachines[index];
+                    const data = {
+                        type: 'drumMachine',
+                        index: index,
+                        sequence: drumMachine.sequence
+                    }
+                    socket.send(JSON.stringify(data));
+                },
+                getSequencerButtonClass: function (synthType, synthIndex, step) {
+                    const classes = {
+                        active: this.currentSequencerStep === step
+                    };
+                    return classes;
+                }
+            }
+        })
+
+        const socket = new WebSocket("ws://localhost:8887")
+        socket.onmessage = function (event) {
+            const obj = JSON.parse(event.data);
+            app.currentSequencerStep = obj.sequencerStep;
+        }
+
         $(".knob").knob()
             .on('grab', function () {
             })
@@ -352,7 +494,6 @@
             .on('rest', function () {
             })
     });
-
 </script>
 
 </body>
