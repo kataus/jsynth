@@ -24,7 +24,8 @@
             <div class="synth">
 
                 <div class="oscillators">
-                    <div class="oscillator" v-for="(oscillator, oscillatorIndex) in synth.oscillators" :key="oscillatorIndex">
+                    <div class="oscillator" v-for="(oscillator, oscillatorIndex) in synth.oscillators"
+                         :key="oscillatorIndex">
                         <div class="waveforms">
                             <div class="waveform">
                                 <button type="button"
@@ -132,31 +133,38 @@
                         <button type="button"
                                 class="white f"
                                 :class="getSynthSequencerNoteClass(synthIndex, 'f' + getSynthOctave(octave, synthIndex))"
-                                @click="setSynthSequencerNote('f' + getSynthOctave(octave, synthIndex))"></button>
+                                @click="setSynthSequencerNote('f' + getSynthOctave(octave, synthIndex))"
+                        ></button>
                         <button type="button"
                                 class="black f_sharp"
                                 :class="getSynthSequencerNoteClass(synthIndex, 'f#' + getSynthOctave(octave, synthIndex))"
-                                @click="setSynthSequencerNote('f#' + getSynthOctave(octave, synthIndex))"></button>
+                                @click="setSynthSequencerNote('f#' + getSynthOctave(octave, synthIndex))"
+                        ></button>
                         <button type="button"
                                 class="white g"
                                 :class="getSynthSequencerNoteClass(synthIndex, 'g' + getSynthOctave(octave, synthIndex))"
-                                @click="setSynthSequencerNote('g' + getSynthOctave(octave, synthIndex))"></button>
+                                @click="setSynthSequencerNote('g' + getSynthOctave(octave, synthIndex))"
+                        ></button>
                         <button type="button"
                                 class="black g_sharp"
                                 :class="getSynthSequencerNoteClass(synthIndex, 'g#' + getSynthOctave(octave, synthIndex))"
-                                @click="setSynthSequencerNote('g#' + getSynthOctave(octave, synthIndex))"></button>
+                                @click="setSynthSequencerNote('g#' + getSynthOctave(octave, synthIndex))"
+                        ></button>
                         <button type="button"
                                 class="white a"
                                 :class="getSynthSequencerNoteClass(synthIndex, 'a' + getSynthOctave(octave, synthIndex))"
-                                @click="setSynthSequencerNote('a' + getSynthOctave(octave, synthIndex))"></button>
+                                @click="setSynthSequencerNote('a' + getSynthOctave(octave, synthIndex))"
+                        ></button>
                         <button type="button"
                                 class="black a_sharp"
                                 :class="getSynthSequencerNoteClass(synthIndex, 'a#' + getSynthOctave(octave, synthIndex))"
-                                @click="setSynthSequencerNote('a#' + getSynthOctave(octave, synthIndex))"></button>
+                                @click="setSynthSequencerNote('a#' + getSynthOctave(octave, synthIndex))"
+                        ></button>
                         <button type="button"
                                 class="white b"
                                 :class="getSynthSequencerNoteClass(synthIndex, 'b' + getSynthOctave(octave, synthIndex))"
-                                @click="setSynthSequencerNote('b' + getSynthOctave(octave, synthIndex))"></button>
+                                @click="setSynthSequencerNote('b' + getSynthOctave(octave, synthIndex))"
+                        ></button>
                     </div><!-- /.octave -->
                 </div><!-- /.keyboard -->
 
@@ -183,25 +191,46 @@
 
                 <div class="pads">
                     <div class="pad">
-                        <button type="button"></button>
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'kick')"
+                                @click="setDrumMachineSequencerNote('kick')"
+                        ></button>
                     </div>
                     <div class="pad">
-                        <button type="button"></button>
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'snare')"
+                                @click="setDrumMachineSequencerNote('snare')"
+                        ></button>
                     </div>
                     <div class="pad">
-                        <button type="button"></button>
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'hihat-closed')"
+                                @click="setDrumMachineSequencerNote('hihat-closed')"
+                        ></button>
                     </div>
                     <div class="pad">
-                        <button type="button"></button>
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'hihat-semiopen')"
+                                @click="setDrumMachineSequencerNote('hihat-semiopen')"
+                        ></button>
                     </div>
                     <div class="pad">
-                        <button type="button"></button>
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'hihat-open')"
+                                @click="setDrumMachineSequencerNote('hihat-open')"
+                        ></button>
                     </div>
                     <div class="pad">
-                        <button type="button"></button>
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'clap')"
+                                @click="setDrumMachineSequencerNote('clap')"
+                        ></button>
                     </div>
                     <div class="pad">
-                        <button type="button"></button>
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'cricket')"
+                                @click="setDrumMachineSequencerNote('cricket')"
+                        ></button>
                     </div>
                 </div><!-- /.pads -->
 
@@ -507,7 +536,49 @@
                 setSynthSequencerNote: function (note) {
                     if (this.editSequencerStatus
                         && this.editSequencerSynthType === 'synth') {
-                        this.synths[this.editSequencerSynthIndex].sequence[this.editSequencerStep].note = note;
+                        if (this.synths[this.editSequencerSynthIndex].sequence[this.editSequencerStep].note === note) {
+                            this.synths[this.editSequencerSynthIndex].sequence[this.editSequencerStep].note = '';
+                        } else {
+                            this.synths[this.editSequencerSynthIndex].sequence[this.editSequencerStep].note = note;
+                        }
+                    }
+                },
+                getDrumMachineSequencerNoteClass: function (synthIndex, note) {
+                    let isActive = false;
+                    let sequenceIndex = 0;
+                    if (this.editSequencerStatus
+                        && this.editSequencerSynthType === 'drumMachine'
+                        && this.editSequencerSynthIndex === synthIndex) {
+                        sequenceIndex = this.editSequencerStep;
+                        if (this.drumMachines[synthIndex].sequence[sequenceIndex].samples.includes(note)) {
+                            isActive = true;
+                        }
+                    } else {
+                        sequenceIndex = this.currentSequencerStep % 16;
+                        if (this.drumMachines[synthIndex].sequence[sequenceIndex].samples.includes(note)) {
+                            isActive = true;
+                        }
+                    }
+                    const classes = {
+                        active: isActive
+                    };
+                    return classes;
+                },
+                setDrumMachineSequencerNote: function (note) {
+                    if (this.editSequencerStatus
+                        && this.editSequencerSynthType === 'drumMachine') {
+                        const sequenceIndex = this.editSequencerStep;
+                        const synthIndex = this.editSequencerSynthIndex;
+                        const noteIndex = this.drumMachines[synthIndex].sequence[sequenceIndex].samples.indexOf(note);
+                        const emptyIndex = this.drumMachines[synthIndex].sequence[sequenceIndex].samples.indexOf('');
+                        if (noteIndex > -1) {
+                            this.drumMachines[synthIndex].sequence[sequenceIndex].samples[noteIndex] = '';
+                            return;
+                        }
+                        if (emptyIndex === -1) {
+                            return;
+                        }
+                        this.drumMachines[synthIndex].sequence[sequenceIndex].samples[emptyIndex] = note;
                     }
                 },
                 getDecayButtonClass: function (synthIndex) {
@@ -548,10 +619,6 @@
                 setOscillatorWaveform: function (synthIndex, oscillatorIndex, waveform) {
                     this.synths[synthIndex].oscillators[oscillatorIndex].waveform = waveform;
                 },
-                /*
-                :class="getOscillatorButtonClass(synthIndex, oscillatorIndex, 'triangle')"
-                                        @click="setOscillatorWaveform(synthIndex, oscillatorIndex, 'triangle')"
-                 */
             }
         })
 
