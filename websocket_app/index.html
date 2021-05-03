@@ -268,6 +268,7 @@
 <script src="js/jquery-ui-1.12.1.min.js"></script>
 <script src="js/jquery.knob.js"></script>
 <script src="js/vue-2.6.12.js"></script>
+<script src="js/lodash-4.13.1.min.js"></script>
 
 <script>
     $(function () {
@@ -462,12 +463,18 @@
                         ]
                     }
                 ],
+
                 currentSequencerStep: 0,
+
                 // TODO: Choose better names for these variables
                 editSequencerStatus: false,
                 editSequencerSynthType: null,
                 editSequencerSynthIndex: null,
                 editSequencerStep: null,
+
+                // TODO: Choose better names for these variables
+                lastChangedSynthType: null,
+                lastChangedSynthIndex: null,
             },
             methods: {
                 calculateOscillatorVolumeFromKnobValue: function (volume) {
@@ -482,6 +489,17 @@
                 },
                 calculateResonanceFromKnobValue: function (resonance) {
                     return resonance;
+                },
+                sendDebouncedMessage: function() {
+                    if (this.lastChangedSynthType === null || this.lastChangedSynthIndex === null) {
+                        return;
+                    }
+                    if (this.lastChangedSynthType === 'synth') {
+                        this.sendSynthMessage(this.lastChangedSynthIndex);
+                    }
+                    if (this.lastChangedSynthType === 'drumMachine') {
+                        this.sendDrumMachineMessage(this.lastChangedSynthIndex);
+                    }
                 },
                 sendSynthMessage: function (index) {
                     const synth = this.synths[index];
@@ -615,12 +633,23 @@
                         const emptyIndex = this.drumMachines[synthIndex].sequence[sequenceIndex].samples.indexOf('');
                         if (noteIndex > -1) {
                             this.drumMachines[synthIndex].sequence[sequenceIndex].samples[noteIndex] = '';
+
+                            // TODO: Use watcher
+                            this.lastChangedSynthType ='drumMachine';
+                            this.lastChangedSynthIndex = synthIndex;
+                            this.handleSynthChangeEvent();
+
                             return;
                         }
                         if (emptyIndex === -1) {
                             return;
                         }
                         this.drumMachines[synthIndex].sequence[sequenceIndex].samples[emptyIndex] = note;
+
+                        // TODO: Use watcher
+                        this.lastChangedSynthType ='drumMachine';
+                        this.lastChangedSynthIndex = synthIndex;
+                        this.handleSynthChangeEvent();
                     }
                 },
                 getDecayButtonClass: function (synthIndex) {
@@ -661,6 +690,68 @@
                 setOscillatorWaveform: function (synthIndex, oscillatorIndex, waveform) {
                     this.synths[synthIndex].oscillators[oscillatorIndex].waveform = waveform;
                 },
+            },
+            computed: {
+                synth0: function() {
+                    return this.synths[0];
+                },
+                synth1: function() {
+                    return this.synths[1];
+                },
+                synth2: function() {
+                    return this.synths[2];
+                },
+                drumMachine0: function() {
+                    return this.drumMachines[0];
+                },
+                drumMachine1: function() {
+                    return this.drumMachines[0];
+                }
+            },
+            watch: {
+                synth0: {
+                    handler: function () {
+                        this.lastChangedSynthType ='synth';
+                        this.lastChangedSynthIndex = 0;
+                        this.handleSynthChangeEvent();
+                    },
+                    deep: true
+                },
+                synth1: {
+                    handler: function () {
+                        this.lastChangedSynthType ='synth';
+                        this.lastChangedSynthIndex = 1;
+                        this.handleSynthChangeEvent();
+                    },
+                    deep: true
+                },
+                synth2: {
+                    handler: function () {
+                        this.lastChangedSynthType ='synth';
+                        this.lastChangedSynthIndex = 2;
+                        this.handleSynthChangeEvent();
+                    },
+                    deep: true
+                },
+                drumMachine0: {
+                    handler: function () {
+                        this.lastChangedSynthType ='drumMachine';
+                        this.lastChangedSynthIndex = 0;
+                        this.handleSynthChangeEvent();
+                    },
+                    deep: true
+                },
+                drumMachine1: {
+                    handler: function () {
+                        this.lastChangedSynthType ='drumMachine';
+                        this.lastChangedSynthIndex = 1;
+                        this.handleSynthChangeEvent();
+                    },
+                    deep: true
+                }
+            },
+            created: function () {
+                this.handleSynthChangeEvent = _.debounce(this.sendDebouncedMessage, 100)
             },
             mounted: function () {
 
