@@ -124,7 +124,10 @@
 
                 <div class="envelope">
                     <div class="decay">
-                        <button type="button"></button>
+                        <button type="button"
+                                :class="getDecayButtonClass(synthIndex)"
+                                @click="toggleDecay(synthIndex)"
+                        ></button>
                     </div><!-- /.decay -->
                 </div><!-- /.envelope -->
 
@@ -562,6 +565,20 @@
                     if (this.editSequencerStatus
                         && this.editSequencerSynthType === 'synth') {
                         this.synths[this.editSequencerSynthIndex].sequence[this.editSequencerStep].note = note;
+                    }
+                },
+                getDecayButtonClass: function (synthIndex) {
+                    let isActive = this.synths[synthIndex].hasDecay === 1;
+                    const classes = {
+                        active: isActive
+                    };
+                    return classes;
+                },
+                toggleDecay: function (synthIndex) {
+                    if (this.synths[synthIndex].hasDecay === 1) {
+                        this.synths[synthIndex].hasDecay = 0;
+                    } else {
+                        this.synths[synthIndex].hasDecay = 1;
                     }
                 }
             }
