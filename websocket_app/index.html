@@ -145,7 +145,10 @@
                 <div class="sequencer">
                     <div class="steps">
                         <div class="step" v-for="step in 16" :key="step">
-                            <button type="button" :class="getSequencerButtonClass('synth', synthIndex, step - 1)"></button>
+                            <button type="button"
+                                    :class="getSequencerButtonClass('synth', synthIndex, step - 1)"
+                                    @click="setEditedSequencerStep('synth', synthIndex, step - 1)"
+                            ></button>
                         </div>
                     </div><!-- /.steps -->
                     <div class="clear">
@@ -154,60 +157,77 @@
                 </div><!-- /.sequencer -->
 
                 <div class="keyboard">
-                    <div class="octave">
-                        <button type="button" class="white c"></button>
-                        <button type="button" class="black c_sharp"></button>
-                        <button type="button" class="white d"></button>
-                        <button type="button" class="black d_sharp"></button>
-                        <button type="button" class="white e"></button>
-                        <button type="button" class="white f"></button>
-                        <button type="button" class="black f_sharp"></button>
-                        <button type="button" class="white g"></button>
-                        <button type="button" class="black g_sharp"></button>
-                        <button type="button" class="white a"></button>
-                        <button type="button" class="black a_sharp"></button>
-                        <button type="button" class="white b"></button>
-                    </div><!-- /.octave -->
-                    <div class="octave">
-                        <button type="button" class="white c"></button>
-                        <button type="button" class="black c_sharp"></button>
-                        <button type="button" class="white d"></button>
-                        <button type="button" class="black d_sharp"></button>
-                        <button type="button" class="white e"></button>
-                        <button type="button" class="white f"></button>
-                        <button type="button" class="black f_sharp"></button>
-                        <button type="button" class="white g"></button>
-                        <button type="button" class="black g_sharp"></button>
-                        <button type="button" class="white a"></button>
-                        <button type="button" class="black a_sharp"></button>
-                        <button type="button" class="white b"></button>
-                    </div><!-- /.octave -->
-                    <div class="octave">
-                        <button type="button" class="white c"></button>
-                        <button type="button" class="black c_sharp"></button>
-                        <button type="button" class="white d"></button>
-                        <button type="button" class="black d_sharp"></button>
-                        <button type="button" class="white e"></button>
-                        <button type="button" class="white f"></button>
-                        <button type="button" class="black f_sharp"></button>
-                        <button type="button" class="white g"></button>
-                        <button type="button" class="black g_sharp"></button>
-                        <button type="button" class="white a"></button>
-                        <button type="button" class="black a_sharp"></button>
-                        <button type="button" class="white b"></button>
+                    <div class="octave" v-for="octave in 3" :key="octave">
+                        <button type="button"
+                                class="white c"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'c' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('c' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="black c_sharp"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'c#' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('c#' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="white d"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'd' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('d' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="black d_sharp"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'd#' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('d#' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="white e"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'e' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('e' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="white f"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'f' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('f' + getSynthOctave(octave, synthIndex))"></button>
+                        <button type="button"
+                                class="black f_sharp"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'f#' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('f#' + getSynthOctave(octave, synthIndex))"></button>
+                        <button type="button"
+                                class="white g"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'g' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('g' + getSynthOctave(octave, synthIndex))"></button>
+                        <button type="button"
+                                class="black g_sharp"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'g#' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('g#' + getSynthOctave(octave, synthIndex))"></button>
+                        <button type="button"
+                                class="white a"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'a' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('a' + getSynthOctave(octave, synthIndex))"></button>
+                        <button type="button"
+                                class="black a_sharp"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'a#' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('a#' + getSynthOctave(octave, synthIndex))"></button>
+                        <button type="button"
+                                class="white b"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'b' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('b' + getSynthOctave(octave, synthIndex))"></button>
                     </div><!-- /.octave -->
                 </div><!-- /.keyboard -->
 
             </div><!-- /.synth -->
         </div><!-- /.unit -->
 
-        <div class="unit" v-for="(drumMachine, drumMachineIndex) in drumMachines" :key="'drumMachine-' + drumMachineIndex">
+        <div class="unit" v-for="(drumMachine, drumMachineIndex) in drumMachines"
+             :key="'drumMachine-' + drumMachineIndex">
             <div class="drum-machine">
 
                 <div class="sequencer">
                     <div class="steps">
                         <div class="step" v-for="step in 16" :key="step">
-                            <button type="button" :class="getSequencerButtonClass('drumMachine', drumMachineIndex, step - 1)"></button>
+                            <button type="button"
+                                    :class="getSequencerButtonClass('drumMachine', drumMachineIndex, step - 1)"
+                                    @click="setEditedSequencerStep('drumMachine', drumMachineIndex, step - 1)"
+                            ></button>
                         </div>
                     </div><!-- /.steps -->
                     <div class="clear">
@@ -256,7 +276,6 @@
         const app = new Vue({
             el: '#app',
             data: {
-                currentSequencerStep: 0,
                 synths: [
                     // Synth 0
                     {
@@ -443,7 +462,13 @@
                             {samples: ['', '', '', '']},
                         ]
                     }
-                ]
+                ],
+                currentSequencerStep: 0,
+                // TODO: Choose better names for these variables
+                editSequencerStatus: false,
+                editSequencerSynthType: null,
+                editSequencerSynthIndex: null,
+                editSequencerStep: null,
             },
             methods: {
                 sendSynthMessage: function (index) {
@@ -472,14 +497,69 @@
                 getSequencerButtonClass: function (synthType, synthIndex, step) {
                     let isActive = false;
                     if (synthType === 'synth' && synthIndex === 0) {
-                        isActive = Math.floor(this.currentSequencerStep/4) === step;
+                        isActive = Math.floor(this.currentSequencerStep / 4) === step;
                     } else {
                         isActive = this.currentSequencerStep % 16 === step;
+                    }
+                    let isEdited = false;
+                    if (this.editSequencerStatus
+                        && this.editSequencerSynthType === synthType
+                        && this.editSequencerSynthIndex === synthIndex
+                        && this.editSequencerStep === step) {
+                        isEdited = true;
+                    }
+                    const classes = {
+                        active: isActive,
+                        edited: isEdited
+                    };
+                    return classes;
+                },
+                setEditedSequencerStep: function (synthType, synthIndex, step) {
+                    if (this.editSequencerStatus
+                        && this.editSequencerSynthType === synthType
+                        && this.editSequencerSynthIndex === synthIndex
+                        && this.editSequencerStep === step) {
+                        this.editSequencerStatus = false;
+                        return;
+                    }
+                    this.editSequencerStatus = true;
+                    this.editSequencerSynthType = synthType;
+                    this.editSequencerSynthIndex = synthIndex;
+                    this.editSequencerStep = step;
+                },
+                getSynthOctave: function (octave, synthIndex) {
+                    if (synthIndex === 0) {
+                        return octave;
+                    }
+                    return octave + 2;
+                },
+                getSynthSequencerNoteClass: function (synthIndex, note) {
+                    let isActive = false;
+                    let sequenceIndex = 0;
+                    if (this.editSequencerStatus
+                        && this.editSequencerSynthType === 'synth'
+                        && this.editSequencerSynthIndex === synthIndex) {
+                        sequenceIndex = this.editSequencerStep;
+                        if (note === this.synths[synthIndex].sequence[sequenceIndex].note) {
+                            isActive = true;
+                        }
+                    } else {
+                        if (synthIndex === 0) {
+                            sequenceIndex = Math.floor(this.currentSequencerStep / 4);
+                        } else {
+                            sequenceIndex = this.currentSequencerStep % 16;
+                        }
+                        if (note === this.synths[synthIndex].sequence[sequenceIndex].note) {
+                            isActive = true;
+                        }
                     }
                     const classes = {
                         active: isActive
                     };
                     return classes;
+                },
+                setSynthSequencerNote: function (note) {
+
                 }
             }
         })

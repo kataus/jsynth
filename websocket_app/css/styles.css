@@ -26,6 +26,10 @@ button.active {
     background: #f00;
 }
 
+button.edited {
+    background: #ff0;
+}
+
 .unit {
     margin: 20px 0;
 }
