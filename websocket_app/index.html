@@ -559,7 +559,10 @@
                     return classes;
                 },
                 setSynthSequencerNote: function (note) {
-
+                    if (this.editSequencerStatus
+                        && this.editSequencerSynthType === 'synth') {
+                        this.synths[this.editSequencerSynthIndex].sequence[this.editSequencerStep].note = note;
+                    }
                 }
             }
         })
