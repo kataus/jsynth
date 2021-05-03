@@ -93,13 +93,21 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
         if (currentChunk == 1) {
 
+            float previousFrequency = sequencer.getCurrentNoteFrequency();
             sequencer.advance();
+            float frequency = sequencer.getCurrentNoteFrequency();
 
-            // TODO: Reset index only when a note changes
-            simpleDecay.resetIndex();
+            if (decayLength == 0) {
+                // If there's no decay, its index is always reset so the sound never stops
+                simpleDecay.resetIndex();
+            } else {
+                // If there's a decay, it's index is reset only when the note changes
+                if (frequency != 0 && frequency != previousFrequency) {
+                    simpleDecay.resetIndex();
+                }
+            }
             simpleDecay.setDecayLength(decayLength);
 
-            float frequency = sequencer.getCurrentNoteFrequency();
             if (frequency == 0) {
                 frequencyGenerator.clearFrequency();
             } else {
