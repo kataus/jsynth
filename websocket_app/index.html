@@ -281,32 +281,31 @@
                     {
                         oscillators: [
                             {
-                                waveform: 'square',
-                                volume: 100,
-                                tune: 0
-                            },
-                            {
-                                waveform: 'square',
-                                volume: 70,
-                                tune: 1
-                            },
-                            {
-                                waveform: 'sine',
+                                waveform: 'saw',
                                 volume: 0,
                                 tune: 0
                             },
                             {
-                                waveform: 'sine',
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'saw',
                                 volume: 0,
                                 tune: 0
                             },
                         ],
                         hasDecay: 0,
                         hasDelay: 0,
-                        cutoff: 3,
+                        cutoff: 100,
                         resonance: 0,
                         sequence: [
-                            {isEmpty: false, note: 'd2'},
                             {isEmpty: true, note: ''},
                             {isEmpty: true, note: ''},
                             {isEmpty: true, note: ''},
@@ -314,14 +313,15 @@
                             {isEmpty: true, note: ''},
                             {isEmpty: true, note: ''},
                             {isEmpty: true, note: ''},
-                            {isEmpty: false, note: 'g2'},
                             {isEmpty: true, note: ''},
                             {isEmpty: true, note: ''},
                             {isEmpty: true, note: ''},
-                            {isEmpty: false, note: 'a#1'},
                             {isEmpty: true, note: ''},
                             {isEmpty: true, note: ''},
                             {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''}
                         ]
                     },
                     // Synth 1
@@ -329,68 +329,68 @@
                         oscillators: [
                             {
                                 waveform: 'saw',
-                                volume: 100,
+                                volume: 0,
                                 tune: 0
                             },
                             {
                                 waveform: 'saw',
-                                volume: 50,
-                                tune: 1
+                                volume: 0,
+                                tune: 0
                             },
                             {
-                                waveform: 'triangle',
-                                volume: 50,
-                                tune: 99
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
                             },
                             {
-                                waveform: 'sine',
+                                waveform: 'saw',
                                 volume: 0,
                                 tune: 0
                             },
                         ],
-                        hasDecay: 1,
-                        hasDelay: 1,
-                        cutoff: 6,
-                        resonance: 100,
+                        hasDecay: 0,
+                        hasDelay: 0,
+                        cutoff: 100,
+                        resonance: 0,
                         sequence: [
-                            {isEmpty: false, note: 'd3'},
-                            {isEmpty: false, note: 'a3'},
-                            {isEmpty: false, note: 'f5'},
-                            {isEmpty: false, note: 'd3'},
-                            {isEmpty: false, note: 'a3'},
-                            {isEmpty: false, note: 'e5'},
-                            {isEmpty: false, note: 'd3'},
-                            {isEmpty: false, note: 'a3'},
-                            {isEmpty: false, note: 'd5'},
-                            {isEmpty: false, note: 'd3'},
-                            {isEmpty: false, note: 'a3'},
-                            {isEmpty: false, note: 'c5'},
-                            {isEmpty: false, note: 'd3'},
-                            {isEmpty: false, note: 'a4'},
-                            {isEmpty: false, note: 'c5'},
-                            {isEmpty: false, note: 'd5'}
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''}
                         ]
                     },
                     // Synth 2
                     {
                         oscillators: [
                             {
-                                waveform: 'sine',
+                                waveform: 'saw',
                                 volume: 0,
                                 tune: 0
                             },
                             {
-                                waveform: 'sine',
+                                waveform: 'saw',
                                 volume: 0,
                                 tune: 0
                             },
                             {
-                                waveform: 'sine',
+                                waveform: 'saw',
                                 volume: 0,
                                 tune: 0
                             },
                             {
-                                waveform: 'sine',
+                                waveform: 'saw',
                                 volume: 0,
                                 tune: 0
                             },
@@ -423,19 +423,19 @@
                     // Drum machine 0
                     {
                         sequence: [
-                            {samples: ['kick', 'hihat-closed', '', '']},
                             {samples: ['', '', '', '']},
                             {samples: ['', '', '', '']},
                             {samples: ['', '', '', '']},
-                            {samples: ['hihat-closed', '', '', '']},
                             {samples: ['', '', '', '']},
                             {samples: ['', '', '', '']},
                             {samples: ['', '', '', '']},
-                            {samples: ['snare', 'hihat-closed', '', '']},
                             {samples: ['', '', '', '']},
                             {samples: ['', '', '', '']},
                             {samples: ['', '', '', '']},
-                            {samples: ['hihat-closed', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
                             {samples: ['', '', '', '']},
                             {samples: ['', '', '', '']},
                             {samples: ['', '', '', '']},
@@ -444,21 +444,21 @@
                     // Drum machine 1
                     {
                         sequence: [
-                            {samples: ['hihat-closed', '', '', '']},
-                            {samples: ['hihat-semiopen', '', '', '']},
                             {samples: ['', '', '', '']},
-                            {samples: ['hihat-closed', '', '', '']},
                             {samples: ['', '', '', '']},
-                            {samples: ['hihat-semiopen', '', '', '']},
-                            {samples: ['hihat-open', 'clap', '', '']},
                             {samples: ['', '', '', '']},
-                            {samples: ['hihat-closed', '', '', '']},
-                            {samples: ['hihat-semiopen', '', '', '']},
                             {samples: ['', '', '', '']},
-                            {samples: ['hihat-closed', 'clap', '', '']},
                             {samples: ['', '', '', '']},
-                            {samples: ['hihat-semiopen', '', '', '']},
-                            {samples: ['hihat-open', 'cricket', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
                             {samples: ['', '', '', '']},
                         ]
                     }
