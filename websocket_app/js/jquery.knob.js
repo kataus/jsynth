@@ -282,7 +282,7 @@
 
 			v = this._clamp(v,o.min,o.max)
 			v = (v-o.min)/(o.max-o.min)
-			v = o.vol ? v : (v-.5)*2
+			v = o.type === 'vol' ? v : (v-.5)*2
 
 			return v
 		},

@@ -38,6 +38,8 @@ The functionality is somehow limited at the moment and includes:
 This repository includes a local copy of the berndporr/iirj library with several important changes to its code. A proper
 fork will be made in the foreseeable future.
 
+Yet another library included in this repository is Knob.js (and it also required a bugfix).
+
 ## Building and running the Java application
 
 Usual stuff with a couple of notes:
