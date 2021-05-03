@@ -141,7 +141,10 @@
                         </div>
                     </div><!-- /.knobs -->
                     <div class="delay">
-                        <button type="button"></button>
+                        <button type="button"
+                                :class="getDelayButtonClass(synthIndex)"
+                                @click="toggleDelay(synthIndex)"
+                        ></button>
                     </div><!-- /.delay -->
                 </div><!-- /.effects -->
 
@@ -579,6 +582,20 @@
                         this.synths[synthIndex].hasDecay = 0;
                     } else {
                         this.synths[synthIndex].hasDecay = 1;
+                    }
+                },
+                getDelayButtonClass: function (synthIndex) {
+                    let isActive = this.synths[synthIndex].hasDelay === 1;
+                    const classes = {
+                        active: isActive
+                    };
+                    return classes;
+                },
+                toggleDelay: function (synthIndex) {
+                    if (this.synths[synthIndex].hasDelay === 1) {
+                        this.synths[synthIndex].hasDelay = 0;
+                    } else {
+                        this.synths[synthIndex].hasDelay = 1;
                     }
                 }
             }

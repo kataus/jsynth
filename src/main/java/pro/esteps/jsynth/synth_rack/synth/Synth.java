@@ -198,6 +198,13 @@ public class Synth implements FrequencyConsumer, SoundProducer {
     }
 
     /**
+     * Disable the delay.
+     */
+    public void disableDelay() {
+        this.effectsProcessor.disableDelay();
+    }
+
+    /**
      * Set the decay length.
      *
      * @param decayLength

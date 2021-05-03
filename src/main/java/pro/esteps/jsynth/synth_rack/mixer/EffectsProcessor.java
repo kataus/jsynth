@@ -55,4 +55,8 @@ public class EffectsProcessor implements SoundConsumer, SoundProducer {
         this.effects.set(1, new FixedDelay((SoundProducer) this.effects.get(0)));
     }
 
+    public void disableDelay() {
+        this.effects.set(1, new Bypass((SoundProducer) this.effects.get(0)));
+    }
+
 }
