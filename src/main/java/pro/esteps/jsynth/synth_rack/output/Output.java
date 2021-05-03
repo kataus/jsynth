@@ -67,7 +67,7 @@ public class Output implements Runnable {
     private void processTick() {
         if (tick == 0) {
             messageBroker.publish(new SequencerStepMessage(sequencerStep++));
-            if (sequencerStep == 16) {
+            if (sequencerStep == 64) {
                 sequencerStep = 0;
             }
         }

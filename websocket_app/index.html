@@ -470,8 +470,14 @@
                     socket.send(JSON.stringify(data));
                 },
                 getSequencerButtonClass: function (synthType, synthIndex, step) {
+                    let isActive = false;
+                    if (synthType === 'synth' && synthIndex === 0) {
+                        isActive = Math.floor(this.currentSequencerStep/4) === step;
+                    } else {
+                        isActive = this.currentSequencerStep % 16 === step;
+                    }
                     const classes = {
-                        active: this.currentSequencerStep === step
+                        active: isActive
                     };
                     return classes;
                 }
