@@ -24,91 +24,31 @@
             <div class="synth">
 
                 <div class="oscillators">
-                    <div class="oscillator">
+                    <div class="oscillator" v-for="(oscillator, oscillatorIndex) in synth.oscillators" :key="oscillatorIndex">
                         <div class="waveforms">
                             <div class="waveform">
-                                <button type="button"></button>
+                                <button type="button"
+                                        :class="getOscillatorButtonClass(synthIndex, oscillatorIndex, 'saw')"
+                                        @click="setOscillatorWaveform(synthIndex, oscillatorIndex, 'saw')"
+                                ></button>
                             </div>
                             <div class="waveform">
-                                <button type="button"></button>
+                                <button type="button"
+                                        :class="getOscillatorButtonClass(synthIndex, oscillatorIndex, 'square')"
+                                        @click="setOscillatorWaveform(synthIndex, oscillatorIndex, 'square')"
+                                ></button>
                             </div>
                             <div class="waveform">
-                                <button type="button"></button>
+                                <button type="button"
+                                        :class="getOscillatorButtonClass(synthIndex, oscillatorIndex, 'sine')"
+                                        @click="setOscillatorWaveform(synthIndex, oscillatorIndex, 'sine')"
+                                ></button>
                             </div>
                             <div class="waveform">
-                                <button type="button"></button>
-                            </div>
-                        </div><!-- /.waveforms -->
-                        <div class="knobs">
-                            <div class="knob-wrapper">
-                                <div class="knob" data-value="0" data-arc="320"></div>
-                            </div>
-                            <div class="knob-wrapper">
-                                <div class="knob" data-value="0" data-arc="320"></div>
-                            </div>
-                        </div><!-- /.knobs -->
-                    </div><!-- /.oscillator -->
-                    <div class="oscillator">
-                        <div class="waveforms">
-                            <div class="waveform">
-                                <button type="button"></button>
-                            </div>
-                            <div class="waveform">
-                                <button type="button"></button>
-                            </div>
-                            <div class="waveform">
-                                <button type="button"></button>
-                            </div>
-                            <div class="waveform">
-                                <button type="button"></button>
-                            </div>
-                        </div><!-- /.waveforms -->
-                        <div class="knobs">
-                            <div class="knob-wrapper">
-                                <div class="knob" data-value="0" data-arc="320"></div>
-                            </div>
-                            <div class="knob-wrapper">
-                                <div class="knob" data-value="0" data-arc="320"></div>
-                            </div>
-                        </div><!-- /.knobs -->
-                    </div><!-- /.oscillator -->
-                    <div class="oscillator">
-                        <div class="waveforms">
-                            <div class="waveform">
-                                <button type="button"></button>
-                            </div>
-                            <div class="waveform">
-                                <button type="button"></button>
-                            </div>
-                            <div class="waveform">
-                                <button type="button"></button>
-                            </div>
-                            <div class="waveform">
-                                <button type="button"></button>
-                            </div>
-                        </div><!-- /.waveforms -->
-                        <div class="knobs">
-                            <div class="knob-wrapper">
-                                <div class="knob" data-value="0" data-arc="320"></div>
-                            </div>
-                            <div class="knob-wrapper">
-                                <div class="knob" data-value="0" data-arc="320"></div>
-                            </div>
-                        </div><!-- /.knobs -->
-                    </div><!-- /.oscillator -->
-                    <div class="oscillator">
-                        <div class="waveforms">
-                            <div class="waveform">
-                                <button type="button"></button>
-                            </div>
-                            <div class="waveform">
-                                <button type="button"></button>
-                            </div>
-                            <div class="waveform">
-                                <button type="button"></button>
-                            </div>
-                            <div class="waveform">
-                                <button type="button"></button>
+                                <button type="button"
+                                        :class="getOscillatorButtonClass(synthIndex, oscillatorIndex, 'triangle')"
+                                        @click="setOscillatorWaveform(synthIndex, oscillatorIndex, 'triangle')"
+                                ></button>
                             </div>
                         </div><!-- /.waveforms -->
                         <div class="knobs">
@@ -597,7 +537,21 @@
                     } else {
                         this.synths[synthIndex].hasDelay = 1;
                     }
-                }
+                },
+                getOscillatorButtonClass: function (synthIndex, oscillatorIndex, waveform) {
+                    let isActive = this.synths[synthIndex].oscillators[oscillatorIndex].waveform === waveform;
+                    const classes = {
+                        active: isActive
+                    };
+                    return classes;
+                },
+                setOscillatorWaveform: function (synthIndex, oscillatorIndex, waveform) {
+                    this.synths[synthIndex].oscillators[oscillatorIndex].waveform = waveform;
+                },
+                /*
+                :class="getOscillatorButtonClass(synthIndex, oscillatorIndex, 'triangle')"
+                                        @click="setOscillatorWaveform(synthIndex, oscillatorIndex, 'triangle')"
+                 */
             }
         })
 
