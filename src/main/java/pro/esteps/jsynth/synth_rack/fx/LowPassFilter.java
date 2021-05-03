@@ -17,7 +17,7 @@ public class LowPassFilter implements Effect, SoundConsumer, SoundProducer {
     public static final float LOW_PASS_DEFAULT_FREQUENCY = 20000f;
     private static final int BAND_PASS_DEFAULT_WIDTH_FREQUENCY = 600;
 
-    private final SoundProducer producer;
+    private SoundProducer producer;
 
     private float frequency;
 
@@ -42,6 +42,11 @@ public class LowPassFilter implements Effect, SoundConsumer, SoundProducer {
         this.butterworthBandPassFilter = new Butterworth();
         butterworthBandPassFilter.bandPass(8, SAMPLE_RATE, this.frequency, calculateBandPassWidthFrequency());
 
+    }
+
+    @Override
+    public void setProducer(SoundProducer producer) {
+        this.producer = producer;
     }
 
     public void setFrequency(float frequency) {
