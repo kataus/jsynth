@@ -470,15 +470,26 @@
             },
             methods: {
                 calculateOscillatorVolumeFromKnobValue: function (volume) {
+                    let log = Math.log10(volume / 10);
+                    if (log < 0) {
+                        log = 0;
+                    }
+                    volume = 100 * log;
                     return Math.floor(volume / 4);
                 },
                 calculateOscillatorTuneFromKnobValue: function (tune) {
                     return tune;
                 },
                 calculateCutoffFromKnobValue: function (cutoff) {
-                    // TODO: Use log. scale
+                    // Logarithm is inverted so the lower the cutoff value is, the slower it changes
+                    const delta = 100 - cutoff;
+                    let log = Math.log10(delta / 10);
+                    if (log < 0) {
+                        log = 0;
+                    }
+                    log = 1 - log;
+                    cutoff = 100 * log;
                     let result = cutoff * 200;
-                    // TODO: Remove this safeguard and fix the server-side bug
                     if (result < 200) {
                         result = 200;
                     }
