@@ -1,3 +1,14 @@
+.clearfix:before {
+    content: '';
+    display: table;
+}
+
+.clearfix:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
 body {
     background: #000;
 }
@@ -17,17 +28,33 @@ button {
     width: 25px;
     height: 25px;
     position: absolute;
-    background: #900;
+    background: transparent;
     border: none;
     cursor: pointer;
 }
 
-button.active {
-    background: #f00;
+button.active:before {
+    content: '';
+    width: 70px;
+    height: 71px;
+    background: transparent url("../images/led-active.png");
+    position: absolute;
+    top: -23px;
+    left: -23px;
 }
 
-button.edited {
-    background: #ff0;
+button:focus {
+    outline: none;
+}
+
+button.edited:before {
+    content: '';
+    width: 70px;
+    height: 71px;
+    background: transparent url("../images/led-edit.png");
+    position: absolute;
+    top: -23px;
+    left: -23px;
 }
 
 .unit {
@@ -65,7 +92,6 @@ button.edited {
     left: 30px;
     width: 923px;
     height: 115px;
-    overflow: hidden;
 }
 
 .synth .keyboard .octave {
@@ -81,7 +107,7 @@ button.edited {
 }
 
 .synth .keyboard .octave button.white {
-    bottom: 9px;
+    bottom: 0;
 }
 
 .synth .keyboard .octave button.black {
@@ -151,7 +177,6 @@ button.edited {
     position: absolute;
     left: 22px;
     top: 0;
-    overflow: hidden;
 }
 
 .sequencer .steps .step {
@@ -190,7 +215,6 @@ button.edited {
     position: absolute;
     left: 30px;
     top: 70px;
-    overflow: hidden;
 }
 
 .oscillators .oscillator {
@@ -237,8 +261,8 @@ button.edited {
     width: 68px;
     height: 68px;
     margin-left: 10px;
-    margin-top: 19px;
-    margin-bottom: 21px;
+    margin-top: 9px;
+    margin-bottom: 31px;
 }
 
 .knob-wrapper:last-child {
@@ -250,7 +274,7 @@ button.edited {
     height: 195px;
     position: absolute;
     top: 70px;
-    right: 206px;
+    right: 184px;
 }
 
 .envelope .decay {
@@ -263,7 +287,7 @@ button.edited {
 
 .envelope .decay button {
     left: 53px;
-    top: 85px;
+    top: 20px;
 }
 
 .effects {
@@ -278,13 +302,22 @@ button.edited {
     width: 44px;
     height: 195px;
     position: absolute;
-    right: 0;
+    left: 32px;
     top: 0;
 }
 
 .effects .delay button {
     left: 9px;
-    top: 85px;
+    top: 20px;
+}
+
+.effects .knobs {
+    width: 68px;
+    right: 0;
+}
+
+.effects .knobs .knob-wrapper {
+    margin-left: 0;
 }
 
 .drum-machine {
@@ -294,7 +327,7 @@ button.edited {
 }
 
 .drum-machine .sequencer {
-    bottom: 114px;
+    bottom: 134px;
 }
 
 .drum-machine .pads {
@@ -303,7 +336,6 @@ button.edited {
     position: absolute;
     left: 30px;
     bottom: 20px;
-    overflow: hidden;
 }
 
 .drum-machine .pads .pad {
@@ -321,4 +353,18 @@ button.edited {
 .drum-machine .pads .pad button {
     left: 53px;
     top: 28px;
+}
+
+#app .knob svg {
+    visibility: hidden;
+}
+
+#app .knob .knob-knob {
+    top: 47% !important;
+    background-color: transparent !important;
+}
+
+#app .knob .knob-pointer {
+    background-color: #fff !important;
+    opacity: .9;
 }

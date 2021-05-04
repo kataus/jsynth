@@ -12,18 +12,10 @@
 <main>
     <div id="app">
 
-        <div class="unit">
-            <div class="controls">
-                <div class="start">
-                    <button type="button"></button>
-                </div><!-- /.start -->
-            </div><!-- /.controls -->
-        </div>
-
         <div class="unit" v-for="(synth, synthIndex) in synths" :key="'synth-' + synthIndex">
             <div class="synth">
 
-                <div class="oscillators">
+                <div class="oscillators clearfix">
                     <div class="oscillator" v-for="(oscillator, oscillatorIndex) in synth.oscillators"
                          :key="oscillatorIndex">
                         <div class="waveforms">
@@ -87,6 +79,12 @@
                 </div><!-- /.envelope -->
 
                 <div class="effects">
+                    <div class="delay">
+                        <button type="button"
+                                :class="getDelayButtonClass(synthIndex)"
+                                @click="toggleDelay(synthIndex)"
+                        ></button>
+                    </div><!-- /.delay -->
                     <div class="knobs">
                         <div class="knob-wrapper">
                             <div class="knob"
@@ -105,12 +103,6 @@
                                  data-arc="320"></div>
                         </div>
                     </div><!-- /.knobs -->
-                    <div class="delay">
-                        <button type="button"
-                                :class="getDelayButtonClass(synthIndex)"
-                                @click="toggleDelay(synthIndex)"
-                        ></button>
-                    </div><!-- /.delay -->
                 </div><!-- /.effects -->
 
                 <div class="sequencer">
@@ -127,7 +119,7 @@
                     </div><!-- /.clear -->
                 </div><!-- /.sequencer -->
 
-                <div class="keyboard">
+                <div class="keyboard clearfix">
                     <div class="octave" v-for="octave in 3" :key="octave">
                         <button type="button"
                                 class="white c"
@@ -200,7 +192,7 @@
             <div class="drum-machine">
 
                 <div class="sequencer">
-                    <div class="steps">
+                    <div class="steps clearfix">
                         <div class="step" v-for="step in 16" :key="step">
                             <button type="button"
                                     :class="getSequencerButtonClass('drumMachine', drumMachineIndex, step - 1)"
@@ -213,7 +205,7 @@
                     </div><!-- /.clear -->
                 </div><!-- /.sequencer -->
 
-                <div class="pads">
+                <div class="pads clearfix">
                     <div class="pad">
                         <button type="button"
                                 :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'kick')"
@@ -485,7 +477,12 @@
                 },
                 calculateCutoffFromKnobValue: function (cutoff) {
                     // TODO: Use log. scale
-                    return cutoff * 200;
+                    let result = cutoff * 200;
+                    // TODO: Remove this safeguard and fix the server-side bug
+                    if (result < 200) {
+                        result = 200;
+                    }
+                    return result;
                 },
                 calculateResonanceFromKnobValue: function (resonance) {
                     return resonance;
