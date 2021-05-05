@@ -45,7 +45,7 @@ public class Output implements Runnable {
     }
 
     /**
-     * Send sound chunk to the AudioSystem source data line.
+     * Send a sound chunk to the AudioSystem source data line.
      *
      * @param chunk
      */

@@ -48,12 +48,12 @@ public class SynthServer extends WebSocketServer implements Subscriber {
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-        ex.printStackTrace();
+        // TODO: Handle exception
     }
 
     @Override
     public void onStart() {
-        // TODO: These 2 lines of code were taken from the library examples; check whether they make sense
+        // TODO: These 2 lines of code have been taken from the library examples; check whether they make any sense
         setConnectionLostTimeout(0);
         setConnectionLostTimeout(10);
     }

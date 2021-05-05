@@ -49,7 +49,6 @@ public class App {
 
         } catch (Exception e) {
             // TODO: Handle exception
-            e.printStackTrace();
         }
 
 
