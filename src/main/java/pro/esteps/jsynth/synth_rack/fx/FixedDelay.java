@@ -23,12 +23,17 @@ public class FixedDelay implements Effect, SoundConsumer, SoundProducer {
     // TODO: Attach LowPassFilter instead of Butterworth
     private final Butterworth butterworth;
 
-    private final SoundProducer producer;
+    private SoundProducer producer;
 
     public FixedDelay(SoundProducer producer) {
         this.producer = producer;
         this.butterworth = new Butterworth();
         butterworth.lowPass(8, SAMPLE_RATE, 1500);
+    }
+
+    @Override
+    public void setProducer(SoundProducer producer) {
+        this.producer = producer;
     }
 
     @Override

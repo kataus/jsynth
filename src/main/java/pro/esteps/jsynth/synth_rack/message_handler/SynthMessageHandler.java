@@ -106,9 +106,10 @@ public class SynthMessageHandler implements MessageHandler {
             synth.setDecayLength((byte) 0);
         }
 
-        // TODO: Add the possibility to disable delay
         if (message.hasDelay()) {
             synth.enableDelay();
+        } else {
+            synth.disableDelay();
         }
     }
 

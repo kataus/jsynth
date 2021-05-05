@@ -33,12 +33,20 @@ public class EffectsProcessor implements SoundConsumer, SoundProducer {
     }
 
     public void setCutoffFrequency(float frequency) {
-        Effect effect = effects.get(0);
-        if (!(effect instanceof LowPassFilter)) {
-            this.effects.set(0, new LowPassFilter(producer, frequency, (byte) 0));
-            this.effects.set(1, new Bypass((SoundProducer) this.effects.get(0)));
+
+        Effect firstEffect = effects.get(0);
+        Effect secondEffect = effects.get(1);
+
+        if (!(firstEffect instanceof LowPassFilter)) {
+            effects.set(0, new LowPassFilter(producer, frequency, (byte) 0));
         } else {
-            ((LowPassFilter) effect).setFrequency(frequency);
+            ((LowPassFilter) firstEffect).setFrequency(frequency);
+        }
+
+        if (secondEffect == null) {
+            effects.set(1, new Bypass((SoundProducer) effects.get(0)));
+        } else {
+            secondEffect.setProducer((SoundProducer) effects.get(0));
         }
     }
 
@@ -52,7 +60,14 @@ public class EffectsProcessor implements SoundConsumer, SoundProducer {
     }
 
     public void enableDelay() {
-        this.effects.set(1, new FixedDelay((SoundProducer) this.effects.get(0)));
+        Effect secondEffect = effects.get(1);
+        if (!(secondEffect instanceof FixedDelay)) {
+            effects.set(1, new FixedDelay((SoundProducer) effects.get(0)));
+        }
+    }
+
+    public void disableDelay() {
+        this.effects.set(1, new Bypass((SoundProducer) this.effects.get(0)));
     }
 
 }

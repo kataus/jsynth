@@ -6,12 +6,796 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>jSynth</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 <main>
     <div id="app">
-        <h1>Work in progress</h1>
+
+        <div class="unit" v-for="(synth, synthIndex) in synths" :key="'synth-' + synthIndex">
+            <div class="synth">
+
+                <div class="oscillators clearfix">
+                    <div class="oscillator" v-for="(oscillator, oscillatorIndex) in synth.oscillators"
+                         :key="oscillatorIndex">
+                        <div class="waveforms">
+                            <div class="waveform">
+                                <button type="button"
+                                        :class="getOscillatorButtonClass(synthIndex, oscillatorIndex, 'saw')"
+                                        @click="setOscillatorWaveform(synthIndex, oscillatorIndex, 'saw')"
+                                ></button>
+                            </div>
+                            <div class="waveform">
+                                <button type="button"
+                                        :class="getOscillatorButtonClass(synthIndex, oscillatorIndex, 'square')"
+                                        @click="setOscillatorWaveform(synthIndex, oscillatorIndex, 'square')"
+                                ></button>
+                            </div>
+                            <div class="waveform">
+                                <button type="button"
+                                        :class="getOscillatorButtonClass(synthIndex, oscillatorIndex, 'sine')"
+                                        @click="setOscillatorWaveform(synthIndex, oscillatorIndex, 'sine')"
+                                ></button>
+                            </div>
+                            <div class="waveform">
+                                <button type="button"
+                                        :class="getOscillatorButtonClass(synthIndex, oscillatorIndex, 'triangle')"
+                                        @click="setOscillatorWaveform(synthIndex, oscillatorIndex, 'triangle')"
+                                ></button>
+                            </div>
+                        </div><!-- /.waveforms -->
+                        <div class="knobs">
+                            <div class="knob-wrapper">
+                                <div class="knob"
+                                     data-app-component="oscillator"
+                                     data-app-model="volume"
+                                     :data-app-synth-index="synthIndex"
+                                     :data-app-oscillator-index="oscillatorIndex"
+                                     :data-value="oscillator.volume"
+                                     data-arc="320"></div>
+                            </div>
+                            <div class="knob-wrapper">
+                                <div class="knob"
+                                     data-app-component="oscillator"
+                                     data-app-model="tune"
+                                     :data-app-synth-index="synthIndex"
+                                     :data-app-oscillator-index="oscillatorIndex"
+                                     :data-value="oscillator.tune"
+                                     data-steps="200"
+                                     data-type="pan"
+                                     data-arc="320"></div>
+                            </div>
+                        </div><!-- /.knobs -->
+                    </div><!-- /.oscillator -->
+                </div><!-- /.oscillators -->
+
+                <div class="envelope">
+                    <div class="decay">
+                        <button type="button"
+                                :class="getDecayButtonClass(synthIndex)"
+                                @click="toggleDecay(synthIndex)"
+                        ></button>
+                    </div><!-- /.decay -->
+                </div><!-- /.envelope -->
+
+                <div class="effects">
+                    <div class="delay">
+                        <button type="button"
+                                :class="getDelayButtonClass(synthIndex)"
+                                @click="toggleDelay(synthIndex)"
+                        ></button>
+                    </div><!-- /.delay -->
+                    <div class="knobs">
+                        <div class="knob-wrapper">
+                            <div class="knob"
+                                 data-app-component="effects"
+                                 data-app-model="cutoff"
+                                 :data-app-synth-index="synthIndex"
+                                 :data-value="synth.cutoff"
+                                 data-arc="320"></div>
+                        </div>
+                        <div class="knob-wrapper">
+                            <div class="knob"
+                                 data-app-component="effects"
+                                 data-app-model="resonance"
+                                 :data-app-synth-index="synthIndex"
+                                 :data-value="synth.resonance"
+                                 data-arc="320"></div>
+                        </div>
+                    </div><!-- /.knobs -->
+                </div><!-- /.effects -->
+
+                <div class="sequencer">
+                    <div class="steps">
+                        <div class="step" v-for="step in 16" :key="step">
+                            <button type="button"
+                                    :class="getSequencerButtonClass('synth', synthIndex, step - 1)"
+                                    @click="setEditedSequencerStep('synth', synthIndex, step - 1)"
+                            ></button>
+                        </div>
+                    </div><!-- /.steps -->
+                    <div class="clear">
+                        <button type="button" @click="sendSynthMessage(synthIndex)"></button>
+                    </div><!-- /.clear -->
+                </div><!-- /.sequencer -->
+
+                <div class="keyboard clearfix">
+                    <div class="octave" v-for="octave in 3" :key="octave">
+                        <button type="button"
+                                class="white c"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'c' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('c' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="black c_sharp"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'c#' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('c#' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="white d"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'd' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('d' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="black d_sharp"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'd#' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('d#' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="white e"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'e' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('e' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="white f"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'f' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('f' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="black f_sharp"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'f#' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('f#' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="white g"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'g' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('g' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="black g_sharp"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'g#' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('g#' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="white a"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'a' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('a' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="black a_sharp"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'a#' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('a#' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                        <button type="button"
+                                class="white b"
+                                :class="getSynthSequencerNoteClass(synthIndex, 'b' + getSynthOctave(octave, synthIndex))"
+                                @click="setSynthSequencerNote('b' + getSynthOctave(octave, synthIndex))"
+                        ></button>
+                    </div><!-- /.octave -->
+                </div><!-- /.keyboard -->
+
+            </div><!-- /.synth -->
+        </div><!-- /.unit -->
+
+        <div class="unit" v-for="(drumMachine, drumMachineIndex) in drumMachines"
+             :key="'drumMachine-' + drumMachineIndex">
+            <div class="drum-machine">
+
+                <div class="sequencer">
+                    <div class="steps clearfix">
+                        <div class="step" v-for="step in 16" :key="step">
+                            <button type="button"
+                                    :class="getSequencerButtonClass('drumMachine', drumMachineIndex, step - 1)"
+                                    @click="setEditedSequencerStep('drumMachine', drumMachineIndex, step - 1)"
+                            ></button>
+                        </div>
+                    </div><!-- /.steps -->
+                    <div class="clear">
+                        <button type="button" @click="sendDrumMachineMessage(drumMachineIndex)"></button>
+                    </div><!-- /.clear -->
+                </div><!-- /.sequencer -->
+
+                <div class="pads clearfix">
+                    <div class="pad">
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'kick')"
+                                @click="setDrumMachineSequencerNote('kick')"
+                        ></button>
+                    </div>
+                    <div class="pad">
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'snare')"
+                                @click="setDrumMachineSequencerNote('snare')"
+                        ></button>
+                    </div>
+                    <div class="pad">
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'hihat-closed')"
+                                @click="setDrumMachineSequencerNote('hihat-closed')"
+                        ></button>
+                    </div>
+                    <div class="pad">
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'hihat-semiopen')"
+                                @click="setDrumMachineSequencerNote('hihat-semiopen')"
+                        ></button>
+                    </div>
+                    <div class="pad">
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'hihat-open')"
+                                @click="setDrumMachineSequencerNote('hihat-open')"
+                        ></button>
+                    </div>
+                    <div class="pad">
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'clap')"
+                                @click="setDrumMachineSequencerNote('clap')"
+                        ></button>
+                    </div>
+                    <div class="pad">
+                        <button type="button"
+                                :class="getDrumMachineSequencerNoteClass(drumMachineIndex, 'cricket')"
+                                @click="setDrumMachineSequencerNote('cricket')"
+                        ></button>
+                    </div>
+                </div><!-- /.pads -->
+
+            </div><!-- /.drum-machine -->
+        </div><!-- /.unit -->
+
     </div>
 </main>
+
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/jquery-ui-1.12.1.min.js"></script>
+<script src="js/jquery.knob.js"></script>
+<script src="js/vue-2.6.12.js"></script>
+<script src="js/lodash-4.13.1.min.js"></script>
+
+<script>
+    $(function () {
+
+        window.app = new Vue({
+            el: '#app',
+            data: {
+                synths: [
+                    // Synth 0
+                    {
+                        oscillators: [
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                        ],
+                        hasDecay: 0,
+                        hasDelay: 0,
+                        cutoff: 100,
+                        resonance: 0,
+                        sequence: [
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''}
+                        ]
+                    },
+                    // Synth 1
+                    {
+                        oscillators: [
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                        ],
+                        hasDecay: 0,
+                        hasDelay: 0,
+                        cutoff: 100,
+                        resonance: 0,
+                        sequence: [
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''}
+                        ]
+                    },
+                    // Synth 2
+                    {
+                        oscillators: [
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                            {
+                                waveform: 'saw',
+                                volume: 0,
+                                tune: 0
+                            },
+                        ],
+                        hasDecay: 0,
+                        hasDelay: 0,
+                        cutoff: 100,
+                        resonance: 0,
+                        sequence: [
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''},
+                            {isEmpty: true, note: ''}
+                        ]
+                    },
+                ],
+                drumMachines: [
+                    // Drum machine 0
+                    {
+                        sequence: [
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                        ]
+                    },
+                    // Drum machine 1
+                    {
+                        sequence: [
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                            {samples: ['', '', '', '']},
+                        ]
+                    }
+                ],
+
+                currentSequencerStep: 0,
+
+                // TODO: Choose better names for these variables
+                editSequencerStatus: false,
+                editSequencerSynthType: null,
+                editSequencerSynthIndex: null,
+                editSequencerStep: null,
+
+                // TODO: Choose better names for these variables
+                lastChangedSynthType: null,
+                lastChangedSynthIndex: null,
+            },
+            methods: {
+                calculateOscillatorVolumeFromKnobValue: function (volume) {
+                    let log = Math.log10(volume / 10);
+                    if (log < 0) {
+                        log = 0;
+                    }
+                    volume = 100 * log;
+                    return Math.floor(volume / 4);
+                },
+                calculateOscillatorTuneFromKnobValue: function (tune) {
+                    return tune;
+                },
+                calculateCutoffFromKnobValue: function (cutoff) {
+                    // Logarithm is inverted so the lower the cutoff value is, the slower it changes
+                    const delta = 100 - cutoff;
+                    let log = Math.log10(delta / 10);
+                    if (log < 0) {
+                        log = 0;
+                    }
+                    log = 1 - log;
+                    cutoff = 100 * log;
+                    let result = cutoff * 200;
+                    if (result < 200) {
+                        result = 200;
+                    }
+                    return result;
+                },
+                calculateResonanceFromKnobValue: function (resonance) {
+                    return resonance;
+                },
+                sendDebouncedMessage: function() {
+                    if (this.lastChangedSynthType === null || this.lastChangedSynthIndex === null) {
+                        return;
+                    }
+                    if (this.lastChangedSynthType === 'synth') {
+                        this.sendSynthMessage(this.lastChangedSynthIndex);
+                    }
+                    if (this.lastChangedSynthType === 'drumMachine') {
+                        this.sendDrumMachineMessage(this.lastChangedSynthIndex);
+                    }
+                },
+                sendSynthMessage: function (index) {
+                    const synth = this.synths[index];
+                    const data = {
+                        type: 'synth',
+                        index: index,
+                        oscillators: synth.oscillators.map(o => {
+                            const newOscillator = Object.assign({}, o);
+                            newOscillator.volume = this.calculateOscillatorVolumeFromKnobValue(newOscillator.volume);
+                            newOscillator.tune = this.calculateOscillatorTuneFromKnobValue(newOscillator.tune);
+                            return newOscillator;
+                        }),
+                        has_decay: synth.hasDecay === 1,
+                        has_delay: synth.hasDelay === 1,
+                        cutoff: this.calculateCutoffFromKnobValue(synth.cutoff),
+                        resonance: this.calculateResonanceFromKnobValue(synth.resonance),
+                        sequence: synth.sequence
+                    }
+                    socket.send(JSON.stringify(data));
+                },
+                sendDrumMachineMessage: function (index) {
+                    const drumMachine = this.drumMachines[index];
+                    const data = {
+                        type: 'drumMachine',
+                        index: index,
+                        sequence: drumMachine.sequence
+                    }
+                    socket.send(JSON.stringify(data));
+                },
+                getSequencerButtonClass: function (synthType, synthIndex, step) {
+                    let isActive = false;
+                    if (synthType === 'synth' && synthIndex === 0) {
+                        isActive = Math.floor(this.currentSequencerStep / 4) === step;
+                    } else {
+                        isActive = this.currentSequencerStep % 16 === step;
+                    }
+                    let isEdited = false;
+                    if (this.editSequencerStatus
+                        && this.editSequencerSynthType === synthType
+                        && this.editSequencerSynthIndex === synthIndex
+                        && this.editSequencerStep === step) {
+                        isEdited = true;
+                    }
+                    const classes = {
+                        active: isActive,
+                        edited: isEdited
+                    };
+                    return classes;
+                },
+                setEditedSequencerStep: function (synthType, synthIndex, step) {
+                    if (this.editSequencerStatus
+                        && this.editSequencerSynthType === synthType
+                        && this.editSequencerSynthIndex === synthIndex
+                        && this.editSequencerStep === step) {
+                        this.editSequencerStatus = false;
+                        return;
+                    }
+                    this.editSequencerStatus = true;
+                    this.editSequencerSynthType = synthType;
+                    this.editSequencerSynthIndex = synthIndex;
+                    this.editSequencerStep = step;
+                },
+                getSynthOctave: function (octave, synthIndex) {
+                    if (synthIndex === 0) {
+                        return octave;
+                    }
+                    return octave + 2;
+                },
+                getSynthSequencerNoteClass: function (synthIndex, note) {
+                    let isActive = false;
+                    let sequenceIndex = 0;
+                    if (this.editSequencerStatus
+                        && this.editSequencerSynthType === 'synth'
+                        && this.editSequencerSynthIndex === synthIndex) {
+                        sequenceIndex = this.editSequencerStep;
+                        if (note === this.synths[synthIndex].sequence[sequenceIndex].note) {
+                            isActive = true;
+                        }
+                    } else {
+                        if (synthIndex === 0) {
+                            sequenceIndex = Math.floor(this.currentSequencerStep / 4);
+                        } else {
+                            sequenceIndex = this.currentSequencerStep % 16;
+                        }
+                        if (note === this.synths[synthIndex].sequence[sequenceIndex].note) {
+                            isActive = true;
+                        }
+                    }
+                    const classes = {
+                        active: isActive
+                    };
+                    return classes;
+                },
+                setSynthSequencerNote: function (note) {
+                    if (this.editSequencerStatus
+                        && this.editSequencerSynthType === 'synth') {
+                        if (this.synths[this.editSequencerSynthIndex].sequence[this.editSequencerStep].note === note) {
+                            this.synths[this.editSequencerSynthIndex].sequence[this.editSequencerStep].note = '';
+                        } else {
+                            this.synths[this.editSequencerSynthIndex].sequence[this.editSequencerStep].note = note;
+                        }
+                    }
+                },
+                getDrumMachineSequencerNoteClass: function (synthIndex, note) {
+                    let isActive = false;
+                    let sequenceIndex = 0;
+                    if (this.editSequencerStatus
+                        && this.editSequencerSynthType === 'drumMachine'
+                        && this.editSequencerSynthIndex === synthIndex) {
+                        sequenceIndex = this.editSequencerStep;
+                        if (this.drumMachines[synthIndex].sequence[sequenceIndex].samples.includes(note)) {
+                            isActive = true;
+                        }
+                    } else {
+                        sequenceIndex = this.currentSequencerStep % 16;
+                        if (this.drumMachines[synthIndex].sequence[sequenceIndex].samples.includes(note)) {
+                            isActive = true;
+                        }
+                    }
+                    const classes = {
+                        active: isActive
+                    };
+                    return classes;
+                },
+                setDrumMachineSequencerNote: function (note) {
+                    if (this.editSequencerStatus
+                        && this.editSequencerSynthType === 'drumMachine') {
+                        const sequenceIndex = this.editSequencerStep;
+                        const synthIndex = this.editSequencerSynthIndex;
+                        const noteIndex = this.drumMachines[synthIndex].sequence[sequenceIndex].samples.indexOf(note);
+                        const emptyIndex = this.drumMachines[synthIndex].sequence[sequenceIndex].samples.indexOf('');
+                        if (noteIndex > -1) {
+                            this.drumMachines[synthIndex].sequence[sequenceIndex].samples[noteIndex] = '';
+
+                            // TODO: Use watcher
+                            this.lastChangedSynthType ='drumMachine';
+                            this.lastChangedSynthIndex = synthIndex;
+                            this.handleSynthChangeEvent();
+
+                            return;
+                        }
+                        if (emptyIndex === -1) {
+                            return;
+                        }
+                        this.drumMachines[synthIndex].sequence[sequenceIndex].samples[emptyIndex] = note;
+
+                        // TODO: Use watcher
+                        this.lastChangedSynthType ='drumMachine';
+                        this.lastChangedSynthIndex = synthIndex;
+                        this.handleSynthChangeEvent();
+                    }
+                },
+                getDecayButtonClass: function (synthIndex) {
+                    let isActive = this.synths[synthIndex].hasDecay === 1;
+                    const classes = {
+                        active: isActive
+                    };
+                    return classes;
+                },
+                toggleDecay: function (synthIndex) {
+                    if (this.synths[synthIndex].hasDecay === 1) {
+                        this.synths[synthIndex].hasDecay = 0;
+                    } else {
+                        this.synths[synthIndex].hasDecay = 1;
+                    }
+                },
+                getDelayButtonClass: function (synthIndex) {
+                    let isActive = this.synths[synthIndex].hasDelay === 1;
+                    const classes = {
+                        active: isActive
+                    };
+                    return classes;
+                },
+                toggleDelay: function (synthIndex) {
+                    if (this.synths[synthIndex].hasDelay === 1) {
+                        this.synths[synthIndex].hasDelay = 0;
+                    } else {
+                        this.synths[synthIndex].hasDelay = 1;
+                    }
+                },
+                getOscillatorButtonClass: function (synthIndex, oscillatorIndex, waveform) {
+                    let isActive = this.synths[synthIndex].oscillators[oscillatorIndex].waveform === waveform;
+                    const classes = {
+                        active: isActive
+                    };
+                    return classes;
+                },
+                setOscillatorWaveform: function (synthIndex, oscillatorIndex, waveform) {
+                    this.synths[synthIndex].oscillators[oscillatorIndex].waveform = waveform;
+                },
+            },
+            computed: {
+                synth0: function() {
+                    return this.synths[0];
+                },
+                synth1: function() {
+                    return this.synths[1];
+                },
+                synth2: function() {
+                    return this.synths[2];
+                },
+                drumMachine0: function() {
+                    return this.drumMachines[0];
+                },
+                drumMachine1: function() {
+                    return this.drumMachines[0];
+                }
+            },
+            watch: {
+                synth0: {
+                    handler: function () {
+                        this.lastChangedSynthType ='synth';
+                        this.lastChangedSynthIndex = 0;
+                        this.handleSynthChangeEvent();
+                    },
+                    deep: true
+                },
+                synth1: {
+                    handler: function () {
+                        this.lastChangedSynthType ='synth';
+                        this.lastChangedSynthIndex = 1;
+                        this.handleSynthChangeEvent();
+                    },
+                    deep: true
+                },
+                synth2: {
+                    handler: function () {
+                        this.lastChangedSynthType ='synth';
+                        this.lastChangedSynthIndex = 2;
+                        this.handleSynthChangeEvent();
+                    },
+                    deep: true
+                },
+                drumMachine0: {
+                    handler: function () {
+                        this.lastChangedSynthType ='drumMachine';
+                        this.lastChangedSynthIndex = 0;
+                        this.handleSynthChangeEvent();
+                    },
+                    deep: true
+                },
+                drumMachine1: {
+                    handler: function () {
+                        this.lastChangedSynthType ='drumMachine';
+                        this.lastChangedSynthIndex = 1;
+                        this.handleSynthChangeEvent();
+                    },
+                    deep: true
+                }
+            },
+            created: function () {
+                this.handleSynthChangeEvent = _.debounce(this.sendDebouncedMessage, 100)
+            },
+            mounted: function () {
+
+                $(".knob").knob()
+                    .on('grab', function () {
+                    })
+                    .on('turn', function (e, value) {
+                        const component = $(this).data('app-component');
+                        const model = $(this).data('app-model');
+                        if (component === 'oscillator') {
+                            const synthIndex = $(this).data('app-synth-index');
+                            const oscillatorIndex = $(this).data('app-oscillator-index');
+                            window.app.synths[synthIndex].oscillators[oscillatorIndex][model] = value;
+                        }
+                        if (component === 'effects') {
+                            const synthIndex = $(this).data('app-synth-index');
+                            window.app.synths[synthIndex][model] = value;
+                        }
+                    })
+                    .on('release', function () {
+                    })
+                    .on('rest', function () {
+                    });
+
+            }
+        })
+
+        const socket = new WebSocket("ws://localhost:8887")
+        socket.onmessage = function (event) {
+            const obj = JSON.parse(event.data);
+            app.currentSequencerStep = obj.sequencerStep;
+        }
+
+
+    });
+</script>
+
 </body>
 </html>

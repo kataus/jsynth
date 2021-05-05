@@ -1,0 +1,370 @@
+.clearfix:before {
+    content: '';
+    display: table;
+}
+
+.clearfix:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+body {
+    background: #000;
+}
+
+main {
+    text-align: center;
+}
+
+#app {
+    margin-left: auto;
+    margin-right: auto;
+    width: 983px;
+    position: relative;
+}
+
+button {
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+button.active:before {
+    content: '';
+    width: 70px;
+    height: 71px;
+    background: transparent url("../images/led-active.png");
+    position: absolute;
+    top: -23px;
+    left: -23px;
+}
+
+button:focus {
+    outline: none;
+}
+
+button.edited:before {
+    content: '';
+    width: 70px;
+    height: 71px;
+    background: transparent url("../images/led-edit.png");
+    position: absolute;
+    top: -23px;
+    left: -23px;
+}
+
+.unit {
+    margin: 30px 0;
+}
+
+.controls {
+    height: 141px;
+    background: transparent url("../images/background-controls.png");
+    position: relative;
+}
+
+.controls .start {
+    position: absolute;
+    right: 30px;
+    top: 30px;
+    width: 131px;
+    height: 81px;
+}
+
+.controls .start button {
+    left: 53px;
+    top: 28px;
+}
+
+.synth {
+    height: 500px;
+    background: transparent url("../images/background-synth.png");
+    position: relative;
+}
+
+.synth .keyboard {
+    position: absolute;
+    bottom: 20px;
+    left: 30px;
+    width: 923px;
+    height: 115px;
+}
+
+.synth .keyboard .octave {
+    width: 307px;
+    height: 115px;
+    float: left;
+    margin-right: 1px;
+    position: relative;
+}
+
+.synth .keyboard .octave:last-child {
+    margin-right: 0;
+}
+
+.synth .keyboard .octave button.white {
+    bottom: 0;
+}
+
+.synth .keyboard .octave button.black {
+    bottom: 48px;
+}
+
+.synth .keyboard .octave button.c {
+    left: 9px;
+}
+
+.synth .keyboard .octave button.c_sharp {
+    left: 31px;
+}
+
+.synth .keyboard .octave button.d {
+    left: 53px;
+}
+
+.synth .keyboard .octave button.d_sharp {
+    left: 75px;
+}
+
+.synth .keyboard .octave button.e {
+    left: 97px;
+}
+
+.synth .keyboard .octave button.f {
+    left: 141px;
+}
+
+.synth .keyboard .octave button.f_sharp {
+    left: 163px;
+}
+
+.synth .keyboard .octave button.g {
+    left: 185px;
+}
+
+.synth .keyboard .octave button.g_sharp {
+    left: 207px;
+}
+
+.synth .keyboard .octave button.a {
+    left: 229px;
+}
+
+.synth .keyboard .octave button.a_sharp {
+    left: 251px;
+}
+
+.synth .keyboard .octave button.b {
+    left: 273px;
+}
+
+.sequencer {
+    width: 923px;
+    height: 51px;
+    position: absolute;
+    left: 30px;
+}
+
+.synth .sequencer {
+    bottom: 148px;
+}
+
+.sequencer .steps {
+    position: absolute;
+    left: 22px;
+    top: 0;
+}
+
+.sequencer .steps .step {
+    float: left;
+    width: 43px;
+    height: 51px;
+    margin-right: 1px;
+    position: relative;
+}
+
+.sequencer .steps .step:last-child {
+    margin-right: 0;
+}
+
+.sequencer .steps .step button {
+    left: 9px;
+    top: 13px;
+}
+
+.sequencer .clear {
+    position: absolute;
+    right: 22px;
+    top: 0;
+    width: 43px;
+    height: 51px;
+}
+
+.sequencer .clear button {
+    left: 9px;
+    top: 13px;
+}
+
+.oscillators {
+    width: 593px;
+    height: 195px;
+    position: absolute;
+    left: 30px;
+    top: 70px;
+}
+
+.oscillators .oscillator {
+    width: 131px;
+    height: 195px;
+    float: left;
+    position: relative;
+    margin-right: 23px;
+}
+
+.oscillators .oscillator:last-child {
+    margin-right: 0;
+}
+
+.oscillators .oscillator .waveforms {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 41px;
+}
+
+.oscillators .oscillator .waveforms .waveform {
+    width: 41px;
+    height: 44px;
+    position: relative;
+}
+
+.oscillators .oscillator .waveforms .waveform button {
+    left: 9px;
+    top: 9px;
+}
+
+.knobs {
+    position: absolute;
+    width: 88px;
+}
+
+.oscillators .oscillator .knobs {
+    right: 0;
+    top: 0;
+}
+
+.knobs .knob-wrapper {
+    width: 68px;
+    height: 68px;
+    margin-left: 10px;
+    margin-top: 9px;
+    margin-bottom: 31px;
+}
+
+.knob-wrapper:last-child {
+    margin-bottom: 0;
+}
+
+.envelope {
+    width: 131px;
+    height: 195px;
+    position: absolute;
+    top: 70px;
+    right: 184px;
+}
+
+.envelope .decay {
+    width: 131px;
+    height: 195px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.envelope .decay button {
+    left: 53px;
+    top: 20px;
+}
+
+.effects {
+    width: 153px;
+    height: 195px;
+    position: absolute;
+    right: 30px;
+    top: 70px;
+}
+
+.effects .delay {
+    width: 44px;
+    height: 195px;
+    position: absolute;
+    left: 32px;
+    top: 0;
+}
+
+.effects .delay button {
+    left: 9px;
+    top: 20px;
+}
+
+.effects .knobs {
+    width: 68px;
+    right: 0;
+}
+
+.effects .knobs .knob-wrapper {
+    margin-left: 0;
+}
+
+.drum-machine {
+    height: 235px;
+    background: transparent url("../images/background-drum-machine.png");
+    position: relative;
+}
+
+.drum-machine .sequencer {
+    bottom: 134px;
+}
+
+.drum-machine .pads {
+    width: 923px;
+    height: 81px;
+    position: absolute;
+    left: 30px;
+    bottom: 20px;
+}
+
+.drum-machine .pads .pad {
+    width: 131px;
+    height: 81px;
+    float: left;
+    margin-right: 1px;
+    position: relative;
+}
+
+.drum-machine .pads .pad:last-child {
+    margin-right: 0;
+}
+
+.drum-machine .pads .pad button {
+    left: 53px;
+    top: 28px;
+}
+
+#app .knob svg {
+    visibility: hidden;
+}
+
+#app .knob .knob-knob {
+    top: 47% !important;
+    background-color: transparent !important;
+}
+
+#app .knob .knob-pointer {
+    background-color: #fff !important;
+    opacity: .9;
+}

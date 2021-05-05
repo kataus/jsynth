@@ -17,6 +17,11 @@ public class Bypass implements Effect, SoundConsumer, SoundProducer {
     }
 
     @Override
+    public void setProducer(SoundProducer producer) {
+        this.producer = producer;
+    }
+
+    @Override
     public short[] getSoundChunk() {
         return producer.getSoundChunk();
     }

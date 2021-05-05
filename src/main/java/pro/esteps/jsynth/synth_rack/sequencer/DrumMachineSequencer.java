@@ -21,7 +21,7 @@ public class DrumMachineSequencer {
     }
 
     public void advance() {
-        if (currentNoteIndex == 0) {
+        if (true) {
             if (nextSequence != null) {
                 System.arraycopy(nextSequence, 0,sequence, 0, nextSequence.length);
                 nextSequence = null;

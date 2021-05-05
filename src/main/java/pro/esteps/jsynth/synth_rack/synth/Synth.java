@@ -43,6 +43,32 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
     private byte currentChunk = 1;
 
+    // TODO: Get rid of this class and refactor the architecture
+    private static class OscillatorSettings {
+
+        private float delta;
+        private byte volume;
+
+        public float getDelta() {
+            return delta;
+        }
+
+        public void setDelta(float delta) {
+            this.delta = delta;
+        }
+
+        public byte getVolume() {
+            return volume;
+        }
+
+        public void setVolume(byte volume) {
+            this.volume = volume;
+        }
+    }
+
+    // TODO: Get rid of this list and refactor the architecture
+    private final List<OscillatorSettings> oscillatorSettingsList = new ArrayList<>();
+
     public Synth() {
 
         this.sequencer = new Sequencer();
@@ -93,13 +119,21 @@ public class Synth implements FrequencyConsumer, SoundProducer {
 
         if (currentChunk == 1) {
 
+            float previousFrequency = sequencer.getCurrentNoteFrequency();
             sequencer.advance();
+            float frequency = sequencer.getCurrentNoteFrequency();
 
-            // TODO: Reset index only when a note changes
-            simpleDecay.resetIndex();
+            if (decayLength == 0) {
+                // If there's no decay, its index is always reset so the sound never stops
+                simpleDecay.resetIndex();
+            } else {
+                // If there's a decay, it's index is reset only when the note changes
+                if (frequency != 0 && frequency != previousFrequency) {
+                    simpleDecay.resetIndex();
+                }
+            }
             simpleDecay.setDecayLength(decayLength);
 
-            float frequency = sequencer.getCurrentNoteFrequency();
             if (frequency == 0) {
                 frequencyGenerator.clearFrequency();
             } else {
@@ -155,19 +189,68 @@ public class Synth implements FrequencyConsumer, SoundProducer {
      */
     public void setOscillator(int index, Oscillator oscillator, float delta, byte volume) {
         assert index >= 0 && index < oscillators.size();
+
         if (index >= oscillators.size() - 1) {
+
+            // Add new oscillator and connect it to the mixer
             oscillators.add(index, oscillator);
+
+            // TODO: This is a duplicate code
+            if (delta != 0) {
+                FrequencyShift frequencyShift = new FrequencyShift(delta);
+                frequencyShift.addConsumer((FrequencyConsumer) oscillator);
+                frequencyGenerator.addConsumer(frequencyShift);
+            } else {
+                frequencyGenerator.addConsumer((FrequencyConsumer) oscillator);
+            }
+            oscillatorMixer.setProducerForInput(index, (SoundProducer) oscillators.get(index), volume);
+
+            // TODO: Get rid of this code
+            var oscillatorSettings = new OscillatorSettings();
+            oscillatorSettings.setDelta(delta);
+            oscillatorSettings.setVolume(volume);
+            oscillatorSettingsList.add(index, oscillatorSettings);
+
         } else {
-            oscillators.set(index, oscillator);
+
+            Oscillator currentOscillator = oscillators.get(index);
+            if (!currentOscillator.getClass().equals(oscillator.getClass())) {
+
+                oscillators.set(index, oscillator);
+
+                // TODO: This is a duplicate code
+                if (delta != 0) {
+                    FrequencyShift frequencyShift = new FrequencyShift(delta);
+                    frequencyShift.addConsumer((FrequencyConsumer) oscillators.get(index));
+                    frequencyGenerator.addConsumer(frequencyShift);
+                } else {
+                    frequencyGenerator.addConsumer((FrequencyConsumer) oscillators.get(index));
+                }
+                oscillatorMixer.setProducerForInput(index, (SoundProducer) oscillators.get(index), volume);
+
+            }
+
+            // TODO: Get rid of this code
+            var oscillatorSettings = oscillatorSettingsList.get(index);
+
+            if (delta != oscillatorSettings.getDelta() || volume != oscillatorSettings.getVolume()) {
+
+                // TODO: This is a duplicate code
+                if (delta != 0) {
+                    FrequencyShift frequencyShift = new FrequencyShift(delta);
+                    frequencyShift.addConsumer((FrequencyConsumer) oscillators.get(index));
+                    frequencyGenerator.addConsumer(frequencyShift);
+                } else {
+                    frequencyGenerator.addConsumer((FrequencyConsumer) oscillators.get(index));
+                }
+                oscillatorMixer.setProducerForInput(index, (SoundProducer) oscillators.get(index), volume);
+
+                oscillatorSettings.setDelta(delta);
+                oscillatorSettings.setVolume(volume);
+
+            }
+
         }
-        if (delta != 0) {
-            FrequencyShift frequencyShift = new FrequencyShift(delta);
-            frequencyShift.addConsumer((FrequencyConsumer) oscillator);
-            frequencyGenerator.addConsumer(frequencyShift);
-        } else {
-            frequencyGenerator.addConsumer((FrequencyConsumer) oscillator);
-        }
-        oscillatorMixer.setProducerForInput(index, (SoundProducer) oscillators.get(index), volume);
     }
 
     /**
@@ -195,6 +278,13 @@ public class Synth implements FrequencyConsumer, SoundProducer {
      */
     public void enableDelay() {
         this.effectsProcessor.enableDelay();
+    }
+
+    /**
+     * Disable the delay.
+     */
+    public void disableDelay() {
+        this.effectsProcessor.disableDelay();
     }
 
     /**

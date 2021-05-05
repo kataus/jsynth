@@ -19,6 +19,11 @@ public class Distortion implements Effect, SoundConsumer, SoundProducer {
     }
 
     @Override
+    public void setProducer(SoundProducer producer) {
+        this.producer = producer;
+    }
+
+    @Override
     public short[] getSoundChunk() {
 
         short[] mixedChunk = new short[BUFFER_SIZE];

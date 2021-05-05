@@ -55,7 +55,8 @@ public class Sequencer {
     public void advance() {
 
         if (currentTempoIndex++ == 0) {
-            if (currentNoteIndex == 0) {
+            // if (currentNoteIndex == 0) {
+            if (true) {
                 if (nextSequence != null) {
                     System.arraycopy(nextSequence, 0,sequence, 0, nextSequence.length);
                     nextSequence = null;
